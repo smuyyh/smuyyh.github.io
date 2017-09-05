@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Mac," />
 
 
 
@@ -95,13 +95,27 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="LeBron_Six 的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="Android Studio将远程仓库默认指定为Jcenter仓库，位于Bintray网站。Bintray网站下面还有其他好几个仓库。本文主要介绍如何将Android项目发布到Jcenter。 注册Bintray账号Bintray官网：https://bintray.com  也可使用GitHub账号登录。  获取APIKey上传项目之前我们需要两样东西，一个就是用户名，另一个是APIKey。AP">
+<meta name="keywords" content="Mac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用Gradle发布项目到JCenter">
+<meta property="og:url" content="http://yoursite.com/2016/07/13/2016-07-13 mac-jcenter/index.html">
 <meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="Android Studio将远程仓库默认指定为Jcenter仓库，位于Bintray网站。Bintray网站下面还有其他好几个仓库。本文主要介绍如何将Android项目发布到Jcenter。 注册Bintray账号Bintray官网：https://bintray.com  也可使用GitHub账号登录。  获取APIKey上传项目之前我们需要两样东西，一个就是用户名，另一个是APIKey。AP">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713202236653?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713202940528?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713205525775?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713205544104?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713205907464?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713210606947?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160714085637027">
+<meta property="og:image" content="http://img.blog.csdn.net/20160714092328928">
+<meta property="og:updated_time" content="2017-09-04T05:28:10.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LeBron_Six 的博客">
+<meta name="twitter:title" content="利用Gradle发布项目到JCenter">
+<meta name="twitter:description" content="Android Studio将远程仓库默认指定为Jcenter仓库，位于Bintray网站。Bintray网站下面还有其他好几个仓库。本文主要介绍如何将Android项目发布到Jcenter。 注册Bintray账号Bintray官网：https://bintray.com  也可使用GitHub账号登录。  获取APIKey上传项目之前我们需要两样东西，一个就是用户名，另一个是APIKey。AP">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160713202236653?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
 
 
 
@@ -131,13 +145,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/07/13/2016-07-13 mac-jcenter/"/>
 
 
 
 
 
-  <title>LeBron_Six 的博客</title>
+  <title>利用Gradle发布项目到JCenter | LeBron_Six 的博客</title>
   
 
 
@@ -166,8 +180,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -260,9 +273,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -292,9 +305,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/07/13/2016-07-13 mac-jcenter/" itemprop="url">利用Gradle发布项目到JCenter</a></h1>
+          <h1 class="post-title" itemprop="name headline">利用Gradle发布项目到JCenter</h1>
         
 
         <div class="post-meta">
@@ -366,9 +377,7 @@
       
 
       
-        
-          
-            <p>Android Studio将远程仓库默认指定为Jcenter仓库，位于Bintray网站。Bintray网站下面还有其他好几个仓库。本文主要介绍如何将Android项目发布到Jcenter。</p>
+        <p>Android Studio将远程仓库默认指定为Jcenter仓库，位于Bintray网站。Bintray网站下面还有其他好几个仓库。本文主要介绍如何将Android项目发布到Jcenter。</p>
 <h2 id="注册Bintray账号"><a href="#注册Bintray账号" class="headerlink" title="注册Bintray账号"></a>注册Bintray账号</h2><p>Bintray官网：<a href="https://bintray.com" target="_blank" rel="external">https://bintray.com</a></p>
 <p><div align="center"><br><img src="http://img.blog.csdn.net/20160713202236653?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width="780" alt="注册账号" align="center"></div></p>
 <p>也可使用GitHub账号登录。</p>
@@ -410,8 +419,6 @@
 <hr>
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>若在上传的时候，出现GBK编码错误，尝试在task javadoc(type: Javadoc) 下设置UTF-8编码：<br>options.encoding = “UTF-8”<br>无法解决请参考以下这个Gradle文件的配置：<br><a href="https://github.com/msdx/gradle-publish/blob/master/bintray.gradle" target="_blank" rel="external">https://github.com/msdx/gradle-publish/blob/master/bintray.gradle</a></p>
 
-          
-        
       
     </div>
     
@@ -426,14 +433,20 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Mac/" rel="tag"># Mac</a>
+          
+        </div>
+      
+
+      
+      
+      
 
       
 
       
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -443,10 +456,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -454,6 +468,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -474,8 +492,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
             <img class="site-author-image" itemprop="image"
@@ -564,6 +591,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#注册Bintray账号"><span class="nav-number">1.</span> <span class="nav-text">注册Bintray账号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取APIKey"><span class="nav-number">2.</span> <span class="nav-text">获取APIKey</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插件依赖"><span class="nav-number">3.</span> <span class="nav-text">插件依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Module配置"><span class="nav-number">4.</span> <span class="nav-text">Module配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置Username和APIKey"><span class="nav-number">5.</span> <span class="nav-text">配置Username和APIKey</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ReBuild"><span class="nav-number">6.</span> <span class="nav-text">ReBuild</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上传项目到Jcenter"><span class="nav-number">7.</span> <span class="nav-text">上传项目到Jcenter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#申请项目加入Jcenter"><span class="nav-number">8.</span> <span class="nav-text">申请项目加入Jcenter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#等待审核"><span class="nav-number">9.</span> <span class="nav-text">等待审核</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目依赖"><span class="nav-number">10.</span> <span class="nav-text">项目依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目更新"><span class="nav-number">11.</span> <span class="nav-text">项目更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">12.</span> <span class="nav-text">问题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -700,6 +743,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
 
   
 

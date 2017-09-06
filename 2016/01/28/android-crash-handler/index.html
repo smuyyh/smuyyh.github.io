@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="一个App上线或者投入到生产环境的时候崩溃了，还不知道是什么原因，这肯定是开发者的痛…所以肯定要加入全局异常捕获，如果项目较大的话，可以考虑加入第三方诸如友盟的崩溃统计插件，以达到异常捕获的效果！ Crash，可以理解为崩溃、垮台，通常来讲就是App运行期间发生了不可预料的错误，虽然在经历发布之前，测试人员进行了大量的测试，但是并不能保证App的正常运行，总会或多或少有一些BUG的。 Java的T">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 全局异常捕获之CrashHandler">
+<meta property="og:url" content="http://yoursite.com/2016/01/28/android-crash-handler/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="一个App上线或者投入到生产环境的时候崩溃了，还不知道是什么原因，这肯定是开发者的痛…所以肯定要加入全局异常捕获，如果项目较大的话，可以考虑加入第三方诸如友盟的崩溃统计插件，以达到异常捕获的效果！ Crash，可以理解为崩溃、垮台，通常来讲就是App运行期间发生了不可预料的错误，虽然在经历发布之前，测试人员进行了大量的测试，但是并不能保证App的正常运行，总会或多或少有一些BUG的。 Java的T">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-09-06T01:30:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 全局异常捕获之CrashHandler">
+<meta name="twitter:description" content="一个App上线或者投入到生产环境的时候崩溃了，还不知道是什么原因，这肯定是开发者的痛…所以肯定要加入全局异常捕获，如果项目较大的话，可以考虑加入第三方诸如友盟的崩溃统计插件，以达到异常捕获的效果！ Crash，可以理解为崩溃、垮台，通常来讲就是App运行期间发生了不可预料的错误，虽然在经历发布之前，测试人员进行了大量的测试，但是并不能保证App的正常运行，总会或多或少有一些BUG的。 Java的T">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/01/28/android-crash-handler/"/>
+
+
+
+
+
+  <title>Android 全局异常捕获之CrashHandler | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eda0d89c61ce94284ad4c17fdc3d79c7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/28/android-crash-handler/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 全局异常捕获之CrashHandler</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-28T21:13:04+08:00">
+                2016-01-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一个App上线或者投入到生产环境的时候崩溃了，还不知道是什么原因，这肯定是开发者的痛…所以肯定要加入全局异常捕获，如果项目较大的话，可以考虑加入第三方诸如友盟的崩溃统计插件，以达到异常捕获的效果！</p>
+<p>Crash，可以理解为崩溃、垮台，通常来讲就是App运行期间发生了不可预料的错误，虽然在经历发布之前，测试人员进行了大量的测试，但是并不能保证App的正常运行，总会或多或少有一些BUG的。</p>
+<p>Java的Thread中有一个UncaughtExceptionHandler接口，该接口的作用主要是为了当Thread 因未捕获的异常而突然终止时，调用处理程序。我们可以通过setDefaultUncaughtExceptionHandler方法，来改变异常默认处理程序。<br>实现代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.content.pm.PackageInfo;</div><div class="line"><span class="keyword">import</span> android.content.pm.PackageManager;</div><div class="line"><span class="keyword">import</span> android.content.pm.PackageManager.NameNotFoundException;</div><div class="line"><span class="keyword">import</span> android.os.Build;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.io.PrintWriter;</div><div class="line"><span class="keyword">import</span> java.io.StringWriter;</div><div class="line"><span class="keyword">import</span> java.io.Writer;</div><div class="line"><span class="keyword">import</span> java.lang.Thread.UncaughtExceptionHandler;</div><div class="line"><span class="keyword">import</span> java.lang.reflect.Field;</div><div class="line"><span class="keyword">import</span> java.text.DateFormat;</div><div class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</div><div class="line"><span class="keyword">import</span> java.util.HashMap;</div><div class="line"><span class="keyword">import</span> java.util.Map;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * UncaughtException处理类,当程序发生Uncaught异常的时候,有该类来接管程序,并记录发送错误报告.</span></div><div class="line"><span class="comment"> * &lt;p&gt;</span></div><div class="line"><span class="comment"> * Created by yuyuhang on 15/12/7.</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CrashHandler</span> <span class="keyword">implements</span> <span class="title">UncaughtExceptionHandler</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">//系统默认的UncaughtException处理类</span></div><div class="line">    <span class="keyword">private</span> Thread.UncaughtExceptionHandler mDefaultHandler;</div><div class="line">    <span class="comment">//CrashHandler实例</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> CrashHandler INSTANCE;</div><div class="line">    <span class="comment">//程序的Context对象</span></div><div class="line">    <span class="keyword">private</span> Context mContext;</div><div class="line">    <span class="comment">//用来存储设备信息和异常信息</span></div><div class="line">    <span class="keyword">private</span> Map&lt;String, String&gt; infos = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">CrashHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 获取CrashHandler实例 ,单例模式</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CrashHandler <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>)</div><div class="line">            INSTANCE = <span class="keyword">new</span> CrashHandler();</div><div class="line">        <span class="keyword">return</span> INSTANCE;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 初始化</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> context</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        mContext = context;</div><div class="line">        <span class="comment">//获取系统默认的UncaughtException处理器</span></div><div class="line">        mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();</div><div class="line">        <span class="comment">//设置该CrashHandler为程序的默认处理器</span></div><div class="line">        Thread.setDefaultUncaughtExceptionHandler(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 当UncaughtException发生时会转入该函数来处理</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">uncaughtException</span><span class="params">(Thread thread, Throwable ex)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!handleException(ex) &amp;&amp; mDefaultHandler != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">//如果用户没有处理则让系统默认的异常处理器来处理</span></div><div class="line">            mDefaultHandler.uncaughtException(thread, ex);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                Thread.sleep(<span class="number">3000</span>);</div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                LogUtils.e(e.toString());</div><div class="line">            &#125;</div><div class="line">            <span class="comment">//退出程序</span></div><div class="line">            android.os.Process.killProcess(android.os.Process.myPid());</div><div class="line">            System.exit(<span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 自定义错误处理,收集错误信息 发送错误报告等操作均在此完成.</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> ex</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> true:如果处理了该异常信息;否则返回false.</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">handleException</span><span class="params">(Throwable ex)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (ex == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//收集设备参数信息</span></div><div class="line">        collectDeviceInfo(mContext);</div><div class="line">        <span class="comment">//保存日志文件</span></div><div class="line">        saveCrashInfo2File(ex);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 收集设备参数信息</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> ctx</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">collectDeviceInfo</span><span class="params">(Context ctx)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            PackageManager pm = ctx.getPackageManager();</div><div class="line">            PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), PackageManager.GET_ACTIVITIES);</div><div class="line">            <span class="keyword">if</span> (pi != <span class="keyword">null</span>) &#123;</div><div class="line">                String versionName = pi.versionName == <span class="keyword">null</span> ? <span class="string">"null"</span> : pi.versionName;</div><div class="line">                String versionCode = pi.versionCode + <span class="string">""</span>;</div><div class="line">                infos.put(<span class="string">"versionName"</span>, versionName);</div><div class="line">                infos.put(<span class="string">"versionCode"</span>, versionCode);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (NameNotFoundException e) &#123;</div><div class="line">            LogUtils.e(<span class="string">"CrashHandleran.NameNotFoundException---&gt; error occured when collect package info"</span>, e);</div><div class="line">        &#125;</div><div class="line">        Field[] fields = Build.class.getDeclaredFields();</div><div class="line">        <span class="keyword">for</span> (Field field : fields) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                field.setAccessible(<span class="keyword">true</span>);</div><div class="line">                infos.put(field.getName(), field.get(<span class="keyword">null</span>).toString());</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                LogUtils.e(<span class="string">"CrashHandler.NameNotFoundException---&gt; an error occured when collect crash info"</span>, e);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 保存错误信息到文件中</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> ex</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 返回文件名称, 便于将文件传送到服务器</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">saveCrashInfo2File</span><span class="params">(Throwable ex)</span> </span>&#123;</div><div class="line"></div><div class="line">        StringBuffer sb = <span class="keyword">new</span> StringBuffer();</div><div class="line">        sb.append(<span class="string">"---------------------sta--------------------------"</span>);</div><div class="line">        <span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : infos.entrySet()) &#123;</div><div class="line">            String key = entry.getKey();</div><div class="line">            String value = entry.getValue();</div><div class="line">            sb.append(key + <span class="string">"="</span> + value + <span class="string">"\n"</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        Writer writer = <span class="keyword">new</span> StringWriter();</div><div class="line">        PrintWriter printWriter = <span class="keyword">new</span> PrintWriter(writer);</div><div class="line">        ex.printStackTrace(printWriter);</div><div class="line">        Throwable cause = ex.getCause();</div><div class="line">        <span class="keyword">while</span> (cause != <span class="keyword">null</span>) &#123;</div><div class="line">            cause.printStackTrace(printWriter);</div><div class="line">            cause = cause.getCause();</div><div class="line">        &#125;</div><div class="line">        printWriter.close();</div><div class="line">        String result = writer.toString();</div><div class="line">        sb.append(result);</div><div class="line">        sb.append(<span class="string">"--------------------end---------------------------"</span>);</div><div class="line">        LogUtils.e(sb.toString());</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">然后我们在Application中，对CrashHandler进行初始化。</div><div class="line"><span class="keyword">import</span> android.app.Application;</div><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.yuyh.utils.CrashHandler;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created by yuyuhang on 15/12/7.</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Context mContext;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate();</div><div class="line">        CrashHandler crashHandler = CrashHandler.getInstance();</div><div class="line">        crashHandler.init(getApplicationContext());</div><div class="line">        mContext = <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样的话，当程序代码中并未捕获异常，但发生了异常的时候，就会交由<code>CrashHandler</code>进行处理，异常信息可以保存到日志文件中。日志文件记录请参考：<a href="http://blog.csdn.net/yyh352091626/article/details/49562411" target="_blank" rel="external">Android 日志打印工具类 可显示打印所在的方法和行号</a>,<br>这样子，就能把异常信息及其异常发生所在的位置，保存在日志文件中。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/25/android-memory-leak-optimization/" rel="next" title="浅谈Android开发中内存泄露与优化">
+                <i class="fa fa-chevron-left"></i> 浅谈Android开发中内存泄露与优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/13/mac-library-to-jcenter/" rel="prev" title="利用Gradle发布项目到JCenter">
+                利用Gradle发布项目到JCenter <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460"
+              alt="LeBron_Six" />
+          
+            <p class="site-author-name" itemprop="name">LeBron_Six</p>
+            <p class="site-description motion-element" itemprop="description">Android Developer.</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LeBron_Six</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="作为一个Android开发者，自己想做一个app练手，有个比较头疼的问题就是没有UI图标资源~~ 其实很容易搞定的，下面就来聊聊如何在Android中应用图标字体库，找图标不再纠结！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 如何应用ttf图标字体库">
+<meta property="og:url" content="http://yoursite.com/2016/11/10/android-icon-font/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="作为一个Android开发者，自己想做一个app练手，有个比较头疼的问题就是没有UI图标资源~~ 其实很容易搞定的，下面就来聊聊如何在Android中应用图标字体库，找图标不再纠结！">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110105748162">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110093951299">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110094111561">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110094257813">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110094426676">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110094707287">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110095115371">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110095528760">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110101125883">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110104040828">
+<meta property="og:image" content="http://img.blog.csdn.net/20161110104824402">
+<meta property="og:updated_time" content="2017-09-06T05:45:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 如何应用ttf图标字体库">
+<meta name="twitter:description" content="作为一个Android开发者，自己想做一个app练手，有个比较头疼的问题就是没有UI图标资源~~ 其实很容易搞定的，下面就来聊聊如何在Android中应用图标字体库，找图标不再纠结！">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20161110105748162">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/10/android-icon-font/"/>
+
+
+
+
+
+  <title>Android 如何应用ttf图标字体库 | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eda0d89c61ce94284ad4c17fdc3d79c7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/android-icon-font/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 如何应用ttf图标字体库</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-10T22:13:04+08:00">
+                2016-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>作为一个Android开发者，自己想做一个app练手，有个比较头疼的问题就是没有UI图标资源~~ 其实很容易搞定的，下面就来聊聊如何在Android中应用图标字体库，找图标不再纠结！<br><img src="http://img.blog.csdn.net/20161110105748162" alt="这里写图片描述"></p>
+<a id="more"></a>
+<p>图标库传送门：<a href="https://icomoon.io/app/#/select" target="_blank" rel="external">https://icomoon.io/app/#/select</a></p>
+<p>1、点击<strong>左上角菜单 -&gt; Manager Projects</strong> 进入管理页面。<br><img src="http://img.blog.csdn.net/20161110093951299" alt="这里写图片描述"></p>
+<p>2、点击<strong>New Project</strong>, 创建一个工程，如<strong>First App</strong>并点击<strong>Load&gt;</strong><br><img src="http://img.blog.csdn.net/20161110094111561" alt="这里写图片描述"></p>
+<p>3、点击<strong>Add Icon From Libray</strong>，去选择自己喜欢的Library，点击<strong>+Add</strong>添加到工程里面。Library有收费的，也有免费的，视情况而定。<br><img src="http://img.blog.csdn.net/20161110094257813" alt="这里写图片描述"></p>
+<p><img src="http://img.blog.csdn.net/20161110094426676" alt="这里写图片描述"></p>
+<p>4、转到资源页面。选择自己想要下载的图标，怎么都是灰色的？安啦，后面有惊喜！<br><img src="http://img.blog.csdn.net/20161110094707287" alt="这里写图片描述"></p>
+<p>5、点击右下角<strong>Generate Font</strong>，生成ttf字体库。<br><img src="http://img.blog.csdn.net/20161110095115371" alt="这里写图片描述"></p>
+<p>上面四个图标就是我前面选中的，下面的诸如<strong>e911</strong>文字就是图标对应的unicode符号，中文字体也是这么一个道理。点击<strong>download</strong>下载字体库。<br><img src="http://img.blog.csdn.net/20161110095528760" alt="这里写图片描述"></p>
+<p>6、下载完成，解压。拷贝<strong>fonts/icomoon.ttf</strong> 到 <strong>android-assets/fonts</strong> 下面。<br><img src="http://img.blog.csdn.net/20161110101125883" alt="这里写图片描述"></p>
+<p>7、应用字体。首先建一个字体“映射”类，反正官方不太推荐用枚举方式，暂且就用注解吧~~ 打开刚才解压包里面的<strong>demo.html</strong>，对应来创建字体映射。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">import android.support.annotation.StringDef;</div><div class="line"></div><div class="line">/**</div><div class="line"> * @author yuyh.</div><div class="line"> * @date 2016/11/10.</div><div class="line"> */</div><div class="line">@StringDef(&#123;</div><div class="line">        MDFonts.HOME,</div><div class="line">        MDFonts.NEWSPAPER,</div><div class="line">        MDFonts.MUSIC,</div><div class="line">        MDFonts.PLAY</div><div class="line">&#125;)</div><div class="line">public @interface MDFonts &#123;</div><div class="line"></div><div class="line">    String HOME = &quot;\ue902&quot;;</div><div class="line"></div><div class="line">    String NEWSPAPER = &quot;\ue904&quot;;</div><div class="line"></div><div class="line">    String MUSIC = &quot;\ue911&quot;;</div><div class="line"></div><div class="line">    String PLAY = &quot;\ue912&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> android.content.Context;</div><div class="line"><span class="keyword">import</span> android.graphics.Typeface;</div><div class="line"><span class="keyword">import</span> android.widget.TextView;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * <span class="doctag">@author</span> yuyh.</span></div><div class="line"><span class="comment"> * <span class="doctag">@date</span> 2016/11/10.</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MDFontsUtils</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Typeface OCTICONS;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * Get octicons typeface</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> context</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> octicons typeface</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Typeface <span class="title">getOcticons</span><span class="params">(<span class="keyword">final</span> Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (OCTICONS == <span class="keyword">null</span>)</div><div class="line">            OCTICONS = getTypeface(context, <span class="string">"fonts/icomoon.ttf"</span>);</div><div class="line">        <span class="keyword">return</span> OCTICONS;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * Set octicons typeface on given text view(s)</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> textViews</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setOcticons</span><span class="params">(<span class="keyword">final</span> TextView... textViews)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (textViews == <span class="keyword">null</span> || textViews.length == <span class="number">0</span>)</div><div class="line">            <span class="keyword">return</span>;</div><div class="line"></div><div class="line">        Typeface typeface = getOcticons(textViews[<span class="number">0</span>].getContext());</div><div class="line">        <span class="keyword">for</span> (TextView textView : textViews)</div><div class="line">            textView.setTypeface(typeface);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * Get typeface with name</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> context</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> name</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> typeface</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Typeface <span class="title">getTypeface</span><span class="params">(<span class="keyword">final</span> Context context, <span class="keyword">final</span> String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> Typeface.createFromAsset(context.getAssets(), name);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>9、图标对应是用TextView表示，而不是ImageView。如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line"><span class="tag">     <span class="attr">android:id</span>=<span class="string">"@+id/tvMusic"</span></span></div><div class="line"><span class="tag">     <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">     <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">     <span class="attr">android:layout_margin</span>=<span class="string">"10dp"</span></span></div><div class="line"><span class="tag">     <span class="attr">android:textSize</span>=<span class="string">"16dp"</span> /&gt;</span></div><div class="line"></div><div class="line"> <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line"><span class="tag">     <span class="attr">android:id</span>=<span class="string">"@+id/tvHome"</span></span></div><div class="line"><span class="tag">     <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">     <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></div><div class="line"><span class="tag">     <span class="attr">android:layout_margin</span>=<span class="string">"10dp"</span></span></div><div class="line"><span class="tag">     <span class="attr">android:textSize</span>=<span class="string">"16dp"</span> /&gt;</span></div></pre></td></tr></table></figure></p>
+<p>在Java中应用字体。如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">tvMusic = (TextView) findViewById(R.id.tvMusic);</div><div class="line">tvMusic.setText(MDFonts.MUSIC);</div><div class="line"></div><div class="line">tvHome = (TextView) findViewById(R.id.tvHome);</div><div class="line">tvHome.setText(MDFonts.HOME);</div><div class="line"></div><div class="line"><span class="comment">// 应用字体</span></div><div class="line">MDFontsUtils.setOcticons(tvMusic, tvHome);</div></pre></td></tr></table></figure></p>
+<p>run起来，大功告成！<br><img src="http://img.blog.csdn.net/20161110104040828" alt="这里写图片描述"></p>
+<p>10、你会发现，run起来图标颜色全是Android默认的灰色，那么怎么更改图标颜色呢？刚才说了，图标字体用的是TextView，实际上他跟中文英文字体没什么两样，他本质上还是文字。所以，TextView怎么设置字体大小、字体颜色，这里就对应怎么设置。如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tvHome.setTextColor(Color.RED);</div><div class="line">tvHome.setTextSize(<span class="number">50</span>);</div></pre></td></tr></table></figure></p>
+<p><img src="http://img.blog.csdn.net/20161110104824402" alt="这里写图片描述"></p>
+<p>哈哈，没毛病！</p>
+<p>当然，也可以把字体符号配置在string.xml<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;string name=&quot;icon_home&quot; translatable=&quot;false&quot;&gt;\ue902&lt;/string&gt;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;TextView</div><div class="line">    android:id=&quot;@+id/tvHome&quot;</div><div class="line">    android:layout_width=&quot;wrap_content&quot;</div><div class="line">    android:layout_height=&quot;wrap_content&quot;</div><div class="line">    android:layout_margin=&quot;10dp&quot;</div><div class="line">    android:textSize=&quot;16dp&quot;</div><div class="line">    android:text=&quot;@string/icon_home&quot; /&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// 当然，还需要下面这步来应用设置</div><div class="line">MDFontsUtils.setOcticons(tvHome);</div></pre></td></tr></table></figure>
+<p>更多用法大家就自行扩展吧！比如可以自定义一个TextView，直接应用字体，就不需要<code>MDFontsUtils.setOcticons(tvHome);</code> 这步操作了，自己用就可以啦！</p>
+<p>感谢阅读！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/08/retrofit-okhttp-param-redirection/" rel="next" title="关于Retrofit2+Okhttp3实现统一添加请求参数和重定向">
+                <i class="fa fa-chevron-left"></i> 关于Retrofit2+Okhttp3实现统一添加请求参数和重定向
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/23/rxjava-1.0-source/" rel="prev" title="RxJava 从入门到出轨">
+                RxJava 从入门到出轨 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460"
+              alt="LeBron_Six" />
+          
+            <p class="site-author-name" itemprop="name">LeBron_Six</p>
+            <p class="site-description motion-element" itemprop="description">Android Developer.</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LeBron_Six</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

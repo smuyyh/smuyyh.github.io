@@ -275,7 +275,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/11/android-10-technique/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/08/android-virtualapk-source/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LeBron_Six">
@@ -294,7 +294,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/10/11/android-10-technique/" itemprop="url">10 个你有可能不知道的Android Studio技巧</a></h1>
+                <a class="post-title-link" href="/2017/07/08/android-virtualapk-source/" itemprop="url">滴滴开源Android插件化框架VirtualAPK原理分析</a></h1>
         
 
         <div class="post-meta">
@@ -306,8 +306,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-11T21:13:04+08:00">
-                2016-10-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-08T22:13:04+08:00">
+                2017-07-08
               </time>
             
 
@@ -367,11 +367,11 @@
 
       
         
-          <p>英文原文：<a href="https://medium.com/google-developers/about-10-things-you-probably-didn-t-know-you-could-do-in-android-studio-de231071b375#.9wc67rigb" target="_blank" rel="external">medium</a></p>
-<p><code>Android Studio</code> 是每一个 Android 开发每天都要使用的工具，但是即使你是一个经验丰富的开发人员，你也可能已经错过了许多可以节约生命的技巧，这篇文章也许就可以帮助你掌握它们其中的一部分。我不会一字一句地翻译，而是以最简洁易懂的方式介绍给你，同时提供必要的注解和延伸，让你可以在一遍快速阅读之后迅速掌握。</p>
+          <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>滴滴出行公司的首个对外开源项目 - VirtualAPK。地址：<a href="https://github.com/didi/VirtualAPK" target="_blank" rel="external">https://github.com/didi/VirtualAPK</a></p>
+<p>滴滴自行研发了这款插件化框架，功能全面、兼容性好，还能够适用于有耦合的业务插件，这就是VirtualAPK存在的意义。业内认为，在加载耦合插件方面，VirtualAPK可以说是开源方案的首选。据说滴滴打车里面已经用上了，所以还是有必要一探究竟的~~</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/10/11/android-10-technique/#more" rel="contents">
+            <a class="btn" href="/2017/07/08/android-virtualapk-source/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -422,7 +422,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/10/android-asynctask-source/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/04/android-handler-message-looper/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LeBron_Six">
@@ -441,7 +441,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/09/10/android-asynctask-source/" itemprop="url">从源码角度分析AsyncTask的用法与原理</a></h1>
+                <a class="post-title-link" href="/2017/07/04/android-handler-message-looper/" itemprop="url">从源码的角度解析Handler、Looper、Message和MessageQueue</a></h1>
         
 
         <div class="post-meta">
@@ -453,8 +453,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-10T21:13:04+08:00">
-                2016-09-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-04T23:13:04+08:00">
+                2017-07-04
               </time>
             
 
@@ -514,201 +514,11 @@
 
       
         
-          
-            <p>AsyncTask 是Android特有的一个轻量级异步抽象类，在类中通过<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">&lt;!-- more --&gt;</div><div class="line"></div><div class="line">## 前言</div><div class="line">众所周知，Android视图的绘制、监听、事件等都UI线程（主线程，Main Thread）执行，如果执行访问网络请求、数据库等耗时操作，可能会阻塞主线程，若阻塞时间超过5秒，可能会引起系统的ANR异常（Application Not Responding）。所以耗时操作需要放在子线程（也称为Worker Thread）执行，这样就避免了主线程的阻塞，然而在线程是不能有更新UI的操作的，比如在子线程调用```TextView.setText()```就会引发以下错误：</div></pre></td></tr></table></figure></p>
-<p>Only the original thread that created a view hierarchy can touch its views.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line">故而可以用 “Handle + Thread”的方式，子线程执行耗时操作，通过Handler通知主线程更新UI。但是这个方式略微麻烦，于是便引入了AsyncTask。</div><div class="line"></div><div class="line">## AsyncTask特点</div><div class="line">AsyncTask&lt;Params, Progress, Result&gt; 定义了三种泛型，作用如下：</div><div class="line"></div><div class="line">- Params：启动AsyncTask任务所需要的参数，在```doInBackground```方法接收</div><div class="line">- Progress：后台任务执行进度</div><div class="line">- Result：后台任务执行完毕之后回馈给```onPostExecute```的结果</div><div class="line"></div><div class="line">AsyncTask 内部提供了多个方法，子类可重写，会自动在相应的时刻自动调用，并且用户最好不好手动调用以下的方法，避免引起不可预知的错误。以下方法只有```doInBackground```方法是必须重写的，其他方法可选。</div><div class="line"></div><div class="line">- **onPreExecute()**：任务执行之前调用</div><div class="line">- **doInBackground(Params... params)**：子线程执行任务，在这个方法中是不可以进行UI更新操作的，如果需要更新UI元素，例如展示该任务的执行进度，可以调用publishProgress(Progress... progress)方法来完成。</div><div class="line">- **onProgressUpdate(Progress... values)**：任务执行进度。可用于进度条显示</div><div class="line">- **onPostExecute(Result result)**：任务执行完毕</div><div class="line">- **onCancelled(Result reslut)**、**onCancelled()**：用户取消任务</div><div class="line"></div><div class="line">最后，调用```execute()```开启异步任务。</div><div class="line"></div><div class="line">## AsyncTask简单使用</div><div class="line">```java</div><div class="line">public void request() &#123;</div><div class="line"></div><div class="line">    AsyncTask&lt;String, Integer, Integer&gt; task = new AsyncTask&lt;String, Integer, Integer&gt;() &#123;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        protected void onPreExecute() &#123;</div><div class="line">            super.onPreExecute();</div><div class="line">            Log.i(&quot;AsyncTask&quot;, &quot;准备执行后台任务&quot;);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        protected Integer doInBackground(String... params) &#123;</div><div class="line">            String url_1 = params[0];</div><div class="line"></div><div class="line">            doRequest(url_1);</div><div class="line"></div><div class="line">            publishProgress(50);</div><div class="line"></div><div class="line">            String url_2 = params[1];</div><div class="line"></div><div class="line">            doRequest(url_2);</div><div class="line"></div><div class="line">            publishProgress(100);</div><div class="line"></div><div class="line">            return 1;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        protected void onProgressUpdate(Integer... values) &#123;</div><div class="line">            super.onProgressUpdate(values);</div><div class="line">            Log.i(&quot;AsyncTask&quot;, &quot;当前进度&quot; + values[0] + &quot;%&quot;);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        @Override</div><div class="line">        protected void onPostExecute(Integer ret) &#123;</div><div class="line">            super.onPostExecute(ret);</div><div class="line">            Log.i(&quot;AsyncTask&quot;, &quot;执行完毕，执行结果&quot; + ret);</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    String url_1 = &quot;https://api.github.com/users/smuyyh&quot;;</div><div class="line">    String url_2 = &quot;https://api.github.com/users/smuyyh/followers&quot;;</div><div class="line"></div><div class="line">    task.execute(url_1, url_2); // 开启后台任务</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>代码较为简单，就不做过多的解释了。后面着重介绍AsyncTask的内部实现机制。</p>
-<h2 id="原理分析"><a href="#原理分析" class="headerlink" title="原理分析"></a>原理分析</h2><p>这一节将从源码的角度来分析一下<a href="http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.1.1_r1/android/os/AsyncTask.java" target="_blank" rel="external">AsyncTask</a>。以下源码基于Android-23.</p>
-<ul>
-<li>开启后台任务之前，首先需要创建AsyncTask的实例，所以还得从构造函数说起。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">AsyncTask</span><span class="params">()</span> </span>&#123;</div><div class="line">    mWorker = <span class="keyword">new</span> WorkerRunnable&lt;Params, Result&gt;() &#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> Result <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">            mTaskInvoked.set(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);</div><div class="line">            Result result = doInBackground(mParams);</div><div class="line">            Binder.flushPendingCommands();</div><div class="line">            <span class="keyword">return</span> postResult(result); <span class="comment">// 任务的具体实现</span></div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    mFuture = <span class="keyword">new</span> FutureTask&lt;Result&gt;(mWorker) &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">done</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                postResultIfNotInvoked(get());</div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                android.util.Log.w(LOG_TAG, e);</div><div class="line">            &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"An error occurred while executing doInBackground()"</span>,</div><div class="line">                        e.getCause());</div><div class="line">            &#125; <span class="keyword">catch</span> (CancellationException e) &#123;</div><div class="line">                postResultIfNotInvoked(<span class="keyword">null</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在构造函数中，初始化了两个变量，分别是mWorker与mFuture，mFuture创建的时候传入了mWorker参数，而mWorker本身是一个<a href="http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7u40-b43/java/util/concurrent/Callable.java#Callable" target="_blank" rel="external">Callable</a>对象。那么，mFutrue是个什么东西呢？</p>
-<p>mFuture是一个<a href="http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7u40-b43/java/util/concurrent/FutureTask.java#FutureTask" target="_blank" rel="external">FutureTask</a>对象，FutureTask实际上是一个任务的操作类，它并不启动新线程，并且只负责任务调度。任务的具体实现是构造FutureTask时提供的，实现自Callable<v>接口，也就是刚才的mWorker。</v></p>
-<ul>
-<li>AsyncTask对象穿件完毕之后调用<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">```java</div><div class="line">@MainThread</div><div class="line">public final AsyncTask&lt;Params, Progress, Result&gt; execute(Params... params) &#123;</div><div class="line">    return executeOnExecutor(sDefaultExecutor, params);</div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
-</ul>
-<p>只有一句话，可知是调用executeOnExecutor进行执行。这里就有个疑问了，sDefaultExecutor是个什么东西？在说这个之前，需要明确一下一下三个事：</p>
-<p><strong>1</strong>、Android3.0之前部分代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CORE_POOL_SIZE = <span class="number">5</span>;  </div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXIMUM_POOL_SIZE = <span class="number">128</span>;  </div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> KEEP_ALIVE = <span class="number">10</span>;  </div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadPoolExecutor sExecutor = <span class="keyword">new</span> ThreadPoolExecutor(CORE_POOL_SIZE,  MAXIMUM_POOL_SIZE, KEEP_ALIVE,</div><div class="line">                TimeUnit.SECONDS, sWorkQueue, sThreadFactory);</div></pre></td></tr></table></figure></p>
-<p><strong>2</strong>、在Android3.0之前，AsyncTask执行中最终触发的是把任务交给线池THREAD_POOL_EXECUTOR来执行，提交的任务并行的在线程池中运行，但这些规则在3.0之后发生了变化，3.0之后提交的任务是默认串行运行的，执行完一个任务才执行下一个！</p>
-<p><strong>3</strong>、在Android3.0以前线程池里核心线程有5个，任务队列的任务数最大不能超过128个，线程池里的线程都是并行运行的，在3.0以后，直接调用execute(params)触发的是sDefaultExecutor的execute(runnable)方法，而不是原来的THREAD_POOL_EXECUTOR。在Android4.4以后，线程池大小等于 cpu核心数 + 1，最大值为cpu核心数 * 2 + 1。这些变化大家可以自行对比一下。</p>
-<p>跟进源码不难发现，sDefaultExecutor实际上是指向SerialExecutor的一个实例，从名字上看是一个顺序执行的executor，并且它在AsyncTask中是以常量的形式存在的，因此在整个应用程序中的所有AsyncTask实例都会共用同一个SerialExecutor。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SerialExecutor</span> <span class="keyword">implements</span> <span class="title">Executor</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> ArrayDeque&lt;Runnable&gt; mTasks = <span class="keyword">new</span> ArrayDeque&lt;Runnable&gt;();</div><div class="line">    Runnable mActive;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(<span class="keyword">final</span> Runnable r)</span> </span>&#123;</div><div class="line">        mTasks.offer(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    r.run();</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    scheduleNext();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">        <span class="keyword">if</span> (mActive == <span class="keyword">null</span>) &#123;</div><div class="line">            scheduleNext();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">scheduleNext</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> ((mActive = mTasks.poll()) != <span class="keyword">null</span>) &#123;</div><div class="line">            THREAD_POOL_EXECUTOR.execute(mActive);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>SerialExecutor是使用ArrayDeque这个队列来管理Runnable对象的。当Executor提交一个任务，执行一次<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">当AsyncTask不断提交任务时，那么此时mActive不为空了，所以后续添加的任务能得到执行的唯一条件，就是前一个任务执行完毕，也就是```r.run()```。所以这就保证了SerialExecutor的顺序执行。这个地方其实也是一个坑，初学者很容易在这里踩坑，同时提交多个任务，却无法同步执行。</div><div class="line"></div><div class="line">如果想让其并行执行怎么办？AsyncTask提供了一下两种方式：</div><div class="line">```java</div><div class="line">task.setDefaultExecutor(AsyncTask.THREAD_POOL_EXECUTOR); </div><div class="line"></div><div class="line">task.executeOnExecutor(executor, params); //可以自己指定线程池</div></pre></td></tr></table></figure></p>
-<ul>
-<li>继续跟进<figure class="highlight plain"><figcaption><span>exec, Params... params)```代码</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">```java</div><div class="line">@MainThread</div><div class="line">public final AsyncTask&lt;Params, Progress, Result&gt; executeOnExecutor(Executor exec,</div><div class="line">        Params... params) &#123;</div><div class="line">    if (mStatus != Status.PENDING) &#123;</div><div class="line">        switch (mStatus) &#123;</div><div class="line">            case RUNNING:</div><div class="line">                throw new IllegalStateException(&quot;Cannot execute task:&quot;</div><div class="line">                        + &quot; the task is already running.&quot;);</div><div class="line">            case FINISHED:</div><div class="line">                throw new IllegalStateException(&quot;Cannot execute task:&quot;</div><div class="line">                        + &quot; the task has already been executed &quot;</div><div class="line">                        + &quot;(a task can be executed only once)&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    mStatus = Status.RUNNING;</div><div class="line"></div><div class="line">    onPreExecute();</div><div class="line"></div><div class="line">    mWorker.mParams = params;</div><div class="line">    exec.execute(mFuture);</div><div class="line"></div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure></li>
-</ul>
-<p>不难看出，最后是调用Executor的<figure class="highlight plain"><figcaption><span>command)```方法启动mFuture。默认情况下，sDefaultExecutor就是SerialExecutor类，所以为串行执行。当然用户也可以提供自己的Executor来改变AsyncTask的运行方式。最后在```THREAD_POOL_EXECUTOR```真正启动任务执行的Executor。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">上面已经提到，Execute执行是调用Runnable的run()方法，也就是mFuture的run方法，继续跟进代码</div><div class="line">```java</div><div class="line">public void run() &#123;</div><div class="line">    if (state != NEW || !U.compareAndSwapObject(this, RUNNER, null, Thread.currentThread()))</div><div class="line">        return;</div><div class="line">    try &#123;</div><div class="line">        Callable&lt;V&gt; c = callable;</div><div class="line">        if (c != null &amp;&amp; state == NEW) &#123;</div><div class="line">            V result;</div><div class="line">            boolean ran;</div><div class="line">            try &#123;</div><div class="line">                result = c.call();</div><div class="line">                ran = true;</div><div class="line">            &#125; catch (Throwable ex) &#123;</div><div class="line">                result = null;</div><div class="line">                ran = false;</div><div class="line">                setException(ex);</div><div class="line">            &#125;</div><div class="line">            if (ran)</div><div class="line">                set(result);</div><div class="line">        &#125;</div><div class="line">    &#125; finally &#123;</div><div class="line">        runner = null;</div><div class="line">        int s = state;</div><div class="line">        if (s &gt;= INTERRUPTING)</div><div class="line">            handlePossibleCancellationInterrupt(s);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>从第10行代码可发现，最后是调用callable的call()方法。那么这个callable是什么呢？就是初始化mFuture传入的mWorker对象。在前面的构造函数那边可以发现call()方法，我们单独分析一下这个方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Result <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    mTaskInvoked.set(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">    Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);</div><div class="line">    Result result = doInBackground(mParams);</div><div class="line">    Binder.flushPendingCommands();</div><div class="line">    <span class="keyword">return</span> postResult(result);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>看了这么久，终于发现了<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">```java</div><div class="line">private Result postResult(Result result) &#123;</div><div class="line">    Message message = getHandler().obtainMessage(MESSAGE_POST_RESULT,</div><div class="line">            new AsyncTaskResult&lt;Result&gt;(this, result));</div><div class="line">    message.sendToTarget();</div><div class="line">    return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>可以发现，最后是通过Handler的方式，把消息发送出去，消息中携带了<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">```java</div><div class="line">private static class InternalHandler extends Handler &#123;</div><div class="line">    public InternalHandler() &#123;</div><div class="line">        super(Looper.getMainLooper());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void handleMessage(Message msg) &#123;</div><div class="line">        AsyncTaskResult&lt;?&gt; result = (AsyncTaskResult&lt;?&gt;) msg.obj;</div><div class="line">        switch (msg.what) &#123;</div><div class="line">            case MESSAGE_POST_RESULT:</div><div class="line">                // There is only one result</div><div class="line">                result.mTask.finish(result.mData[0]);</div><div class="line">                break;</div><div class="line">            case MESSAGE_POST_PROGRESS:</div><div class="line">                result.mTask.onProgressUpdate(result.mData);</div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这里对消息的类型进行了判断，如果是MESSAGE_POST_RESULT，就执行<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">```java</div><div class="line">protected final void publishProgress(Progress... values) &#123;  </div><div class="line">    if (!isCancelled()) &#123;  </div><div class="line">        sHandler.obtainMessage(MESSAGE_POST_PROGRESS,  </div><div class="line">                new AsyncTaskResult&lt;Progress&gt;(this, values)).sendToTarget();  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>然后看一下finish()的代码。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">finish</span><span class="params">(Result result)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (isCancelled()) &#123;</div><div class="line">        onCancelled(result);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        onPostExecute(result);</div><div class="line">    &#125;</div><div class="line">    mStatus = Status.FINISHED;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>不难发现，如果当前任务被取消掉了，就会调用onCancelled()方法，如果没有被取消，则调用onPostExecute()方法，这样当前任务的执行就全部结束了。并且，当你再次调用execute的时候，这个时候mStatus的状态为Status.FINISHED，表示已经执行过了，那么此时就会抛异常，这也就是为什么一个AsyncTask对象只能执行一次的原因。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">switch</span> (mStatus) &#123;</div><div class="line">    <span class="keyword">case</span> RUNNING:</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Cannot execute task:"</span></div><div class="line">                + <span class="string">" the task is already running."</span>);</div><div class="line">    <span class="keyword">case</span> FINISHED:</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Cannot execute task:"</span></div><div class="line">                + <span class="string">" the task has already been executed "</span></div><div class="line">                + <span class="string">"(a task can be executed only once)"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>到这里，就非常清晰了吧。彻底的了解了AsyncTask内部实现的逻辑。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>可以看出，在使用AsyncTask的过程中，有许多需要注意的地方。</p>
-<ol>
-<li>由于Handler需要和主线程交互，而Handler又是内置于AsnycTask中的，所以，AsyncTask的创建必须在主线程，execute的执行也应该在主线程。</li>
-<li>AsyncTask的doInBackground(Params… Params)方法运行在子线程中，其他方法运行在主线程中，可以操作UI组件。</li>
-<li>尽量不要手动的去调用AsyncTask的onPreExecute, doInBackground, publishProgress, onProgressUpdate, onPostExecute 这些方法，避免发生不可预知的问题。</li>
-<li>一个任务AsyncTask任务只能被执行一次。否则会抛IllegalStateException异常</li>
-<li>在doInBackground()中要检查isCancelled()的返回值，如果你的异步任务是可以取消的话。cancel()仅仅是给AsyncTask对象设置了一个标识位，虽然运行中可以随时调用cancel(boolean mayInterruptIfRunning)方法取消任务，如果成功调用isCancelled()会返回true，并且不会执行 onPostExecute() 方法了，取而代之的是调用 onCancelled() 方法。但是！！！值得注意的一点是，如果这个任务在执行之后调用cancel()方法是不会真正的把任务结束的，而是继续执行，只不过改变的是执行之后的回调方法是 onPostExecute还是onCancelled。可以在doInBackground里面去判断isCancle，如果取消了，那就直接return result; 当然，这种方式也并非非常完美。</li>
-<li>Asynctask的生命周期和它所在的activity的生命周期并非一致的，当Activity终止时，它会以它自有的方式继续运行，即使你退出了整个应用程序。另一方面，要注意Android屏幕切换问题，因为这时候Activity会重新创建。</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/29/javascript-github-widget/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LeBron_Six">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LeBron_Six 的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/29/javascript-github-widget/" itemprop="url">JS实现类似于微博秀的GitHub挂件</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-29T21:13:04+08:00">
-                2016-08-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>项目地址：<a href="https://github.com/smuyyh/GitHubWidgets" target="_blank" rel="external">https://github.com/smuyyh/GitHubWidgets</a></p>
-<p>先来几张效果图。</p>
-<ul>
-<li><p>GitHub用户信息挂件<br><img src="https://github.com/smuyyh/GitHubWidgets/blob/master/screenshot/github_user_1.png?raw=true" width="210/"></p>
-</li>
-<li><p>GitHub代码库信息挂件<br><img src="https://github.com/smuyyh/GitHubWidgets/blob/master/screenshot/github_repo_1.png?raw=true" width="280/"></p>
-</li>
-<li><p>GitHub个人贡献信息挂件<br><img src="https://github.com/smuyyh/GitHubWidgets/blob/master/screenshot/github_activity_1.png?raw=true" width="280/"></p>
-</li>
-<li><p>为CSDN博客添加GitHub用户信息挂件<br><img src="https://github.com/smuyyh/GitHubWidgets/blob/master/screenshot/csdn_widget_2.png?raw=true" width="210/"></p>
-</li>
-</ul>
+          <h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p>虽然很基础的一个东西，然是最近面试中还是常常最被问到，而且都是到源码层，因此决定再造一次轮子！</p>
+<p><img src="http://img.blog.csdn.net/20170704141529111?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/08/29/javascript-github-widget/#more" rel="contents">
+            <a class="btn" href="/2017/07/04/android-handler-message-looper/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -759,7 +569,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/28/gradlew-command-not-found/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/06/java-hashmap-source/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LeBron_Six">
@@ -778,7 +588,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/08/28/gradlew-command-not-found/" itemprop="url">-bash ：gradlew command not found</a></h1>
+                <a class="post-title-link" href="/2017/04/06/java-hashmap-source/" itemprop="url">HashMap 内部原理</a></h1>
         
 
         <div class="post-meta">
@@ -790,8 +600,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-28T21:13:04+08:00">
-                2016-08-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-06T22:13:04+08:00">
+                2017-04-06
               </time>
             
 
@@ -813,8 +623,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
                   </a>
                 </span>
 
@@ -851,157 +661,11 @@
 
       
         
-          
-            <p>mac下执行gradlew命令时，提示-bash ：gradlew command not found，主要原因是Android Project根目录下地gradlew文件没有执行权限。打开终端，执行以下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo chmod +x gradlew</div></pre></td></tr></table></figure>
-<p>为gradlew增加可执行权限。</p>
-<p>值得一提的是，mac下执行当前目录下的命令需要在前面加上“./”，否则会到环境变量下找相应命令。例如</p>
-<pre><code>./gradlew javadocJar
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/25/android-bubble-popup-window/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LeBron_Six">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LeBron_Six 的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/08/25/android-bubble-popup-window/" itemprop="url">Android 实现气泡布局/弹窗，可控制气泡尖角方向及偏移量</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-25T21:13:04+08:00">
-                2016-08-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>Android 自定义布局实现气泡弹窗，可控制气泡尖角方向及偏移量。</p>
-<h2 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h2><p><img src="http://img.blog.csdn.net/20160825143916306" width="280/"></p>
+          <h2 id="HashMap-内部实现"><a href="#HashMap-内部实现" class="headerlink" title="HashMap 内部实现"></a>HashMap 内部实现</h2><p>通过名字便可知道的是，HashMap 的原理就是散列。HashMap内部维护一个 Buckets 数组，每个 Bucket 封装为一个 Entry<k, v=""> 键值对形式的链表结构，这个 Buckets 数组也称为表。表的索引是 密钥K 的散列值（散列码）。如下图所示：</k,></p>
+<p><img src="http://img.blog.csdn.net/20170308093008092?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/08/25/android-bubble-popup-window/#more" rel="contents">
+            <a class="btn" href="/2017/04/06/java-hashmap-source/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1052,7 +716,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/16/java-coding-standard/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/03/android-26-3d-touch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LeBron_Six">
@@ -1071,7 +735,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/08/16/java-coding-standard/" itemprop="url">Java 代码规范初步</a></h1>
+                <a class="post-title-link" href="/2017/04/03/android-26-3d-touch/" itemprop="url">Android 7.1.1 之实现 3D Touch</a></h1>
         
 
         <div class="post-meta">
@@ -1083,8 +747,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-16T21:13:04+08:00">
-                2016-08-16
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-03T22:13:04+08:00">
+                2017-04-03
               </time>
             
 
@@ -1144,11 +808,10 @@
 
       
         
-          <p>谈到编码规范，对于团队项目开发来说，是很有必要的。如果说代码是一种社会行为，那么代码规范可以说是法律，通过法律来约束行为。养成一个良好编码规范的习惯，一是可以统一代码风格；二是便于团队成员协作开发；三是在review代码的时候，更加容易精确地判断需要修改的地方；四是提高代码的可读性和可维护性，提高编码效率及代码质量。</p>
-<p>写代码就像写文章一样，逻辑调理清晰，在合适的地方分段，这样对方看起来也比较舒服。当然，以下一些规范是个人整理出来的一些建议，也并非绝对正确，欢迎提议，不喜勿喷~~</p>
+          <h2 id="Shortcut概念"><a href="#Shortcut概念" class="headerlink" title="Shortcut概念"></a>Shortcut概念</h2><p>Shortcut 是Android-25（Android 7.1）新增的一项类似iOS的 3D Touch 功能的快捷方式组件，但是有着不同的表现形式，因为Android在硬件上不支持触摸压力感应，所以表现形式为长按，而iOS须用力长按。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/08/16/java-coding-standard/#more" rel="contents">
+            <a class="btn" href="/2017/04/03/android-26-3d-touch/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1199,7 +862,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/13/mac-library-to-jcenter/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/06/java-jvm-basic-knowledge/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LeBron_Six">
@@ -1218,7 +881,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/07/13/mac-library-to-jcenter/" itemprop="url">利用Gradle发布项目到JCenter</a></h1>
+                <a class="post-title-link" href="/2017/03/06/java-jvm-basic-knowledge/" itemprop="url">JVM 基础知识</a></h1>
         
 
         <div class="post-meta">
@@ -1230,8 +893,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-13T21:13:04+08:00">
-                2016-07-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-06T22:13:04+08:00">
+                2017-03-06
               </time>
             
 
@@ -1253,8 +916,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
                   </a>
                 </span>
 
@@ -1291,10 +954,12 @@
 
       
         
-          <p>Android Studio将远程仓库默认指定为Jcenter仓库，位于Bintray网站。Bintray网站下面还有其他好几个仓库。本文主要介绍如何将Android项目发布到Jcenter。</p>
+          <h2 id="JVM-概念"><a href="#JVM-概念" class="headerlink" title="JVM 概念"></a>JVM 概念</h2><p>JVM（Java Virtual Mechine，Java虚拟机），是 Java 应用程序的运行时引擎。JVM 是 JRE（Java Runtime，Java运行环境）的一部分，它实际上就是去执行 Java 程序的 main 方法。</p>
+<p>为什么说 Java 是一个平台无关的语言？ Java 号称是 Write Once，Run Anywhere，能实现这个的核心，就是 JVM 。当我们通过编译器编译 .java 文件时，会生成一个同名的 .class 文件（包含字节码），当我们运行 Java 程序时，流程如图所示：</p>
+<p><img src="http://img.blog.csdn.net/20170306140953187?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/07/13/mac-library-to-jcenter/#more" rel="contents">
+            <a class="btn" href="/2017/03/06/java-jvm-basic-knowledge/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1345,7 +1010,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/28/android-crash-handler/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/07/android-24-camera-crop/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LeBron_Six">
@@ -1364,7 +1029,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/01/28/android-crash-handler/" itemprop="url">Android 全局异常捕获之CrashHandler</a></h1>
+                <a class="post-title-link" href="/2017/02/07/android-24-camera-crop/" itemprop="url">Android 7.0 之拍照与图片裁剪适配</a></h1>
         
 
         <div class="post-meta">
@@ -1376,8 +1041,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-28T21:13:04+08:00">
-                2016-01-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-07T22:13:04+08:00">
+                2017-02-07
               </time>
             
 
@@ -1437,12 +1102,11 @@
 
       
         
-          <p>一个App上线或者投入到生产环境的时候崩溃了，还不知道是什么原因，这肯定是开发者的痛…所以肯定要加入全局异常捕获，如果项目较大的话，可以考虑加入第三方诸如友盟的崩溃统计插件，以达到异常捕获的效果！</p>
-<p>Crash，可以理解为崩溃、垮台，通常来讲就是App运行期间发生了不可预料的错误，虽然在经历发布之前，测试人员进行了大量的测试，但是并不能保证App的正常运行，总会或多或少有一些BUG的。</p>
-<p>Java的Thread中有一个UncaughtExceptionHandler接口，该接口的作用主要是为了当Thread 因未捕获的异常而突然终止时，调用处理程序。我们可以通过setDefaultUncaughtExceptionHandler方法，来改变异常默认处理程序。</p>
+          <p>在Android 7.0以上，在相机拍照和图片裁剪上，可能会碰到以下一些错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Process: com.yuyh.imgsel, PID: 22995</div><div class="line"></div><div class="line">// 错误1</div><div class="line">android.os.FileUriExposedException: file:///storage/emulated/0/Android/data/com.yuyh.imgsel/cache/1486438962645.jpg exposed beyond app through ClipData.Item.getUri()</div><div class="line"></div><div class="line">// 错误2</div><div class="line">android.os.FileUriExposedException: file:///storage/emulated/0/DCIM/RxGalleryFinal/IMG_20161018180127.jpg exposed beyond app through Intent.getData()</div></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2016/01/28/android-crash-handler/#more" rel="contents">
+            <a class="btn" href="/2017/02/07/android-24-camera-crop/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1493,7 +1157,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/01/25/android-memory-leak-optimization/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/07/android-view-draw/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="LeBron_Six">
@@ -1512,7 +1176,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/01/25/android-memory-leak-optimization/" itemprop="url">浅谈Android开发中内存泄露与优化</a></h1>
+                <a class="post-title-link" href="/2017/02/07/android-view-draw/" itemprop="url">【转】Android View 绘制流程</a></h1>
         
 
         <div class="post-meta">
@@ -1524,8 +1188,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-01-25T21:13:04+08:00">
-                2016-01-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-07T22:13:04+08:00">
+                2017-02-07
               </time>
             
 
@@ -1585,14 +1249,455 @@
 
       
         
-          
-            <p>内存泄露是在Android开发中尤其要重视的一个问题，对开发人员开说，这是一个很容易犯也很常见的错误。优化内存泄露的问题，主要从两方面着手，一是开发人员避免写出有内存泄露的代码，二是通过一些诸如MAT的内存分析工具来找出潜在的内存泄露并解决它。<br>其实平时遇到的最多的情况，就是对 <figure class="highlight plain"><figcaption><span>或 ```Context``` 保持一个长生命周期的引用。下面主要来分析一下造成内存泄露的各种原因。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">&lt;!-- more --&gt;</div><div class="line"></div><div class="line"></div><div class="line">## 一、静态变量导致的内存泄露</div><div class="line"></div><div class="line">要不怎么说static关键字要慎用呢？来看看下面这段代码，Context对象为静态的，那么Activity就无法正常销毁，会常驻内存。</div><div class="line"></div><div class="line">```java</div><div class="line">public class MemoryActivity extends Activity&#123;</div><div class="line">    public static Context mContext;</div><div class="line">    @Override</div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        mContext = this;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这是一个很隐晦的内存泄漏的情况，在开发过程中，<figure class="highlight plain"><figcaption><span>能使用 ```ApplicationContext``` 得尽量使用 ```ApplicationContext``` ，因为这个 ```Context``` 的生存周期和你的应用的生存周期一样长，而不是取决于activity的生存周期。除此之外，在 ```Activity``` 里面创建了静态的View，这就意味着该View持有一个对当前这个 ```Activity``` 的引用，那么 ```Activity``` 也是无法正常销毁的。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 二、引用没释放导致的内存泄露</div><div class="line"></div><div class="line">### 1、注册服务没取消导致的内存泄露</div><div class="line"></div><div class="line">假如我们在锁屏界面(LockScreen)中，监听系统中的电话服务以获取一些信息(如信号强度等)，则可以在```LockScreen``` 中定义一个 ```PhoneStateListener``` 的对象，同时将它注册到 ```TelephonyManager``` 服务中。对于LockScreen对象，当需要显示锁屏界面的时候就会创建一个LockScreen对象，而当锁屏界面消失的时候LockScreen对象就会被释放掉。但是如果在释放LockScreen对象的时候没有取消之前注册的PhoneStateListener对象，那么则会导致LockScreen无法被垃圾回收。而锁屏界面又不断的创建和销毁，则最终会由于大量的LockScreen对象没有办法被回收而引起 ```OutOfMemory``` 。类似的，```BraodcastReceiver```，```ContentObserver```，```FileObserver``` 在 Activity onDeatory或者某类声明周期结束之后一定要unregister掉，否则这个Activity类会被system强引用，不会被内存回收。</div><div class="line"></div><div class="line">### 2、集合中的对象没有及时清理导致的内存泄露</div><div class="line"></div><div class="line">当该集合为静态的时候，那么在集合里面对象越来越多的时候，最好要及时清理不需要用到的对象。</div><div class="line"></div><div class="line">## 三、单例模式导致的内存泄露</div><div class="line">单例模式的特点就是它的生命周期和 ```Application``` 一样，那么如果某个 ```Activity``` 实例被一个单例所持有，也就是说在单例里面引用了它，那么就会造成 ```Activity``` 对象无法正常回收释放。</div><div class="line"></div><div class="line">## 四、资源对象未关闭导致的内存泄露</div><div class="line">资源性对象(如 ```Cursor```，```File``` 文件等)往往都用了一些缓冲，我们在不使用的时候，应该及时关闭它们，以便它们的缓冲及时回收内存。它们的缓冲不仅存在于java虚拟机内，还存在于java虚拟机外。如果我们仅仅是把它的引用设置为null，而不关闭它们，往往会造成内存泄露。例如程序中经常会进行查询数据库的操作，但是经常会有使用完毕Cursor后没有关闭的情况。如果我们的查询结果集比较小，对内存的消耗不容易被发现，只有在常时间大量操作的情况下才会复现内存问题，这样就会给以后的测试和问题排查带来困难和风险。类似的，Bitmap在不需要之后，应该调用recycle回收，再置为null。</div><div class="line"></div><div class="line">## 五、属性动画导致的内存泄露</div><div class="line">例如下面的代码，由于该属性动画为循环动画，如果在 ```Activity``` 销毁时，没有取消动画，那么虽然我们看不见动画在执行，实际上动画仍然一直播放下去，这个时候```Button```会被动画所持有，而 ```Button``` 又持有对应的 ```Activity``` 对象，那么就会造成 ```Activity``` 无法正常释放。</div><div class="line"></div><div class="line">```java</div><div class="line">public class MemoryActivity extends Activity&#123;</div><div class="line">    @Override</div><div class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</div><div class="line">        super.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">        Button button = (Button) findViewById(R.id.btn_end);</div><div class="line">        ObjectAnimator animator = ObjectAnimator.ofFloat(button, &quot;&quot;, 0,180);</div><div class="line">        animator.setDuration(2000);</div><div class="line">        animator.setRepeatCount(-1);</div><div class="line">        animator.start(); // 没有调用cancle()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="六、Adapter未使用缓存的convertView导致的内存泄露"><a href="#六、Adapter未使用缓存的convertView导致的内存泄露" class="headerlink" title="六、Adapter未使用缓存的convertView导致的内存泄露"></a>六、Adapter未使用缓存的convertView导致的内存泄露</h2><figure class="highlight plain"><figcaption><span>convertView就是被缓存起来的list item的view对象(初始化时缓存中没有view对象则convertView是null)。由此可以看出，如果我们不去使用 convertView，而是每次都在```getView()```中重新实例化一个View对象的话，即浪费资源也浪费时间，也会使得内存占用越来越大。正确的写法如下</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">```java</div><div class="line">public View getView(int position, ViewconvertView, ViewGroup parent) &#123;</div><div class="line">        View view = null;</div><div class="line">        if (convertView != null) &#123; // 不应该直接new</div><div class="line">                view = convertView; </div><div class="line">                ... </div><div class="line">        &#125; else &#123; </div><div class="line">                view = new Xxx(...);</div><div class="line">                ... </div><div class="line">        &#125; </div><div class="line">        return view; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="七、Handler内部类内存泄露"><a href="#七、Handler内部类内存泄露" class="headerlink" title="七、Handler内部类内存泄露"></a>七、Handler内部类内存泄露</h2><p>当使用内部类（包括匿名类）来创建 <code>Handler</code> 的时候，<code>Handler</code> 对象会隐式地持有一个外部类对象（通常是一个 <code>Activity</code> ）的引用，而Handler通常会伴随着一个耗时的后台线程（例如从网络拉取图片）一起出现，这个后台线程在任务执行完毕（例如图片下载完毕）之后，通过消息机制通知Handler，然后 <code>Handler</code> 把图片更新到界面。然而，如果用户在网络请求过程中关闭了Activity，正常情况下，Activity不再被使用，它就有可能在GC检查时被回收掉，但由于这时线程尚未执行完，而该线程持有<code>Handler</code>的引用，这个Handler又持有<code>Activity</code>的引用，就导致该<code>Activity</code>无法被回收（即内存泄露），直到网络请求结束（例如图片下载完毕）。另外，如果你执行了<code>Handler</code>的<code>postDelayed()</code>方法，该方法会将你的<code>Handler</code>装入一个<code>Message</code>，并把这条<code>Message</code>推到<code>MessageQueue</code>中，那么在你设定的delay到达之前，会有一条<code>MessageQueue</code> -&gt; <code>Message</code> -&gt; <code>Handler</code> -&gt; <code>Activity</code>的链，导致你的Activity被持有引用而无法被回收。可以在<code>Activity</code>结束后，关闭线程，如果你的<code>Handler</code>是被delay的<code>Message</code>持有了引用，那么调用<code>removeCallbacks</code>方法来移除消息队列。</p>
-<p>内存泄露检测工具MAT的使用请参考：<a href="http://jingyan.baidu.com/article/ae97a646b4eea8bbfc461d5a.html" target="_blank" rel="external">http://jingyan.baidu.com/article/ae97a646b4eea8bbfc461d5a.html</a>，<br>这里需要强调一点，有一些内存泄露通过Mat是查不出来的，比如native的代码，MAT对C/C++是无能为力的。</p>
+          <p>Android View 绘制流程</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/02/07/android-view-draw/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/23/rxjava-1.0-source/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/23/rxjava-1.0-source/" itemprop="url">RxJava 从入门到出轨</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-23T22:13:04+08:00">
+                2016-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>使用了RxJava有一段时间了，深深感受到了其“牛逼”之处。下面，就从RxJava的基础开始，一步一步与大家分享一下这个强大的异步库的用法！</p>
+<h2 id="RxJava-概念初步"><a href="#RxJava-概念初步" class="headerlink" title="RxJava 概念初步"></a>RxJava 概念初步</h2><p>RxJava 在<a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="external">Github Repo</a>上给的解释是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">“RxJava is a Java VM implementation of Reactive Extensions: </div><div class="line"></div><div class="line">a library for composing asynchronous and event-based programs by using observable sequences.”</div></pre></td></tr></table></figure></p>
+<p>大概就是说RxJava是Java VM上一个灵活的、使用可观测序列来组成的一个异步的、基于事件的库。咋一看好像不知道是啥东西… … 没事，往下看~</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/23/rxjava-1.0-source/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/10/android-icon-font/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/10/android-icon-font/" itemprop="url">Android 如何应用ttf图标字体库</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-10T22:13:04+08:00">
+                2016-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>作为一个Android开发者，自己想做一个app练手，有个比较头疼的问题就是没有UI图标资源~~ 其实很容易搞定的，下面就来聊聊如何在Android中应用图标字体库，找图标不再纠结！<br><img src="http://img.blog.csdn.net/20161110105748162" alt="这里写图片描述"></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/10/android-icon-font/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/08/retrofit-okhttp-param-redirection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/11/08/retrofit-okhttp-param-redirection/" itemprop="url">关于Retrofit2+Okhttp3实现统一添加请求参数和重定向</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-08T22:13:04+08:00">
+                2016-11-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Android开发中难免会遇到一些比较“不友好”的服务端接口。比如以前遇到的json数据中，某个字段偶尔为Object，偶尔为List… </p>
+<p>最近遇到的一个问题就是：所有请求接口都要增加一个token参数… 并且token参数有可能过期，比如请求某一条接口，如果token失效则在该请求的响应中把新的token带回来，客户端就得用新的token再次发送该请求，类似重定向。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/11/08/retrofit-okhttp-param-redirection/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1629,6 +1734,10 @@
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -1675,7 +1784,7 @@
             
               <a href="/archives">
             
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1686,7 +1795,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1697,7 +1806,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

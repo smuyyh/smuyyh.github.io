@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="JVM," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="JVM 概念JVM（Java Virtual Mechine，Java虚拟机），是 Java 应用程序的运行时引擎。JVM 是 JRE（Java Runtime，Java运行环境）的一部分，它实际上就是去执行 Java 程序的 main 方法。 为什么说 Java 是一个平台无关的语言？ Java 号称是 Write Once，Run Anywhere，能实现这个的核心，就是 JVM 。当我们通过">
+<meta name="keywords" content="JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM 基础知识">
+<meta property="og:url" content="http://yoursite.com/2017/03/06/java-jvm-basic-knowledge/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="JVM 概念JVM（Java Virtual Mechine，Java虚拟机），是 Java 应用程序的运行时引擎。JVM 是 JRE（Java Runtime，Java运行环境）的一部分，它实际上就是去执行 Java 程序的 main 方法。 为什么说 Java 是一个平台无关的语言？ Java 号称是 Write Once，Run Anywhere，能实现这个的核心，就是 JVM 。当我们通过">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20170306140953187?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170306151445967?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2017-09-06T05:42:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM 基础知识">
+<meta name="twitter:description" content="JVM 概念JVM（Java Virtual Mechine，Java虚拟机），是 Java 应用程序的运行时引擎。JVM 是 JRE（Java Runtime，Java运行环境）的一部分，它实际上就是去执行 Java 程序的 main 方法。 为什么说 Java 是一个平台无关的语言？ Java 号称是 Write Once，Run Anywhere，能实现这个的核心，就是 JVM 。当我们通过">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20170306140953187?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/06/java-jvm-basic-knowledge/"/>
+
+
+
+
+
+  <title>JVM 基础知识 | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eda0d89c61ce94284ad4c17fdc3d79c7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/06/java-jvm-basic-knowledge/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JVM 基础知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-06T22:13:04+08:00">
+                2017-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="JVM-概念"><a href="#JVM-概念" class="headerlink" title="JVM 概念"></a>JVM 概念</h2><p>JVM（Java Virtual Mechine，Java虚拟机），是 Java 应用程序的运行时引擎。JVM 是 JRE（Java Runtime，Java运行环境）的一部分，它实际上就是去执行 Java 程序的 main 方法。</p>
+<p>为什么说 Java 是一个平台无关的语言？ Java 号称是 Write Once，Run Anywhere，能实现这个的核心，就是 JVM 。当我们通过编译器编译 .java 文件时，会生成一个同名的 .class 文件（包含字节码），当我们运行 Java 程序时，流程如图所示：</p>
+<p><img src="http://img.blog.csdn.net/20170306140953187?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<a id="more"></a>
+<h2 id="类加载器子系统"><a href="#类加载器子系统" class="headerlink" title="类加载器子系统"></a>类加载器子系统</h2><p>类加载器子系统主要负责以下三部分：</p>
+<ul>
+<li>装载</li>
+<li>链接</li>
+<li>初始化</li>
+</ul>
+<h3 id="装载"><a href="#装载" class="headerlink" title="装载"></a>装载</h3><p>类加载器读取 .class 文件，生成相应的二进制数据并将其保存在方法区域中。对于每个 .class 文件，JVM 在方法区域中存储以下信息：</p>
+<ul>
+<li>已加载类及其直接父类的全名（含包名）</li>
+<li>.class 文件是否与类或接口或 Enum 相关</li>
+<li>修饰符，变量和方法信息等</li>
+</ul>
+<p>加载完 .class 文件后，JVM 会创建一个类型为 Class 的对象，以便在堆内存中表示此文件。这里需要注意的是，该 Class 对象的类型是在java.lang包中预定义的类。这个Class对象可以被程序员用于获取类名，类名，方法和变量信息等类级别信息。我们可以通过 Object#getClass 方法来获取该对象。这也是 Java 反射的基础，关于反射可参见<a href="http://blog.csdn.net/yyh352091626/article/details/51657908" target="_blank" rel="external">这篇文章</a>。</p>
+<p>java<br>/** </p>
+<ul>
+<li><p>java获取Class对象的三种方式<br>*/<br>public static Class&lt;?&gt; getClassObj() {<br> // 根据类名获取Class对象<br> Class&lt;?&gt; clazz1 = People.class;  </p>
+<p> // 根据对象获取Class对象<br> People people = new People();<br> Class&lt;?&gt; clazz2 = people.getClass();  </p>
+<p> // 根据完整类名获取Class对象<br> try {  </p>
+<pre><code>Class&lt;?&gt; clazz3 = Class.forName(&quot;com.yuyh.reflection.java.People&quot;);  
+</code></pre><p> } catch (ClassNotFoundException e) {  </p>
+<pre><code>Log.e(TAG, e.toString());  
+</code></pre><p> }  </p>
+<p> Log.i(TAG, “clazz1 = “ + clazz1);  </p>
+<p> return clazz1; // clazz2 clazz3<br>}  </p>
+</li>
+</ul>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>链接过程负责对二进制字节码的格式进行： 校验、初始化装载类中的静态变量、解析类中调用的接口、类。在完成了校验后，JVM初始化类中的静态变量，并将其值赋为默认值。</p>
+<ul>
+<li><strong>校验</strong>： 确保 .class 文件的正确性，检查此文件是否正确格式化并由有效编译器生成。如果验证失败，将会抛出运行时异常：java.lang.VerifyError ；</li>
+<li><strong>初始化</strong>： JVM为类变量分配内存并将内存初始化为默认值。例如 public static int CODE = 1; 实际上，是将CODE初始化为0；</li>
+<li><strong>解析</strong>： 通过搜索方法区域来定位被引用的实体。对类中的所有属性、方法进行解析，以确保其需要调用的属性、方法存在，以及具备应的权限，若方法或属性不存在，将会抛出 NoSuchMethodError 、NoSuchFieldError 等异常。</li>
+</ul>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>在这个阶段，所有静态变量都会分配他们在代码和静态块（如果有）中定义的值，也就是赋值。执行顺序是在类中从上到下执行，在类层次中从父类到子类执行。 通常有三个类加载器：</p>
+<ul>
+<li><strong>引导类加载器</strong>： 每个 JVM 实现都必须有一个引导类加载器，用于加载加载 JAVA_HOME/jre/lib 目录中存在的核心 Java API 类。这个路径通常称为引导路径。该加载器通过 C，C ++ 等语言实现。</li>
+<li><strong>扩展类加载器</strong>：用于加载扩展目录 JAVA_HOME/jre/lib/ext（扩展路径）或 java.ext.dirs 系统属性指定的任何其他目录中存在的类。该加载器通过 sun.misc.Launcher$ExtClassLoader 类实现。</li>
+<li><strong>系统/应用程序类加载器</strong>：是扩展类加载器的子类，用来加载启动参数中指定的Classpath中的jar包以及目录。它也通过 sun.misc.Launcher$ExtClassLoader 类实现，对应的类名为 AppClassLoader 。</li>
+</ul>
+<p>举个栗子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        System.out.println(String.class.getClassLoader());</div><div class="line">        System.out.println(Test.class.getClassLoader());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">null</div><div class="line">sun.misc.Launcher$AppClassLoader@73d16e03</div></pre></td></tr></table></figure>
+<p>因为 String 类是通过引导类加载器加载的，而引导类加载器是通过 C/C++ 实现的，并非 Java 对象，所以为null；而我们自定义的类是通过应用程序类加载器加载的。</p>
+<pre><code>注：JVM遵循委托 - 层次原理来加载类。
+
+1. 系统类加载器 委托加载请求到 扩展类加载器
+2. 扩展类加载器 委托加载请求到 引导类加载器
+3. 如果类在引导路径中找到，类被加载，否则请求再次传递到扩展类加载器，然后到系统类加载器。最后如果系统类加载器无法加载类，那么我们得到运行时异常java.lang.ClassNotFoundException。如图所示：
+</code></pre><p><img src="http://img.blog.csdn.net/20170306151445967?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h2 id="JVM-内存模型"><a href="#JVM-内存模型" class="headerlink" title="JVM 内存模型"></a>JVM 内存模型</h2><h3 id="方法区（Method-Area）"><a href="#方法区（Method-Area）" class="headerlink" title="方法区（Method Area）"></a><strong>方法区（Method Area）</strong></h3><p>在方法区域中，存储类名称、直接父类名称、方法和变量信息等所有类级信息，包括静态变量。每个 JVM 只有一个方法区，它是一个线程共享资源。</p>
+<p>对于每一个加载的类，会在方法区中保存以下信息：</p>
+<pre><code>类型信息
+  类及其直接父类的全限定名（java.lang.Object没有父类）
+  类的类型
+  类的访问修饰符
+  实现的接口的全限定名的列表
+  字段与方法信息
+  常量池
+  除常量外的静态变量
+  类的Class及ClassLoader引用
+
+字段信息
+  字段名
+  字段类型
+  字段的修饰符(public, private , protected, static, final, volatile, transient)
+
+方法信息
+  方法名
+  方法返回类型
+  方法参数的数量和类型（按照顺序）
+  方法的修饰符(public, private, protected , static, final, synchronized, native, abstract)
+</code></pre><h3 id="堆区（Heap-Area）"><a href="#堆区（Heap-Area）" class="headerlink" title="堆区（Heap Area）"></a><strong>堆区（Heap Area）</strong></h3><p>所有对象（包括数组）的信息存储在堆区域中。每个 JVM 也有一个堆区域，并且它也是一个线程共享资源。堆区可能会抛出 OutOfMemoryError 异常。</p>
+<h3 id="栈区（Stack-Area）"><a href="#栈区（Stack-Area）" class="headerlink" title="栈区（Stack Area）"></a><strong>栈区（Stack Area）</strong></h3><p>对于每个线程，JVM 会创建一个存储在此处的运行时堆栈。每调用一个方法，就会生成一个栈帧（Stack Frame）用于存储方法的本地变量表、操作栈、方法出口等信息，当这个方法执行完后，就会弹出相应的栈帧。如果请求的栈的深度过大，虚拟机可能会抛出 StackOverflowError 异常，如果虚拟机的实现中允许虚拟机栈动态扩展，当内存不足以扩展栈的时候，会抛出 OutOfMemoryError 异常。在线程终止后，它的运行时栈将被 JVM 销毁。它不是共享资源。</p>
+<h3 id="程序计数器（Program-Counter-Register）"><a href="#程序计数器（Program-Counter-Register）" class="headerlink" title="程序计数器（Program Counter Register）"></a><strong>程序计数器（Program Counter Register）</strong></h3><p>存储线程当前执行指令的地址。由于多线程间切换时要恢复每一个线程的当前执行位置，显然每个线程都会有独立的PC寄存器。</p>
+<h3 id="本地方法栈（Native-Method-Stacks）"><a href="#本地方法栈（Native-Method-Stacks）" class="headerlink" title="本地方法栈（Native Method Stacks）"></a><strong>本地方法栈（Native Method Stacks）</strong></h3><p>对于每个线程，会创建单独的本地堆栈。它存储本地方法信息。与 Stack Area 类似。</p>
+<h2 id="执行引擎"><a href="#执行引擎" class="headerlink" title="执行引擎"></a>执行引擎</h2><p>执行引擎执行 .class（字节码）。它逐行读取字节代码，读取各类存储区中存在的数据和信息并执行指令。它可以分为三个部分：</p>
+<ul>
+<li><strong>解释</strong>： 它逐行解释字节码，然后执行。主要缺点是当一个方法被多次调用时，每次都需要解释。（第一代JVM）</li>
+<li><strong>即时编译（Just-In-Time Compiler，JIT）</strong>： 用于提高解释器的效率。它编译整个字节码并将其更改为本机代码，因此每当解释器查看重复的方法调用时，JIT为该部分提供直接本地代码，因此不需要重新解释，从而提高效率。（第二代JVM）</li>
+<li><strong>垃圾收集器</strong>：它会销毁未引用的对象。关于垃圾收集，暂不叙述。</li>
+</ul>
+<h2 id="Java-Native-Interface-JNI"><a href="#Java-Native-Interface-JNI" class="headerlink" title="Java Native Interface (JNI)"></a>Java Native Interface (JNI)</h2><p>它是与本地方法库交互并提供执行所需的本机库（C，C ++）的接口，使JVM 可以调用C / C ++库。</p>
+<h2 id="本地方法库"><a href="#本地方法库" class="headerlink" title="本地方法库"></a>本地方法库</h2><p>它是执行引擎所需的本机库（C，C ++）的集合。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/07/android-24-camera-crop/" rel="next" title="Android 7.0 之拍照与图片裁剪适配">
+                <i class="fa fa-chevron-left"></i> Android 7.0 之拍照与图片裁剪适配
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/03/android-26-3d-touch/" rel="prev" title="Android 7.1.1 之实现 3D Touch">
+                Android 7.1.1 之实现 3D Touch <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460"
+              alt="LeBron_Six" />
+          
+            <p class="site-author-name" itemprop="name">LeBron_Six</p>
+            <p class="site-description motion-element" itemprop="description">Android Developer.</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM-概念"><span class="nav-number">1.</span> <span class="nav-text">JVM 概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类加载器子系统"><span class="nav-number">2.</span> <span class="nav-text">类加载器子系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#装载"><span class="nav-number">2.1.</span> <span class="nav-text">装载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链接"><span class="nav-number">2.2.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化"><span class="nav-number">2.3.</span> <span class="nav-text">初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM-内存模型"><span class="nav-number">3.</span> <span class="nav-text">JVM 内存模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法区（Method-Area）"><span class="nav-number">3.1.</span> <span class="nav-text">方法区（Method Area）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#堆区（Heap-Area）"><span class="nav-number">3.2.</span> <span class="nav-text">堆区（Heap Area）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#栈区（Stack-Area）"><span class="nav-number">3.3.</span> <span class="nav-text">栈区（Stack Area）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#程序计数器（Program-Counter-Register）"><span class="nav-number">3.4.</span> <span class="nav-text">程序计数器（Program Counter Register）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本地方法栈（Native-Method-Stacks）"><span class="nav-number">3.5.</span> <span class="nav-text">本地方法栈（Native Method Stacks）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行引擎"><span class="nav-number">4.</span> <span class="nav-text">执行引擎</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-Native-Interface-JNI"><span class="nav-number">5.</span> <span class="nav-text">Java Native Interface (JNI)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地方法库"><span class="nav-number">6.</span> <span class="nav-text">本地方法库</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LeBron_Six</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

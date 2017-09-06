@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="原文：What 2 Years of Android Development Have Taught Me the Hard Way 前言 我仍记得2014年我决定做Android开发的那天，这是我一生中做出的最好决定之一。到现在已经有2年半了。 最初的时候，并没有人告诉我如何做才是正确的。我犯了很多错误，也浪费了很多得时间。 一年半之后，我有机会和一个真正有才而且经验丰富的Android开发者一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个 2 年 Android 开发者的 18 条忠告">
+<meta property="og:url" content="http://yoursite.com/2016/11/08/android-18-advice/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="原文：What 2 Years of Android Development Have Taught Me the Hard Way 前言 我仍记得2014年我决定做Android开发的那天，这是我一生中做出的最好决定之一。到现在已经有2年半了。 最初的时候，并没有人告诉我如何做才是正确的。我犯了很多错误，也浪费了很多得时间。 一年半之后，我有机会和一个真正有才而且经验丰富的Android开发者一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20161108092032571">
+<meta property="og:image" content="http://img.blog.csdn.net/20161108092450968">
+<meta property="og:image" content="http://img.blog.csdn.net/20161108093211230">
+<meta property="og:image" content="http://img.blog.csdn.net/20161108093413356">
+<meta property="og:updated_time" content="2017-09-06T05:44:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一个 2 年 Android 开发者的 18 条忠告">
+<meta name="twitter:description" content="原文：What 2 Years of Android Development Have Taught Me the Hard Way 前言 我仍记得2014年我决定做Android开发的那天，这是我一生中做出的最好决定之一。到现在已经有2年半了。 最初的时候，并没有人告诉我如何做才是正确的。我犯了很多错误，也浪费了很多得时间。 一年半之后，我有机会和一个真正有才而且经验丰富的Android开发者一">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20161108092032571">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/08/android-18-advice/"/>
+
+
+
+
+
+  <title>一个 2 年 Android 开发者的 18 条忠告 | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eda0d89c61ce94284ad4c17fdc3d79c7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/08/android-18-advice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">一个 2 年 Android 开发者的 18 条忠告</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-08T21:13:04+08:00">
+                2016-11-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文：<a href="https://blog.aritraroy.in/what-my-2-years-of-android-development-have-taught-me-the-hard-way-52b495ba5c51#.e0n3991kh" target="_blank" rel="external">What 2 Years of Android Development Have Taught Me the Hard Way</a></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><hr>
+<p>我仍记得2014年我决定做Android开发的那天，这是我一生中做出的最好决定之一。到现在已经有2年半了。</p>
+<p>最初的时候，并没有人告诉我如何做才是正确的。我犯了很多错误，也浪费了很多得时间。</p>
+<p>一年半之后，我有机会和一个真正有才而且经验丰富的Android开发者一起工作，他指导我，并教我正确的做事方式。这期间我学到了很多东西，学会了该做什么不该做什么。</p>
+<p>我直接或者间接帮助其它开发者也有很长一段时间了。这里是我的<a href="http://stackoverflow.com/users/2858654/aritra-roy" target="_blank" rel="external">StackOverflow</a>和<a href="https://github.com/aritraroy" target="_blank" rel="external">Github</a>的简介。</p>
+<p>本文我将分享这几年所收集的精华。也许可以帮助大家更快上手Android，避免重复我犯的错误。</p>
+<a id="more"></a>
+<h2 id="1-不要重复造轮子"><a href="#1-不要重复造轮子" class="headerlink" title="1.不要重复造轮子"></a>1.不要重复造轮子</h2><hr>
+<p>最初，我有一种不愿使用开源库的思想。不管需要什么，我总想自己去实现，这是一种非常可怕的思想。</p>
+<p>如果在开发app的时候遇到一个问题，而这个问题已经被别人很好的解决了，为什么不去使用它呢？这样你可以节省大量时间啊！</p>
+<p>把更多的精力花在app的业务逻辑上吧。如果你想在app中发起一个网络调用，是不需要自己去造一个<a href="https://github.com/square/retrofit" target="_blank" rel="external">Retrofit</a>的。</p>
+<h2 id="2-不要盲目的选择library"><a href="#2-不要盲目的选择library" class="headerlink" title="2. 不要盲目的选择library"></a>2. 不要盲目的选择library</h2><hr>
+<p>在Github上有许多免费使用的开源库，但是别因太激动而盲目的使用。</p>
+<p>检查library的star数目，越多越好。看看作者是否还创建了其它的一些受欢迎的库。查看issues（打开和关闭的都看），这可以让你对这个library的健壮性和稳定性有更好的了解。</p>
+<p>如果你时间充足，你应该深入这个库的代码看看它到底是都真的值得使用。</p>
+<p>你只需要确保它的代码是可靠的，bug不多的，高质量的。</p>
+<p>小贴士：使用<a href="https://github.com/cesarferreira/dryrun" target="_blank" rel="external">Dryrun</a>的命令行尝试任何library。</p>
+<p><img src="http://img.blog.csdn.net/20161108092032571" alt="这里写图片描述"></p>
+<h2 id="3-坐下来，喝杯咖啡，阅读更多的代码"><a href="#3-坐下来，喝杯咖啡，阅读更多的代码" class="headerlink" title="3. 坐下来，喝杯咖啡，阅读更多的代码"></a>3. 坐下来，喝杯咖啡，阅读更多的代码</h2><hr>
+<p>我们在阅读别人代码上花的时间比自己写代码的时间多得多，如果你不是的话，从今天就开始做吧。</p>
+<p>不管你现在能写出什么样的代码，总是因为在某年某月你阅读和学习到了什么东西。它只是你已有知识的反映。</p>
+<p>安卓的伟大之处就在于它是一个完全开源的平台。可以去深入研究这些代码看看他们是如何实现framework的。Github中有成千上万的开源库，只需选择一个看看人家是如何实现的。</p>
+<p>福利：<a href="https://snowdream.github.io/awesome-android/" target="_blank" rel="external">这里</a>是一些最佳library的列表，<a href="https://github.com/pcqpcq/open-source-android-apps" target="_blank" rel="external">这里</a>是几乎所有开源安卓app的列表。</p>
+<h2 id="4-看在上帝的份上，维护一个恰当的编程规范吧"><a href="#4-看在上帝的份上，维护一个恰当的编程规范吧" class="headerlink" title="4. 看在上帝的份上，维护一个恰当的编程规范吧"></a>4. 看在上帝的份上，维护一个恰当的编程规范吧</h2><hr>
+<p>如果把编码比作写作，那么编程规范就是你的书法水平。</p>
+<p>就跟你阅读别人的代码一样，别人也会阅读你的代码，我想你也不想把别人吓到是吧？如果你在一个公司，需要和同事协同工作，那么务必重视这个问题。</p>
+<p>编写简短，干净，可读性强的代码可以让你和别人读代码的时候很享受。代码应该读起来像是读故事一样。</p>
+<p>代码是诗。</p>
+<p>如果你写了一段代码结果你的同事几天都不跟你说话，怨不得别人。</p>
+<p>福利：你应该从通读<a href="https://source.android.com/source/code-style.html" target="_blank" rel="external">这个</a>和<a href="https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md" target="_blank" rel="external">这个</a>开始。</p>
+<h2 id="5-你需要混淆，是的，真的需要！"><a href="#5-你需要混淆，是的，真的需要！" class="headerlink" title="5. 你需要混淆，是的，真的需要！"></a>5. 你需要混淆，是的，真的需要！</h2><hr>
+<p>绝对不要犯还没有使用ProGuard的情况下就在Play Store上发布app的错误。ProGuard不仅仅减小了你的代码，还混淆了代码，让逆向工程师更难理解和复制。</p>
+<p>它是Android SDK附带的，完全免费，因此没有理由不用。</p>
+<p>我曾见过几个开发者没有使用ProGuard就把app发布了。对于一个技术很普通的黑客来说破解你的app也就是几个小时的事情。</p>
+<p>小贴士：但是如果你需要顶尖的安全性，ProGuard就力不从心了，你需要<a href="https://www.guardsquare.com/dexguard" target="_blank" rel="external">DexGuard</a>。</p>
+<h2 id="6-使用一个恰当的架构"><a href="#6-使用一个恰当的架构" class="headerlink" title="6. 使用一个恰当的架构"></a>6. 使用一个恰当的架构</h2><hr>
+<p>你永远都会庆幸自己从一开始就选择了一个恰当的架构。</p>
+<p>你可以使用MVP (Model-View-Presenter)架构，它可以把你的代码解耦成不同的层便于管理，从而提高代码的灵活性并极大的减小维护的时间成本。</p>
+<p>可以参考一个<a href="https://github.com/android10/Android-CleanArchitecture" target="_blank" rel="external">demo项目</a>。如果觉得很难掌握，可以看看这篇针对初学者的<a href="https://medium.com/@dmilicic/a-detailed-guide-on-developing-android-apps-using-the-clean-architecture-pattern-d38d71e94029#.plhx8vhi3" target="_blank" rel="external">指南</a>。</p>
+<p>福利：务必看看<a href="https://github.com/antoniolg/androidmvp" target="_blank" rel="external">这里</a>,<a href="https://github.com/sockeqwe/mosby" target="_blank" rel="external">这里</a>尤其是<a href="https://github.com/googlesamples/android-architecture" target="_blank" rel="external">这里</a>。它们将为你实现MVP提供极大的帮助。</p>
+<p><img src="http://img.blog.csdn.net/20161108092450968" alt="这里写图片描述"></p>
+<h2 id="7-用户界面就像笑话，如果还需要解释那就糟糕了"><a href="#7-用户界面就像笑话，如果还需要解释那就糟糕了" class="headerlink" title="7.用户界面就像笑话，如果还需要解释那就糟糕了"></a>7.用户界面就像笑话，如果还需要解释那就糟糕了</h2><hr>
+<p>如果你是在公司，做的是纯安卓开发，你很可能不需要关心这个问题，因为有UI/UX设计师管这个问题。</p>
+<p>但是如果你是一个独立开发者，你就需要考虑它了。我曾经见过一些把app功能做的很好，但是用户体验很恐怖的开发者。</p>
+<p>要设计一个干净，简单直观的界面，你不要站在开发者的角度思考问题，而要挖掘自己内心中埋藏的设计师的潜力。</p>
+<p>尽量尝试设计一个漂亮的界面，让你的用户持续保持印象，这样用户回到你的app的次数就比别人多，从而产生更多的收获（也许是购买高级版本）。</p>
+<p>你应该乐于去减少元素，而不是增加。保持简洁和小巧。</p>
+<p>福利：你可以从Dribble或者<a href="http://materialup.com/" target="_blank" rel="external">MaterialUp</a>的热门设计师那里获得灵感。如果你对设计感兴趣，你很可能会喜欢<a href="https://www.amazon.com/Design-Everyday-Things-Revised-Expanded/dp/0465050654" target="_blank" rel="external">这本书</a>。</p>
+<h2 id="8-分析是你最好的朋友"><a href="#8-分析是你最好的朋友" class="headerlink" title="8. 分析是你最好的朋友"></a>8. 分析是你最好的朋友</h2><hr>
+<p>如果你想创建一个真正令人惊叹的app，你需要重度依赖分析工具去分析app不同部分的性能和用例。</p>
+<p>对于分析，我借助于crash reporting和app usage tracking。</p>
+<p>不管你怎么做，永远无法做到完美。当真实的用户开始在各种各样的设备以及版本上使用你的app的时候，你会发现即时写的最好的代码也难以保证不出岔子。</p>
+<p>一旦发生崩溃，Crash reporting工具可以帮助你跟踪与修复它们。</p>
+<p>你必须学会像销售那样思考问题并分析app不同模块的使用。这样可以帮助你减小产品和用户实际需求之间的落差。</p>
+<p>小贴士：使用FirebaseCrash Reporting以及Analytics tools。</p>
+<h2 id="9-做一个营销专家"><a href="#9-做一个营销专家" class="headerlink" title="9. 做一个营销专家"></a>9. 做一个营销专家</h2><hr>
+<p>如果你是一个个人开发者，你必须超出作为开发者的思维，去理解市场。</p>
+<p>我见过一些很好的产品因为缺乏正确的市场营销而失败，同时也见过并不怎么样的产品因为牛逼的市场营销而取得极大成功。</p>
+<p>如果你对你的工作是认真的希望它能获得可观的用户，你必须把在市场营销上花费必要的时间和金钱。但是在营销活动开始之前，确保app已经完全稳定，功能已经完善。</p>
+<p>花时间研究谁是你的竞争对手以及如何打败他们。确定一个可以立即打败的以及一个将来会打败的。</p>
+<p>小贴士：<a href="https://sensortower.com/" target="_blank" rel="external">这里</a>是一个价钱合理的市场分析工具，我比较喜欢用。</p>
+<h2 id="10-是时候优化你的app了"><a href="#10-是时候优化你的app了" class="headerlink" title="10. 是时候优化你的app了"></a>10. 是时候优化你的app了</h2><hr>
+<p>这是一个大多数人都不会去做的事情，但是你应该做。</p>
+<p>写代码与写高性能的代码之间有很大的区别。高性能的代码是指运行速度快，内存和存储消耗更少的代码。</p>
+<p>一个未经优化的的app也许在普通情况下运行良好，但是当放在各种压力情景中，它就原形毕露了。检查你app的内存使用情况看看有没有内存泄漏存在。记住小漏不补沉大船。花时间弄懂Java的内存回收机制是怎么回事，创建并分析你的活对象。</p>
+<p>小贴士：可以使用<a href="https://github.com/square/leakcanary" target="_blank" rel="external">Leak Canary</a>检测你的内存泄漏。它可以节省你不少时间。</p>
+<h2 id="11-每周在Gradle编译上最少节省5小时"><a href="#11-每周在Gradle编译上最少节省5小时" class="headerlink" title="11. 每周在Gradle编译上最少节省5小时"></a>11. 每周在Gradle编译上最少节省5小时</h2><hr>
+<p>你极有可能正在使用Android Studio开发app，编译系统使用的是Gradle。Gradle很棒但是也很慢，当项目显著增大的时候慢得根蜗牛样。</p>
+<p>有时候工作忙的时候我还需要在Gradle编译上浪费差不多一个小时。</p>
+<p>但是，总有加速的办法。</p>
+<p>你可以照着<a href="https://medium.com/@cesarmcferreira/speeding-up-gradle-builds-619c442113cb#.thj9h2pqd" target="_blank" rel="external">这篇</a>以及<a href="http://zeroturnaround.com/rebellabs/making-gradle-builds-faster/" target="_blank" rel="external">这篇</a>文章的做法显著提高编译速度。经过优化之后我的编译时间从4分钟降到了30秒钟。</p>
+<h2 id="12-测试，测试，再测试！"><a href="#12-测试，测试，再测试！" class="headerlink" title="12.测试，测试，再测试！"></a>12.测试，测试，再测试！</h2><hr>
+<p>没有什么比测试更重要的了。它应该是你的首要任务。</p>
+<p>尽可能全面的测试你的app。花时间写自动化测试用例，创造各种极端的条件，看看你的app是否能经受住考验。</p>
+<p>我曾经犯过未经充分测试就发布app的错误。等用户报告bug然后修复。</p>
+<p>绝对不要那样做。你可能通过砍掉测试时间而节省了一两天或者一周，但是以后你很可能会花双倍的时间。</p>
+<p>做任何事都要不慌不忙，从容应对并长远打算。做一个有远见的人。此时播种，以后总会有收获。</p>
+<h2 id="13-安卓的碎片化是魔鬼"><a href="#13-安卓的碎片化是魔鬼" class="headerlink" title="13. 安卓的碎片化是魔鬼"></a>13. 安卓的碎片化是魔鬼</h2><hr>
+<p>碎片化可能是安卓最大的问题了。而谷歌似乎并不愿意修复它，你必须适应。</p>
+<p>安卓设备种类繁多，不同屏幕尺寸，不同硬件配置以及各个厂商的自定义系统。</p>
+<p>除此之外，谷歌在不同版本上还莫名其妙的添加或者删除API，进一步加重了你的工作量（<a href="https://plus.google.com/+TodLiebeck/posts/gjnmuaDM8sn" target="_blank" rel="external">这里</a>是一个例子）。</p>
+<p>比如，几乎每个开发者都需要使用SharedPreferences API来完成一个app，它是如此常见，但是在Android 2.2版本的Samsung Galaxy S 上还是出问题了（bug报告<a href="https://code.google.com/p/android/issues/detail?id=14359" target="_blank" rel="external">这里</a>）。</p>
+<p>花更多的时间为不同屏幕尺寸的设备创建不同的布局。在不同版本，不同定制，不同OEM厂商的设备上测试。</p>
+<p>永远别觉得某个东西看似可行就不去测试了。</p>
+<h2 id="14-从今天开始使用git！"><a href="#14-从今天开始使用git！" class="headerlink" title="14. 从今天开始使用git！"></a>14. 从今天开始使用git！</h2><hr>
+<p>如果你还没有使用Git，从现在开始吧。</p>
+<p>当我开始安卓开发的时候，悲剧的我并不知道git是什么东西。我每天都拷贝整个项目，一个备份在硬盘上，一个备份在云盘上。看起来很傻是吗？是的，的确很傻。</p>
+<p>Git可以极大的提高你的工作效率。如果叫我说出一个我每天都要使用并且离不开的工具的名字，那就是Git了。</p>
+<p>在你使用几天之后，你很可能会爱上它，并好奇Git的内部工作原理。建议你看看<a href="http://www.gitguys.com/" target="_blank" rel="external">这个</a>。</p>
+<p>过了一段时间之后，你可能开始了一个大项目，对于如何维护一个分支模型感到困惑，那么可以看看<a href="http://nvie.com/posts/a-successful-git-branching-model/" target="_blank" rel="external">这个</a>。</p>
+<p>福利：如果你刚刚开始，还付不起GitHub的私人仓库的月费，你可以试试<a href="https://bitbucket.org/" target="_blank" rel="external">BitBucket</a>。国内用户的选择更多，oschina的git服务也不错－译者注。</p>
+<h2 id="15-为黑客制造麻烦"><a href="#15-为黑客制造麻烦" class="headerlink" title="15.为黑客制造麻烦"></a>15.为黑客制造麻烦</h2><hr>
+<p>安卓的开源特性让其易受攻击。每个安卓app都可以轻易的被反编译，逆向分析。</p>
+<p>你不希望你的app发生这种事对吧？</p>
+<p>你需要知道如何安全的存储app中的API keys。如果你要处理用户的敏感数据，你必须知道如何加密，选择何种加密算法（安全且快速）。</p>
+<p>你还应该安全的把密钥存储在本地或者服务器上。应该防止app数据被人用ADB备份。如果你在数据库中存储敏感数据，要考虑做适当的伪装。</p>
+<p>如果你的app有高级版本，被别人破解免费发布就损失大了。</p>
+<p>有几种方法可以避免你的app被人篡改。但并不是100&amp;安全。任何一个技术扎实，决心坚决的黑客只要有正确的资源，工具和耐心都可以破解你的app。</p>
+<p>你能做的就是尽量让黑客的破解变得困难，及其困难。</p>
+<p>福利：可以从阅读<a href="https://www.airpair.com/android/posts/adding-tampering-detection-to-your-android-app" target="_blank" rel="external">这个</a>和<a href="https://rammic.github.io/2015/07/28/hiding-secrets-in-android-apps/" target="_blank" rel="external">这个</a>开始。</p>
+<h2 id="16-在低端手机上开发"><a href="#16-在低端手机上开发" class="headerlink" title="16. 在低端手机上开发"></a>16. 在低端手机上开发</h2><hr>
+<p>每个人都喜欢使用一个高端安卓手机，我也是。但是记得只作为个人使用，而不是开发的目的。</p>
+<p>高端机会隐藏app的许多缺陷。假设你在UI线程上做了导致卡顿的事情，但是因为手机过于强大，可能导致你无法察觉。</p>
+<p><img src="http://img.blog.csdn.net/20161108093211230" alt="这里写图片描述"></p>
+<h2 id="17-学习设计模式"><a href="#17-学习设计模式" class="headerlink" title="17. 学习设计模式"></a>17. 学习<a href="http://www.codeceo.com/article/category/develop/design-patterns" target="_blank" rel="external">设计模式</a></h2><hr>
+<p>这是一项终生受益的投资。</p>
+<p>在开发大型app的时候，你会遇到一些已经被比你牛逼的人所解决了的问题。</p>
+<p>从今天开始就花点时间去学习设计模式。<a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="external">这里</a>是一个演示了所有已知设计模式的的Github项目。</p>
+<p>可以从最常见的开始，比如单例，适配器模式，工厂方法模式，迭代模式，依赖注入模式，事件驱动架构，建造者模式，回调，策略模式，外观模式以及生产消费者模式。</p>
+<p>看起来很多是吧？实际上并不多。一旦深入你就会爱上它们的。</p>
+<p>小贴士：阅读一些书籍，比如GoF的 Design Patterns，Martin Fowler的<a href="http://www.goodreads.com/book/show/44936.Refactoring" target="_blank" rel="external">重构</a>以及Joshua Bloch的<a href="https://github.com/HackathonHackers/programming-ebooks/blob/master/Java/Effective%20Java%20%282nd%20Edition%29.pdf" target="_blank" rel="external">Effective Java</a>。</p>
+<h2 id="18-回馈"><a href="#18-回馈" class="headerlink" title="18. 回馈"></a>18. 回馈</h2><hr>
+<p>你得承认，我们都曾从别人和互联网那得到许多帮助。</p>
+<p>每当你遇到问题的时候，你会做的第一件事就是谷歌，发现第一条来自StackOverflow的链接。有时候你很忙，结果直接拷贝粘贴得分最高的答案。</p>
+<p>你有没有想过Github上那些开源库其实也是别人花时间创建然后贡献给社区的。</p>
+<p>当你被一个难以理解的概念卡住或者遇到一个新的东西时，你发现一篇让你豁然开朗的博客，这个时候记住是某人牺牲了约炮时间而写了这篇文章。</p>
+<p>所以也该你回馈了。给予的越多，得到的也就越多。</p>
+<p>我们都忙于自己的工作，很难找到时间为别人做什么事情。但是尽量每周找点时间做点贡献让安卓社区更丰富。</p>
+<p>我已经分享了自己短暂的安卓生涯中所学到的一些东西。我将继续下去，学更多，分享更多。希望能为别人的生活带来微小的帮助。</p>
+<p><img src="http://img.blog.csdn.net/20161108093413356" alt="这里写图片描述"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/11/android-10-technique/" rel="next" title="10 个你有可能不知道的Android Studio技巧">
+                <i class="fa fa-chevron-left"></i> 10 个你有可能不知道的Android Studio技巧
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/08/retrofit-okhttp-param-redirection/" rel="prev" title="关于Retrofit2+Okhttp3实现统一添加请求参数和重定向">
+                关于Retrofit2+Okhttp3实现统一添加请求参数和重定向 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460"
+              alt="LeBron_Six" />
+          
+            <p class="site-author-name" itemprop="name">LeBron_Six</p>
+            <p class="site-description motion-element" itemprop="description">Android Developer.</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-不要重复造轮子"><span class="nav-number">2.</span> <span class="nav-text">1.不要重复造轮子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-不要盲目的选择library"><span class="nav-number">3.</span> <span class="nav-text">2. 不要盲目的选择library</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-坐下来，喝杯咖啡，阅读更多的代码"><span class="nav-number">4.</span> <span class="nav-text">3. 坐下来，喝杯咖啡，阅读更多的代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-看在上帝的份上，维护一个恰当的编程规范吧"><span class="nav-number">5.</span> <span class="nav-text">4. 看在上帝的份上，维护一个恰当的编程规范吧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-你需要混淆，是的，真的需要！"><span class="nav-number">6.</span> <span class="nav-text">5. 你需要混淆，是的，真的需要！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-使用一个恰当的架构"><span class="nav-number">7.</span> <span class="nav-text">6. 使用一个恰当的架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-用户界面就像笑话，如果还需要解释那就糟糕了"><span class="nav-number">8.</span> <span class="nav-text">7.用户界面就像笑话，如果还需要解释那就糟糕了</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-分析是你最好的朋友"><span class="nav-number">9.</span> <span class="nav-text">8. 分析是你最好的朋友</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-做一个营销专家"><span class="nav-number">10.</span> <span class="nav-text">9. 做一个营销专家</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-是时候优化你的app了"><span class="nav-number">11.</span> <span class="nav-text">10. 是时候优化你的app了</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-每周在Gradle编译上最少节省5小时"><span class="nav-number">12.</span> <span class="nav-text">11. 每周在Gradle编译上最少节省5小时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-测试，测试，再测试！"><span class="nav-number">13.</span> <span class="nav-text">12.测试，测试，再测试！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-安卓的碎片化是魔鬼"><span class="nav-number">14.</span> <span class="nav-text">13. 安卓的碎片化是魔鬼</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14-从今天开始使用git！"><span class="nav-number">15.</span> <span class="nav-text">14. 从今天开始使用git！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#15-为黑客制造麻烦"><span class="nav-number">16.</span> <span class="nav-text">15.为黑客制造麻烦</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#16-在低端手机上开发"><span class="nav-number">17.</span> <span class="nav-text">16. 在低端手机上开发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#17-学习设计模式"><span class="nav-number">18.</span> <span class="nav-text">17. 学习设计模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#18-回馈"><span class="nav-number">19.</span> <span class="nav-text">18. 回馈</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LeBron_Six</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

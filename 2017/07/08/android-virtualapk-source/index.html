@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,VirtualAPK," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="概述滴滴出行公司的首个对外开源项目 - VirtualAPK。地址：https://github.com/didi/VirtualAPK 滴滴自行研发了这款插件化框架，功能全面、兼容性好，还能够适用于有耦合的业务插件，这就是VirtualAPK存在的意义。业内认为，在加载耦合插件方面，VirtualAPK可以说是开源方案的首选。据说滴滴打车里面已经用上了，所以还是有必要一探究竟的~~">
+<meta name="keywords" content="Android,VirtualAPK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="滴滴开源Android插件化框架VirtualAPK原理分析">
+<meta property="og:url" content="http://yoursite.com/2017/07/08/android-virtualapk-source/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="概述滴滴出行公司的首个对外开源项目 - VirtualAPK。地址：https://github.com/didi/VirtualAPK 滴滴自行研发了这款插件化框架，功能全面、兼容性好，还能够适用于有耦合的业务插件，这就是VirtualAPK存在的意义。业内认为，在加载耦合插件方面，VirtualAPK可以说是开源方案的首选。据说滴滴打车里面已经用上了，所以还是有必要一探究竟的~~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20170708192139044?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170708191651260?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2017-09-06T05:39:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="滴滴开源Android插件化框架VirtualAPK原理分析">
+<meta name="twitter:description" content="概述滴滴出行公司的首个对外开源项目 - VirtualAPK。地址：https://github.com/didi/VirtualAPK 滴滴自行研发了这款插件化框架，功能全面、兼容性好，还能够适用于有耦合的业务插件，这就是VirtualAPK存在的意义。业内认为，在加载耦合插件方面，VirtualAPK可以说是开源方案的首选。据说滴滴打车里面已经用上了，所以还是有必要一探究竟的~~">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20170708192139044?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/08/android-virtualapk-source/"/>
+
+
+
+
+
+  <title>滴滴开源Android插件化框架VirtualAPK原理分析 | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?eda0d89c61ce94284ad4c17fdc3d79c7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/08/android-virtualapk-source/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">滴滴开源Android插件化框架VirtualAPK原理分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-08T22:13:04+08:00">
+                2017-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>滴滴出行公司的首个对外开源项目 - VirtualAPK。地址：<a href="https://github.com/didi/VirtualAPK" target="_blank" rel="external">https://github.com/didi/VirtualAPK</a></p>
+<p>滴滴自行研发了这款插件化框架，功能全面、兼容性好，还能够适用于有耦合的业务插件，这就是VirtualAPK存在的意义。业内认为，在加载耦合插件方面，VirtualAPK可以说是开源方案的首选。据说滴滴打车里面已经用上了，所以还是有必要一探究竟的~~</p>
+<a id="more"></a>
+<p>VirtualAPK 的工作流程如图所示：</p>
+<p><img src="http://img.blog.csdn.net/20170708192139044?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<p>VirtualAPK 对于插件没有额外的约束，原生的 apk 即可作为一个插件。插件工程编译生成 apk 后，通过宿主 App 加载，每个插件 apk 被加载后，都会在宿主中创建一个单独的 LoadedPlugin 对象。如上图所示，通过这些 LoadedPlugin 对象，VirtualAPK 就可以管理插件并赋予插件新的意义，使其可以像手机中安装过的App一样运行。</p>
+<h2 id="Activity-支持"><a href="#Activity-支持" class="headerlink" title="Activity 支持"></a>Activity 支持</h2><h3 id="Hook-ActivityManagerService"><a href="#Hook-ActivityManagerService" class="headerlink" title="Hook ActivityManagerService"></a>Hook ActivityManagerService</h3><p>插件化支持首先要解决的一点就是插件里的Activity并未在宿主程序的 AndroidMainfest.xml 注册，常规方法肯定无法直接启动插件的Activity，这个时候就需要去了解Activity的启动流程，关于启动过程主要的几个步骤请参考：<a href="http://blog.csdn.net/yyh352091626/article/details/51086117" target="_blank" rel="external">浅析Android Activity的启动过程</a></p>
+<p>从上文中可知，Activity 启动实际上是调用了 Instrumentation.execStartActivity 这个方法。源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> ActivityResult <span class="title">execStartActivity</span><span class="params">(Context who, IBinder contextThread, IBinder token, Activity target,  </span></span></div><div class="line"><span class="function"><span class="params">            Intent intent, <span class="keyword">int</span> requestCode, Bundle options)</span> </span>&#123;  </div><div class="line">    IApplicationThread whoThread = (IApplicationThread) contextThread;  </div><div class="line">    <span class="keyword">if</span> (mActivityMonitors != <span class="keyword">null</span>) &#123;  </div><div class="line">        <span class="keyword">synchronized</span> (mSync) &#123;  </div><div class="line">            <span class="keyword">final</span> <span class="keyword">int</span> N = mActivityMonitors.size();  </div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;N; i++) &#123; <span class="comment">//先查找一遍看是否存在这个activity  </span></div><div class="line">                <span class="keyword">final</span> ActivityMonitor am = mActivityMonitors.get(i);  </div><div class="line">                <span class="keyword">if</span> (am.match(who, <span class="keyword">null</span>, intent)) &#123;  </div><div class="line">                    am.mHits++;  </div><div class="line">                    <span class="keyword">if</span> (am.isBlocking()) &#123;  </div><div class="line">                        <span class="keyword">return</span> requestCode &gt;= <span class="number">0</span> ? am.getResult() : <span class="keyword">null</span>;  </div><div class="line">                    &#125;  </div><div class="line">                    <span class="keyword">break</span>;  </div><div class="line">                &#125;  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">try</span> &#123;  </div><div class="line">        intent.migrateExtraStreamToClipData();  </div><div class="line">        intent.prepareToLeaveProcess();  </div><div class="line">        <span class="comment">//这里才是真正打开activity的地方，其核心功能在whoThread中完成。  </span></div><div class="line">        <span class="keyword">int</span> result = ActivityManagerNative.getDefault().startActivity(whoThread, who.getBasePackageName(), intent,  </div><div class="line">                    intent.resolveTypeIfNeeded(who.getContentResolver()),token, target != <span class="keyword">null</span> ? target.mEmbeddedID : <span class="keyword">null</span>,  </div><div class="line">                    requestCode, <span class="number">0</span>, <span class="keyword">null</span>, options);         </div><div class="line">        checkStartActivityResult(result, intent); <span class="comment">// 处理各种异常，如ActivityNotFound  </span></div><div class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;  </div><div class="line">    &#125;  </div><div class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可见， startActivity 最终通过 ActivityManagerNative.getDefault() 远程调用了AMS的startActivity方法， ActivityManagerNative 实际上就是 ActivityManagerService 这个远程对象的 Binder 代理对象，每次需要与AMS交互时，需要通过这个 Binder 对象完成远程IPC调用。</p>
+<p>还不了解Binder的童鞋，可以看看老罗的<a href="http://blog.csdn.net/luoshengyang/article/details/6618363/" target="_blank" rel="external">Android进程间通信（IPC）机制Binder简要介绍和学习计划</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// ActivityManagerNative.getDefault()</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">public</span> IActivityManager <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> gDefault.get();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton&lt;iactivitymanager&gt; gDefault = </div><div class="line">    <span class="keyword">new</span> Singleton&lt;iactivitymanager&gt;() &#123;</div><div class="line">           <span class="function"><span class="keyword">protected</span> IActivityManager <span class="title">create</span><span class="params">()</span> </span>&#123;</div><div class="line">               IBinder b = ServiceManager.getService(<span class="string">"activity"</span>);</div><div class="line">               <span class="keyword">if</span> (<span class="keyword">false</span>) &#123;</div><div class="line">                   Log.v(<span class="string">"ActivityManager"</span>, <span class="string">"default service binder = "</span> + b);</div><div class="line">               &#125;</div><div class="line">               IActivityManager am = asInterface(b);</div><div class="line">               <span class="keyword">if</span> (<span class="keyword">false</span>) &#123;</div><div class="line">                   Log.v(<span class="string">"ActivityManager"</span>, <span class="string">"default service = "</span> + am);</div><div class="line">               &#125;</div><div class="line">               <span class="keyword">return</span> am;</div><div class="line">           &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line">从这我们可以知道，ActivityManagerNative.getDefault() 实际上是返回了一个 IActivityManager 的单例对象。</div><div class="line"></div><div class="line">那么，VirtualApk 所要做的第一件事，就是把这个 AMS 代理对象保存起来。首先，我们可以看一下 VirtualApk 核心库里面 com.didi.virtualapk.PluginManager 这个类的初始化：</div><div class="line"></div><div class="line">```java</div><div class="line"></div><div class="line"><span class="comment">// 构造方法</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="title">PluginManager</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">    Context app = context.getApplicationContext();</div><div class="line">    <span class="keyword">if</span> (app == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">this</span>.mContext = context;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">this</span>.mContext = ((Application)app).getBaseContext();</div><div class="line">    &#125;</div><div class="line">    prepare();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 初始化</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">()</span> </span>&#123;</div><div class="line">    Systems.sHostContext = getHostContext();</div><div class="line">    <span class="keyword">this</span>.hookInstrumentationAndHandler();</div><div class="line">    <span class="keyword">this</span>.hookSystemServices();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Hook 出一个IActivityManager，也就是 AMS 的代理对象</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">hookSystemServices</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// 反射调用 ActivityManagerNative.getDefault()，实际上这在6.0中是公开的静态方法，反射可能是考虑到版本兼容性吧？</span></div><div class="line">        Singleton&lt;IActivityManager&gt; defaultSingleton = (Singleton&lt;IActivityManager&gt;) ReflectUtil.getField(ActivityManagerNative.class, <span class="keyword">null</span>, <span class="string">"gDefault"</span>);</div><div class="line">        <span class="comment">// 通过动态代理的方式去创建代理对象，之后所有ActivityManagerNative中的方法被调用的时候都会经过这个代理</span></div><div class="line">        IActivityManager activityManagerProxy = ActivityManagerProxy.newInstance(<span class="keyword">this</span>, defaultSingleton.get());</div><div class="line"></div><div class="line">        <span class="comment">// Hook IActivityManager from ActivityManagerNative，实际上就是把 ActivityManagerNative 替换为刚创建的 activityManagerProxy</span></div><div class="line">        ReflectUtil.setField(defaultSingleton.getClass().getSuperclass(), defaultSingleton, <span class="string">"mInstance"</span>, activityManagerProxy);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (defaultSingleton.get() == activityManagerProxy) &#123;</div><div class="line">            <span class="comment">// 两者一样，保存下来</span></div><div class="line">            <span class="keyword">this</span>.mActivityManager = activityManagerProxy;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实际上除了 startActivity 是调用 AMS 的方法以外，startService， bindService 等方法，最终调用到AMS的里的方法，这个我们在动态代理类 com.didi.virtualapk.delegate.ActivityManagerProxy 也可以找到：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="string">"startService"</span>.equals(method.getName())) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// 执行自定义的 startService 过程，后面会提到</span></div><div class="line">            <span class="keyword">return</span> startService(proxy, method, args);</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">            Log.e(TAG, <span class="string">"Start service error"</span>, e);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"stopService"</span>.equals(method.getName())) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">return</span> stopService(proxy, method, args);</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">            Log.e(TAG, <span class="string">"Stop Service error"</span>, e);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"stopServiceToken"</span>.equals(method.getName())) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">return</span> stopServiceToken(proxy, method, args);</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">            Log.e(TAG, <span class="string">"Stop service token error"</span>, e);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"bindService"</span>.equals(method.getName())) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">return</span> bindService(proxy, method, args);</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"unbindService"</span>.equals(method.getName())) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">return</span> unbindService(proxy, method, args);</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"getIntentSender"</span>.equals(method.getName())) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            getIntentSender(method, args);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"overridePendingTransition"</span>.equals(method.getName()))&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            overridePendingTransition(method, args);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e)&#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// sometimes system binder has problems.</span></div><div class="line">        <span class="keyword">return</span> method.invoke(<span class="keyword">this</span>.mActivityManager, args);</div><div class="line">    &#125; <span class="keyword">catch</span> (Throwable th) &#123;</div><div class="line">        Throwable c = th.getCause();</div><div class="line">        <span class="keyword">if</span> (c != <span class="keyword">null</span> &amp;&amp; c <span class="keyword">instanceof</span> DeadObjectException) &#123;</div><div class="line">            <span class="comment">// retry connect to system binder</span></div><div class="line">            IBinder ams = ServiceManager.getService(Context.ACTIVITY_SERVICE);</div><div class="line">            <span class="keyword">if</span> (ams != <span class="keyword">null</span>) &#123;</div><div class="line">                IActivityManager am = ActivityManagerNative.asInterface(ams);</div><div class="line">                mActivityManager = am;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        Throwable cause = th;</div><div class="line">        <span class="keyword">do</span> &#123;</div><div class="line">            <span class="keyword">if</span> (cause <span class="keyword">instanceof</span> RemoteException) &#123;</div><div class="line">                <span class="keyword">throw</span> cause;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">while</span> ((cause = cause.getCause()) != <span class="keyword">null</span>);</div><div class="line"></div><div class="line">        <span class="keyword">throw</span> c != <span class="keyword">null</span> ? c : th;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所以实际上就等同于我们重写了一些 Activity、Service 的相关操作。具体做些什么，后面会提到~</p>
+<h3 id="Hook-Instrumentation"><a href="#Hook-Instrumentation" class="headerlink" title="Hook Instrumentation"></a>Hook Instrumentation</h3><p>回过头去看看 Instrumentation.execStartActivity 这个方法，在最后有这么一句代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">checkStartActivityResult(result, intent); <span class="comment">// 处理各种异常，如ActivityNotFound</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">checkStartActivityResult</span><span class="params">(<span class="keyword">int</span> res, Object intent)</span> </span>&#123;  </div><div class="line">    <span class="keyword">if</span> (res &gt;= ActivityManager.START_SUCCESS) &#123;  </div><div class="line">        <span class="keyword">return</span>;  </div><div class="line">    &#125;  </div><div class="line">      </div><div class="line">    <span class="keyword">switch</span> (res) &#123;  </div><div class="line">        <span class="keyword">case</span> ActivityManager.START_INTENT_NOT_RESOLVED:  </div><div class="line">        <span class="keyword">case</span> ActivityManager.START_CLASS_NOT_FOUND:  </div><div class="line">            <span class="keyword">if</span> (intent <span class="keyword">instanceof</span> Intent &amp;&amp; ((Intent)intent).getComponent() != <span class="keyword">null</span>)  </div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> ActivityNotFoundException(  </div><div class="line">                        <span class="string">"Unable to find explicit activity class "</span>  </div><div class="line">                        + ((Intent)intent).getComponent().toShortString()  </div><div class="line">                        + <span class="string">"; have you declared this activity in your AndroidManifest.xml?"</span>);  </div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ActivityNotFoundException(  </div><div class="line">                    <span class="string">"No Activity found to handle "</span> + intent);  </div><div class="line">        <span class="keyword">case</span> ActivityManager.START_PERMISSION_DENIED:  </div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(<span class="string">"Not allowed to start activity "</span>  </div><div class="line">                    + intent);  </div><div class="line">        <span class="keyword">case</span> ActivityManager.START_FORWARD_AND_REQUEST_CONFLICT:  </div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> AndroidRuntimeException(  </div><div class="line">                    <span class="string">"FORWARD_RESULT_FLAG used while also requesting a result"</span>);  </div><div class="line">        <span class="keyword">case</span> ActivityManager.START_NOT_ACTIVITY:  </div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(  </div><div class="line">                    <span class="string">"PendingIntent is not an activity"</span>);  </div><div class="line">        <span class="keyword">default</span>:  </div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> AndroidRuntimeException(<span class="string">"Unknown error code "</span>  </div><div class="line">                    + res + <span class="string">" when starting "</span> + intent);  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>相信大家对上面的这些异常信息不陌生吧，其中最熟悉的非 Unable to find explicit activity class 莫属了，如果 Activity 没有在 AndroidMainfest.xml 注册，将会抛出此异常。</p>
+<p>那么就得思考一个问题了，插件的 Activity 并未在宿主程序的 AndroidMainfest.xml 注册，要如何才能绕过这一层检测？</p>
+<p>前文中提到，com.didi.virtualapk.PluginManager 这个类的初始化的时候，除了 Hook 出一个 AMS 代理对象以外，还 Hook 出一个 Instrumentation 对象。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">hookInstrumentationAndHandler</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        Instrumentation baseInstrumentation = ReflectUtil.getInstrumentation(<span class="keyword">this</span>.mContext);</div><div class="line">        <span class="keyword">if</span> (baseInstrumentation.getClass().getName().contains(<span class="string">"lbe"</span>)) &#123;</div><div class="line">            <span class="comment">// reject executing in paralell space, for example, lbe.</span></div><div class="line">            System.exit(<span class="number">0</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 创建自定义的 instrumentation，重写了 newActivity() 等一些方法</span></div><div class="line">        <span class="comment">// baseInstrumentation 后面还会用到，也保存下来</span></div><div class="line">        <span class="keyword">final</span> VAInstrumentation instrumentation = <span class="keyword">new</span> VAInstrumentation(<span class="keyword">this</span>, baseInstrumentation);</div><div class="line">        </div><div class="line">        <span class="comment">// 获取 ActivityThread 的实例</span></div><div class="line">        Object activityThread = ReflectUtil.getActivityThread(<span class="keyword">this</span>.mContext);</div><div class="line">        </div><div class="line">        <span class="comment">// 用自定义的 instrumentation 替换掉 ActivityThread 里面的 instrumentation</span></div><div class="line">        ReflectUtil.setInstrumentation(activityThread, instrumentation);</div><div class="line">        ReflectUtil.setHandlerCallback(<span class="keyword">this</span>.mContext, instrumentation);</div><div class="line">        <span class="keyword">this</span>.mInstrumentation = instrumentation;</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>既然 Activity 的启动，中间走了 Instrumentation.execStartActivity 这个方法，那么我们大概可以知道，Hook 出一个 Instrumentation 对象用来做什么了，实际上就是用来帮助启动插件的 Activity。</p>
+<h3 id="启动插件Activity"><a href="#启动插件Activity" class="headerlink" title="启动插件Activity"></a>启动插件Activity</h3><p>我们 Hook 了一个 VAInstrumentation 以替代系统的 Instrumentation，这样当系统通过 ActivityThread 调用 它的的成员变量 mInstrumentation 的 newActivity() 等方法的时候，实际是调用我们 VAInstrumentation 的 newActivity()。</p>
+<p>实际上对于插件 Activity 启动，采用的是宿主 manifest 中占坑的方式来绕过系统校验，然后再加载真正的activity。</p>
+<p>什么是占坑？就是构造一系列假的 Activity 替身，在 AndroidMainfest.xml 里面进行注册，以绕过检测，然后到了真正启动 Activity 的时候，再把它变回，去启动真正的目标 Activity。那么这一步是怎么做的呢？</p>
+<p>我们可以打开核心库里面的 AndroidMainfest.xml 看看：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">application</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- Stub Activities --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".A$1"</span> <span class="attr">android:launchMode</span>=<span class="string">"standard"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".A$2"</span> <span class="attr">android:launchMode</span>=<span class="string">"standard"</span></span></div><div class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">"@android:style/Theme.Translucent"</span> /&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- Stub Activities --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".B$1"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTop"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".B$2"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTop"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".B$3"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTop"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".B$4"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTop"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".B$5"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTop"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".B$6"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTop"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".B$7"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTop"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".B$8"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTop"</span>/&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- Stub Activities --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".C$1"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTask"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".C$2"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTask"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".C$3"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTask"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".C$4"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTask"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".C$5"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTask"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".C$6"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTask"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".C$7"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTask"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".C$8"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTask"</span>/&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- Stub Activities --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".D$1"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleInstance"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".D$2"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleInstance"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".D$3"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleInstance"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".D$4"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleInstance"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".D$5"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleInstance"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".D$6"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleInstance"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".D$7"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleInstance"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".D$8"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleInstance"</span>/&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">application</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>可以发现，在清单里面注册了一堆假的 StubActivity。 ABCD分别对应不同的启动模式，那么，我们启动插件的 Activity 的时候，是如何把它改为清单里面已注册的这些假的 Activity 名呢？</p>
+<p>在 VAInstrumentation 里面，重写了 startActivity 的必经之路，就是 execStartActivity() 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> ActivityResult <span class="title">execStartActivity</span><span class="params">(</span></span></div><div class="line"><span class="function"><span class="params">            Context who, IBinder contextThread, IBinder token, Activity target,</span></span></div><div class="line"><span class="function"><span class="params">            Intent intent, <span class="keyword">int</span> requestCode, Bundle options)</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="comment">// 这里面做了一系列操作，实际上就是查找插件里面第一个符合隐式条件的第一个ResolveInfo，并设置进intent</span></div><div class="line">    mPluginManager.getComponentsHandler().transformIntentToExplicitAsNeeded(intent);</div><div class="line">    <span class="comment">// null component is an implicitly intent</span></div><div class="line">    <span class="keyword">if</span> (intent.getComponent() != <span class="keyword">null</span>) &#123;</div><div class="line">        Log.i(TAG, String.format(<span class="string">"execStartActivity[%s : %s]"</span>, intent.getComponent().getPackageName(),</div><div class="line">                intent.getComponent().getClassName()));</div><div class="line">        <span class="comment">// ！！！ 重头戏在这里，用那些注册的假的StubActivity来替换真实的Activity，以绕过检测 ！！！</span></div><div class="line">        <span class="keyword">this</span>.mPluginManager.getComponentsHandler().markIntentIfNeeded(intent);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ActivityResult result = realExecStartActivity(who, contextThread, token, target,</div><div class="line">                intent, requestCode, options);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> ActivityResult <span class="title">realExecStartActivity</span><span class="params">(</span></span></div><div class="line"><span class="function"><span class="params">        Context who, IBinder contextThread, IBinder token, Activity target,</span></span></div><div class="line"><span class="function"><span class="params">        Intent intent, <span class="keyword">int</span> requestCode, Bundle options)</span> </span>&#123;</div><div class="line">    ActivityResult result = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        Class[] parameterTypes = &#123;Context.class, IBinder.class, IBinder.class, Activity.class, Intent.class,</div><div class="line">        <span class="keyword">int</span>.class, Bundle.class&#125;;</div><div class="line">        result = (ActivityResult)ReflectUtil.invoke(Instrumentation.class, mBase,</div><div class="line">                <span class="string">"execStartActivity"</span>, parameterTypes,</div><div class="line">                who, contextThread, token, target, intent, requestCode, options);</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>那么，是如何替换 StubActivity 的呢？ 跟进代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">markIntentIfNeeded</span><span class="params">(Intent intent)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (intent.getComponent() == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    String targetPackageName = intent.getComponent().getPackageName();</div><div class="line">    String targetClassName = intent.getComponent().getClassName();</div><div class="line">    <span class="comment">// 判断是否是启动插件的Activity</span></div><div class="line">    <span class="keyword">if</span> (!targetPackageName.equals(mContext.getPackageName()) &amp;&amp; mPluginManager.getLoadedPlugin(targetPackageName) != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="comment">// 做标记</span></div><div class="line">        intent.putExtra(Constants.KEY_IS_PLUGIN, <span class="keyword">true</span>);</div><div class="line">        <span class="comment">// 保存真实的意图</span></div><div class="line">        intent.putExtra(Constants.KEY_TARGET_PACKAGE, targetPackageName);</div><div class="line">        intent.putExtra(Constants.KEY_TARGET_ACTIVITY, targetClassName);</div><div class="line">        dispatchStubActivity(intent);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 真正的转换就在这里。根据启动模式，转换对应的 StubActivity</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchStubActivity</span><span class="params">(Intent intent)</span> </span>&#123;</div><div class="line">    ComponentName component = intent.getComponent();</div><div class="line">    String targetClassName = intent.getComponent().getClassName();</div><div class="line">    LoadedPlugin loadedPlugin = mPluginManager.getLoadedPlugin(intent);</div><div class="line">    ActivityInfo info = loadedPlugin.getActivityInfo(component);</div><div class="line">    <span class="keyword">if</span> (info == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"can not find "</span> + component);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">int</span> launchMode = info.launchMode;</div><div class="line">    <span class="comment">// 临时替换主题</span></div><div class="line">    Resources.Theme themeObj = loadedPlugin.getResources().newTheme();</div><div class="line">    themeObj.applyStyle(info.theme, <span class="keyword">true</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 实际上就是这一句，完成转换</span></div><div class="line">    String stubActivity = mStubActivityInfo.getStubActivity(targetClassName, launchMode, themeObj);</div><div class="line">    Log.i(TAG, String.format(<span class="string">"dispatchStubActivity,[%s -&gt; %s]"</span>, targetClassName, stubActivity));</div><div class="line">    intent.setClassName(mContext, stubActivity);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>继续跟进代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">StubActivityInfo</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_COUNT_STANDARD = <span class="number">1</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_COUNT_SINGLETOP = <span class="number">8</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_COUNT_SINGLETASK = <span class="number">8</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_COUNT_SINGLEINSTANCE = <span class="number">8</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String corePackage = <span class="string">"com.didi.virtualapk.core"</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 这个格式，就是那些假的Activity的名字</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String STUB_ACTIVITY_STANDARD = <span class="string">"%s.A$%d"</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String STUB_ACTIVITY_SINGLETOP = <span class="string">"%s.B$%d"</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String STUB_ACTIVITY_SINGLETASK = <span class="string">"%s.C$%d"</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String STUB_ACTIVITY_SINGLEINSTANCE = <span class="string">"%s.D$%d"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> usedStandardStubActivity = <span class="number">1</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> usedSingleTopStubActivity = <span class="number">0</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> usedSingleTaskStubActivity = <span class="number">0</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> usedSingleInstanceStubActivity = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> HashMap&lt;String, String&gt; mCachedStubActivity = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">    </div><div class="line">    <span class="comment">/**</span></div><div class="line"><span class="comment">     * 在这里根据启动模式及主题构造 StubActivity </span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getStubActivity</span><span class="params">(String className, <span class="keyword">int</span> launchMode, Theme theme)</span> </span>&#123;</div><div class="line">        String stubActivity= mCachedStubActivity.get(className);</div><div class="line">        <span class="keyword">if</span> (stubActivity != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> stubActivity;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        TypedArray array = theme.obtainStyledAttributes(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;</div><div class="line">                android.R.attr.windowIsTranslucent,</div><div class="line">                android.R.attr.windowBackground</div><div class="line">        &#125;);</div><div class="line">        <span class="keyword">boolean</span> windowIsTranslucent = array.getBoolean(<span class="number">0</span>, <span class="keyword">false</span>);</div><div class="line">        array.recycle();</div><div class="line">        <span class="keyword">if</span> (Constants.DEBUG) &#123;</div><div class="line">            Log.d(<span class="string">"StubActivityInfo"</span>, <span class="string">"getStubActivity, is transparent theme ? "</span> + windowIsTranslucent);</div><div class="line">        &#125;</div><div class="line">        stubActivity = String.format(STUB_ACTIVITY_STANDARD, corePackage, usedStandardStubActivity);</div><div class="line">        <span class="keyword">switch</span> (launchMode) &#123;</div><div class="line">            <span class="keyword">case</span> ActivityInfo.LAUNCH_MULTIPLE: &#123;</div><div class="line">                stubActivity = String.format(STUB_ACTIVITY_STANDARD, corePackage, usedStandardStubActivity);</div><div class="line">                <span class="keyword">if</span> (windowIsTranslucent) &#123;</div><div class="line">                    stubActivity = String.format(STUB_ACTIVITY_STANDARD, corePackage, <span class="number">2</span>);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">case</span> ActivityInfo.LAUNCH_SINGLE_TOP: &#123;</div><div class="line">                usedSingleTopStubActivity = usedSingleTopStubActivity % MAX_COUNT_SINGLETOP + <span class="number">1</span>;</div><div class="line">                stubActivity = String.format(STUB_ACTIVITY_SINGLETOP, corePackage, usedSingleTopStubActivity);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">case</span> ActivityInfo.LAUNCH_SINGLE_TASK: &#123;</div><div class="line">                usedSingleTaskStubActivity = usedSingleTaskStubActivity % MAX_COUNT_SINGLETASK + <span class="number">1</span>;</div><div class="line">                stubActivity = String.format(STUB_ACTIVITY_SINGLETASK, corePackage, usedSingleTaskStubActivity);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">case</span> ActivityInfo.LAUNCH_SINGLE_INSTANCE: &#123;</div><div class="line">                usedSingleInstanceStubActivity = usedSingleInstanceStubActivity % MAX_COUNT_SINGLEINSTANCE + <span class="number">1</span>;</div><div class="line">                stubActivity = String.format(STUB_ACTIVITY_SINGLEINSTANCE, corePackage, usedSingleInstanceStubActivity);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">default</span>:<span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        mCachedStubActivity.put(className, stubActivity);</div><div class="line">        <span class="keyword">return</span> stubActivity;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>到这一步，就基本清晰了。同样的，既然变为了 StubActivity，那么真正启动的时候还得变回来才行。来看一下重写后的 newActivity() 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> Activity <span class="title">newActivity</span><span class="params">(ClassLoader cl, String className, Intent intent)</span> <span class="keyword">throws</span> InstantiationException, IllegalAccessException, ClassNotFoundException </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        cl.loadClass(className);</div><div class="line">    &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</div><div class="line">        <span class="comment">// 根据 intent 类型，去获取相应的插件</span></div><div class="line">        LoadedPlugin plugin = <span class="keyword">this</span>.mPluginManager.getLoadedPlugin(intent);</div><div class="line">        <span class="comment">// 这里就是从Intent中取出我们刚才保存的真正的意图</span></div><div class="line">        String targetClassName = PluginUtil.getTargetActivity(intent);</div><div class="line"></div><div class="line">        Log.i(TAG, String.format(<span class="string">"newActivity[%s : %s]"</span>, className, targetClassName));</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (targetClassName != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// mBase 是未替换之前的 Instrumentation 对象，所以这个实际上是交给系统原先的 Instrumentation 对象去执行，所以这个模式其实也可以理解为与动态代理等同</span></div><div class="line">            <span class="comment">// plugin.getClassLoader() 是自己构造的一个 DexClassLoader，专门用于加载对应的apk里面的类</span></div><div class="line">            Activity activity = mBase.newActivity(plugin.getClassLoader(), targetClassName, intent);</div><div class="line">            activity.setIntent(intent);</div><div class="line"></div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="comment">// for 4.1+</span></div><div class="line">                ReflectUtil.setField(ContextThemeWrapper.class, activity, <span class="string">"mResources"</span>, plugin.getResources());</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception ignored) &#123;</div><div class="line">                <span class="comment">// ignored.</span></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">return</span> activity;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> mBase.newActivity(cl, className, intent);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>到这里，插件的 Activity 启动流程分析，就基本结束了。细节方面，没法一步到位，还需要大家边看源码边理解，这样才能看得更透彻。</p>
+<h2 id="Service-支持"><a href="#Service-支持" class="headerlink" title="Service 支持"></a>Service 支持</h2><p>对于 Service 的支持，采用动态代理AMS，拦截 Service 相关的请求，将其中转给Service Runtime去处理，Service Runtime会接管系统的所有操作。</p>
+<p>对于我们动态代理AMS，在上一节 <a href="#Activity支持">Activity支持</a> 中已经介绍过了，那么，简单的来看一下 ActivityManagerProxy 是如何启动一个Service的。</p>
+<p>在执行 startService 等方法的时候，AMS 代理对象会相应的来执行以下这些方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Object <span class="title">startService</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">    IApplicationThread appThread = (IApplicationThread) args[<span class="number">0</span>];</div><div class="line">    Intent target = (Intent) args[<span class="number">1</span>];</div><div class="line">    ResolveInfo resolveInfo = <span class="keyword">this</span>.mPluginManager.resolveService(target, <span class="number">0</span>);</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == resolveInfo || <span class="keyword">null</span> == resolveInfo.serviceInfo) &#123;</div><div class="line">        <span class="comment">// is host service</span></div><div class="line">        <span class="keyword">return</span> method.invoke(<span class="keyword">this</span>.mActivityManager, args);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> startDelegateServiceForTarget(target, resolveInfo.serviceInfo, <span class="keyword">null</span>, RemoteService.EXTRA_COMMAND_START_SERVICE);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> ComponentName <span class="title">startDelegateServiceForTarget</span><span class="params">(Intent target, ServiceInfo serviceInfo, Bundle extras, <span class="keyword">int</span> command)</span> </span>&#123;</div><div class="line">    Intent wrapperIntent = wrapperTargetIntent(target, serviceInfo, extras, command);</div><div class="line">    <span class="keyword">return</span> mPluginManager.getHostContext().startService(wrapperIntent);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> Intent <span class="title">wrapperTargetIntent</span><span class="params">(Intent target, ServiceInfo serviceInfo, Bundle extras, <span class="keyword">int</span> command)</span> </span>&#123;</div><div class="line">    <span class="comment">// fill in service with ComponentName</span></div><div class="line">    target.setComponent(<span class="keyword">new</span> ComponentName(serviceInfo.packageName, serviceInfo.name));</div><div class="line">    String pluginLocation = mPluginManager.getLoadedPlugin(target.getComponent()).getLocation();</div><div class="line"></div><div class="line">    <span class="comment">// 这里进行判断，看是交给 LocalService，还是 RemoteService 处理</span></div><div class="line">    <span class="comment">// LocalService 和 RemoteService 分别对应是否在新的进程中启动Activity</span></div><div class="line">    <span class="keyword">boolean</span> local = PluginUtil.isLocalService(serviceInfo);</div><div class="line">    Class&lt;? extends Service&gt; delegate = local ? LocalService.class : RemoteService.class;</div><div class="line">    Intent intent = <span class="keyword">new</span> Intent();</div><div class="line">    intent.setClass(mPluginManager.getHostContext(), delegate);</div><div class="line">    intent.putExtra(RemoteService.EXTRA_TARGET, target);</div><div class="line">    </div><div class="line">    <span class="comment">// 保存一下这个的Command,对应执行不同操作</span></div><div class="line">    intent.putExtra(RemoteService.EXTRA_COMMAND, command);</div><div class="line">    intent.putExtra(RemoteService.EXTRA_PLUGIN_LOCATION, pluginLocation);</div><div class="line">    <span class="keyword">if</span> (extras != <span class="keyword">null</span>) &#123;</div><div class="line">        intent.putExtras(extras);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> intent;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实际上包括我们调用 stopService()，AMS 代理对象最后变换后的意图，同样也是上面代码的最后两个个方法 startDelegateServiceForTarget 和 wrapperTargetIntent()，只不过 command 不一样。</p>
+<p>所以本质上 AMS 作为代理，不管你执行启动或者关闭插件里面的 Service，他都是调用 LocalService 或者 RemoteService 的 startService 方法，在 LocalService 或者 RemoteService 的 onStartCommand() 下，根据 command 进行相应的操作。那么我们来看一下 LocalService 的 onStartCommand() 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">onStartCommand</span><span class="params">(Intent intent, <span class="keyword">int</span> flags, <span class="keyword">int</span> startId)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == intent || !intent.hasExtra(EXTRA_TARGET) || !intent.hasExtra(EXTRA_COMMAND)) &#123;</div><div class="line">        <span class="keyword">return</span> START_STICKY;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Intent target = intent.getParcelableExtra(EXTRA_TARGET);</div><div class="line">    <span class="keyword">int</span> command = intent.getIntExtra(EXTRA_COMMAND, <span class="number">0</span>);</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == target || command &lt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span> START_STICKY;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ComponentName component = target.getComponent();</div><div class="line">    LoadedPlugin plugin = mPluginManager.getLoadedPlugin(component);</div><div class="line"></div><div class="line">    <span class="keyword">switch</span> (command) &#123;</div><div class="line">        <span class="keyword">case</span> EXTRA_COMMAND_START_SERVICE: &#123;</div><div class="line">            ActivityThread mainThread = (ActivityThread)ReflectUtil.getActivityThread(getBaseContext());</div><div class="line">            IApplicationThread appThread = mainThread.getApplicationThread();</div><div class="line">            Service service;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.mPluginManager.getComponentsHandler().isServiceAvailable(component)) &#123;</div><div class="line">                service = <span class="keyword">this</span>.mPluginManager.getComponentsHandler().getService(component);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    service = (Service) plugin.getClassLoader().loadClass(component.getClassName()).newInstance();</div><div class="line"></div><div class="line">                    Application app = plugin.getApplication();</div><div class="line">                    IBinder token = appThread.asBinder();</div><div class="line">                    Method attach = service.getClass().getMethod(<span class="string">"attach"</span>, Context.class, ActivityThread.class, String.class, IBinder.class, Application.class, Object.class);</div><div class="line">                    IActivityManager am = mPluginManager.getActivityManager();</div><div class="line"></div><div class="line">                    attach.invoke(service, plugin.getPluginContext(), mainThread, component.getClassName(), token, app, am);</div><div class="line">                    service.onCreate();</div><div class="line">                    <span class="keyword">this</span>.mPluginManager.getComponentsHandler().rememberService(component, service);</div><div class="line">                &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">                    <span class="keyword">return</span> START_STICKY;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            service.onStartCommand(target, <span class="number">0</span>, <span class="keyword">this</span>.mPluginManager.getComponentsHandler().getServiceCounter(service).getAndIncrement());</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> EXTRA_COMMAND_BIND_SERVICE: &#123;</div><div class="line">            ActivityThread mainThread = (ActivityThread)ReflectUtil.getActivityThread(getBaseContext());</div><div class="line">            IApplicationThread appThread = mainThread.getApplicationThread();</div><div class="line">            Service service = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.mPluginManager.getComponentsHandler().isServiceAvailable(component)) &#123;</div><div class="line">                service = <span class="keyword">this</span>.mPluginManager.getComponentsHandler().getService(component);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    service = (Service) plugin.getClassLoader().loadClass(component.getClassName()).newInstance();</div><div class="line"></div><div class="line">                    Application app = plugin.getApplication();</div><div class="line">                    IBinder token = appThread.asBinder();</div><div class="line">                    Method attach = service.getClass().getMethod(<span class="string">"attach"</span>, Context.class, ActivityThread.class, String.class, IBinder.class, Application.class, Object.class);</div><div class="line">                    IActivityManager am = mPluginManager.getActivityManager();</div><div class="line"></div><div class="line">                    attach.invoke(service, plugin.getPluginContext(), mainThread, component.getClassName(), token, app, am);</div><div class="line">                    service.onCreate();</div><div class="line">                    <span class="keyword">this</span>.mPluginManager.getComponentsHandler().rememberService(component, service);</div><div class="line">                &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">                    t.printStackTrace();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                IBinder binder = service.onBind(target);</div><div class="line">                IBinder serviceConnection = PluginUtil.getBinder(intent.getExtras(), <span class="string">"sc"</span>);</div><div class="line">                IServiceConnection iServiceConnection = IServiceConnection.Stub.asInterface(serviceConnection);</div><div class="line">                iServiceConnection.connected(component, binder);</div><div class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> EXTRA_COMMAND_STOP_SERVICE: &#123;</div><div class="line">            Service service = <span class="keyword">this</span>.mPluginManager.getComponentsHandler().forgetService(component);</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> != service) &#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    service.onDestroy();</div><div class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                    Log.e(TAG, <span class="string">"Unable to stop service "</span> + service + <span class="string">": "</span> + e.toString());</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                Log.i(TAG, component + <span class="string">" not found"</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> EXTRA_COMMAND_UNBIND_SERVICE: &#123;</div><div class="line">            Service service = <span class="keyword">this</span>.mPluginManager.getComponentsHandler().forgetService(component);</div><div class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> != service) &#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    service.onUnbind(target);</div><div class="line">                    service.onDestroy();</div><div class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                    Log.e(TAG, <span class="string">"Unable to unbind service "</span> + service + <span class="string">": "</span> + e.toString());</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                Log.i(TAG, component + <span class="string">" not found"</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> START_STICKY;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>很显然，在这里面才对应去控制了插件Service的生命周期。具体代码就留给大家分析吧~~</p>
+<h2 id="ContentProvider-支持"><a href="#ContentProvider-支持" class="headerlink" title="ContentProvider 支持"></a>ContentProvider 支持</h2><p>动态代理 IContentProvider，拦截provider相关的请求，将其中转给Provider Runtime去处理，Provider Runtime会接管系统的所有操作。</p>
+<p>我们来看一下 com.didi.virtualapk.internal.PluginContentResolver 这个类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PluginContentResolver</span> <span class="keyword">extends</span> <span class="title">ContentResolver</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> ContentResolver mBase;</div><div class="line">    <span class="keyword">private</span> PluginManager mPluginManager;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Method sAcquireProvider;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Method sAcquireExistingProvider;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Method sAcquireUnstableProvider;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            sAcquireProvider = ContentResolver.class.getDeclaredMethod(<span class="string">"acquireProvider"</span>,</div><div class="line">                    <span class="keyword">new</span> Class[]&#123;Context.class, String.class&#125;);</div><div class="line">            sAcquireProvider.setAccessible(<span class="keyword">true</span>);</div><div class="line">            sAcquireExistingProvider = ContentResolver.class.getDeclaredMethod(<span class="string">"acquireExistingProvider"</span>,</div><div class="line">                    <span class="keyword">new</span> Class[]&#123;Context.class, String.class&#125;);</div><div class="line">            sAcquireExistingProvider.setAccessible(<span class="keyword">true</span>);</div><div class="line">            sAcquireUnstableProvider = ContentResolver.class.getDeclaredMethod(<span class="string">"acquireUnstableProvider"</span>,</div><div class="line">                    <span class="keyword">new</span> Class[]&#123;Context.class, String.class&#125;);</div><div class="line">            sAcquireUnstableProvider.setAccessible(<span class="keyword">true</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            <span class="comment">//ignored</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PluginContentResolver</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context);</div><div class="line">        mBase = context.getContentResolver();</div><div class="line">        mPluginManager = PluginManager.getInstance(context);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> IContentProvider <span class="title">acquireProvider</span><span class="params">(Context context, String auth)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">if</span> (mPluginManager.resolveContentProvider(auth, <span class="number">0</span>) != <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="comment">// 在这里，去 hook 一个 IContentProvider 代理对象</span></div><div class="line">                <span class="keyword">return</span> mPluginManager.getIContentProvider();</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">return</span> (IContentProvider) sAcquireProvider.invoke(mBase, context, auth);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个类是在构造 LoadedPlugin 的时候创建的 PluginContext 对象里面的 getContentResolver() 里面创建的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">PluginContext</span> <span class="keyword">extends</span> <span class="title">ContextWrapper</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> LoadedPlugin mPlugin;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PluginContext</span><span class="params">(LoadedPlugin plugin)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(plugin.getPluginManager().getHostContext());</div><div class="line">        <span class="keyword">this</span>.mPlugin = plugin;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> ContentResolver <span class="title">getContentResolver</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// 创建代理支持</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PluginContentResolver(getHostContext());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>那么，上面Hook 的 IContentProvider 代理对象，实际上是在 PluginManager 做的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">hookIContentProviderAsNeeded</span><span class="params">()</span> </span>&#123;</div><div class="line">    Uri uri = Uri.parse(PluginContentResolver.getUri(mContext));</div><div class="line">    mContext.getContentResolver().call(uri, <span class="string">"wakeup"</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        Field authority = <span class="keyword">null</span>;</div><div class="line">        Field mProvider = <span class="keyword">null</span>;</div><div class="line">        ActivityThread activityThread = (ActivityThread) ReflectUtil.getActivityThread(mContext);</div><div class="line">        Map mProviderMap = (Map) ReflectUtil.getField(activityThread.getClass(), activityThread, <span class="string">"mProviderMap"</span>);</div><div class="line">        Iterator iter = mProviderMap.entrySet().iterator();</div><div class="line">        <span class="keyword">while</span> (iter.hasNext()) &#123;</div><div class="line">            Map.Entry entry = (Map.Entry) iter.next();</div><div class="line">            Object key = entry.getKey();</div><div class="line">            Object val = entry.getValue();</div><div class="line">            String auth;</div><div class="line">            <span class="keyword">if</span> (key <span class="keyword">instanceof</span> String) &#123;</div><div class="line">                auth = (String) key;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">if</span> (authority == <span class="keyword">null</span>) &#123;</div><div class="line">                    authority = key.getClass().getDeclaredField(<span class="string">"authority"</span>);</div><div class="line">                    authority.setAccessible(<span class="keyword">true</span>);</div><div class="line">                &#125;</div><div class="line">                auth = (String) authority.get(key);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (auth.equals(PluginContentResolver.getAuthority(mContext))) &#123;</div><div class="line">                <span class="keyword">if</span> (mProvider == <span class="keyword">null</span>) &#123;</div><div class="line">                    mProvider = val.getClass().getDeclaredField(<span class="string">"mProvider"</span>);</div><div class="line">                    mProvider.setAccessible(<span class="keyword">true</span>);</div><div class="line">                &#125;</div><div class="line">                IContentProvider rawProvider = (IContentProvider) mProvider.get(val);</div><div class="line">                IContentProvider proxy = IContentProviderProxy.newInstance(mContext, rawProvider);</div><div class="line">                mIContentProvider = proxy;</div><div class="line">                Log.d(TAG, <span class="string">"hookIContentProvider succeed : "</span> + mIContentProvider);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这一块的内容，最好根据滴滴提供的Demo，再来看，比较容易理解。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Uri bookUri = Uri.parse(<span class="string">"content://com.ryg.chapter_2.book.provider/book"</span>);</div><div class="line">ContentValues values = <span class="keyword">new</span> ContentValues();</div><div class="line">values.put(<span class="string">"_id"</span>, <span class="number">6</span>);</div><div class="line">values.put(<span class="string">"name"</span>, <span class="string">"程序设计的艺术"</span>);</div></pre></td></tr></table></figure>
+<p>哈哈，作者有点懒，用了任玉刚的《Android开发艺术探索》 改的，被发现了</p>
+<p><img src="http://img.blog.csdn.net/20170708191651260?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h2 id="Receiver-支持"><a href="#Receiver-支持" class="headerlink" title="Receiver 支持"></a>Receiver 支持</h2><p>官方解释是将插件中静态注册的receiver重新注册一遍。在代码里貌似没找到相应的支持，Demo 里也没有，或许这部分还没完成吧？？</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文重点在于分析插件的 Activity 启动流程，其他包括主题、资源，并没有详细分析，因为说细了内容还是有点多了，主要是让大伙儿在阅读代码时，有个大致的方向。有疑问欢迎一起探讨哟~~</p>
+<p>感谢阅读！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/VirtualAPK/" rel="tag"># VirtualAPK</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/04/android-handler-message-looper/" rel="next" title="从源码的角度解析Handler、Looper、Message和MessageQueue">
+                <i class="fa fa-chevron-left"></i> 从源码的角度解析Handler、Looper、Message和MessageQueue
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="https://avatars3.githubusercontent.com/u/15133565?v=4&s=460"
+              alt="LeBron_Six" />
+          
+            <p class="site-author-name" itemprop="name">LeBron_Six</p>
+            <p class="site-description motion-element" itemprop="description">Android Developer.</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives">
+            
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                    
+                      E-Mail
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity-支持"><span class="nav-number">2.</span> <span class="nav-text">Activity 支持</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hook-ActivityManagerService"><span class="nav-number">2.1.</span> <span class="nav-text">Hook ActivityManagerService</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hook-Instrumentation"><span class="nav-number">2.2.</span> <span class="nav-text">Hook Instrumentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动插件Activity"><span class="nav-number">2.3.</span> <span class="nav-text">启动插件Activity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service-支持"><span class="nav-number">3.</span> <span class="nav-text">Service 支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ContentProvider-支持"><span class="nav-number">4.</span> <span class="nav-text">ContentProvider 支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Receiver-支持"><span class="nav-number">5.</span> <span class="nav-text">Receiver 支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LeBron_Six</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

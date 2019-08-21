@@ -252,6 +252,279 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://smuyyh.top/2019/08/21/idea-plugin-dev/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/21/idea-plugin-dev/" itemprop="url">IDEA 插件开发</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-21T20:43:04+08:00">
+                2019-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>官方开发文档：<a href="http://www.jetbrains.org/intellij/sdk/docs/welcome.html" target="_blank" rel="external">http://www.jetbrains.org/intellij/sdk/docs/welcome.html</a></p>
+<p>首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。</p>
+<p><img src="https://lark-assets-prod-aliyun.oss-cn-hangzhou.aliyuncs.com/lark/0/2019/png/65604/1565749695264-df125e60-8203-44f9-aae9-f2daac624e18.png?OSSAccessKeyId=LTAIX2KDHwZymFhr&amp;Expires=1566391726&amp;Signature=TeyYdEc01KEU/ymI1d8sSeh9jQQ=" alt=""></p>
+<h2 id="插件工程"><a href="#插件工程" class="headerlink" title="插件工程"></a>插件工程</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565750181229-310fc525-45dd-4881-8699-aa9efafb6a51.png" alt=""></p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565750336788-57824676-c060-4964-9c8a-5cbbfe59f228.png" alt=""></p>
+<h3 id="插件工程结构"><a href="#插件工程结构" class="headerlink" title="插件工程结构"></a>插件工程结构</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">BundleFileFinder/</div><div class="line">  resources/</div><div class="line">    META-INF/</div><div class="line">      plugin.xml</div><div class="line">        ...</div><div class="line">    src/</div><div class="line">    com.yuyang.finder</div><div class="line">        ...</div></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>src 实现插件功能的classes</li>
+<li>resources 存放工程需要用到的资源文件，例如一些引用的jar包、图片资源等。<ul>
+<li>META-INF/plugin.xml 插件的配置文件，指定插件名称、描述、版本号、支持的 IntelliJ IDEA 版本、插件的 components 和 actions 以及软件商等信息。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="plugin-xml"><a href="#plugin-xml" class="headerlink" title="plugin.xml"></a>plugin.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">idea-plugin</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- 插件相关信息， 会展示在IDEA插件的描述中 --&gt;</span></div><div class="line">  </div><div class="line">  <span class="comment">&lt;!-- 插件唯一id, 遵循使用包名的原则 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">id</span>&gt;</span>com.yuyang.finder<span class="tag">&lt;/<span class="name">id</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!-- 插件名称 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>BundleFileFinder<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!-- 插件版本 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!-- 开发者信息 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">vendor</span> <span class="attr">email</span>=<span class="string">"smuyyh@gmail.com"</span> <span class="attr">url</span>=<span class="string">"http://smuyyh.top"</span>&gt;</span>$Company|$Name<span class="tag">&lt;/<span class="name">vendor</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!-- 插件的描述 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">description</span>&gt;</span>my plugin description<span class="tag">&lt;/<span class="name">description</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!-- 插件版本变更信息 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">change-notes</span>&gt;</span>Initial release of the plugin.<span class="tag">&lt;/<span class="name">change-notes</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- 如果该插件还依赖了其他插件，则配置对对应的插件id --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">depends</span>&gt;</span>com.intellij.modules.all<span class="tag">&lt;/<span class="name">depends</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- 插件兼容IDEA的最大和最小build号，不配置则不做限制 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">idea-version</span> <span class="attr">since-build</span>=<span class="string">"94.539"</span> <span class="attr">until-build</span>=<span class="string">"192"</span>/&gt;</span></div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- Actions: 如添加一个文件右击菜单按钮 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">actions</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">action</span> <span class="attr">id</span>=<span class="string">"FinderAction"</span> <span class="attr">class</span>=<span class="string">"com.yuyang.finder.FinderAction"</span> <span class="attr">text</span>=<span class="string">"FileFinder"</span> <span class="attr">description</span>=<span class="string">"FileFinder"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">add-to-group</span> <span class="attr">group-id</span>=<span class="string">"ProjectViewPopupMenu"</span> <span class="attr">anchor</span>=<span class="string">"first"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">action</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">actions</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- 插件定义的扩展点，以供其他插件扩展该插件，类似Java的抽象类的功能 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">extensionPoints</span>&gt;</span></div><div class="line">    ...</div><div class="line">  <span class="tag">&lt;/<span class="name">extensionPoints</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- 声明该插件对IDEA core或其他插件的扩展 --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">extensions</span> <span class="attr">xmlns</span>=<span class="string">"com.intellij"</span>&gt;</span></div><div class="line">    ...</div><div class="line">  <span class="tag">&lt;/<span class="name">extensions</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">idea-plugin</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>##Plugin Action</p>
+<h3 id="Action-是什么"><a href="#Action-是什么" class="headerlink" title="Action 是什么"></a>Action 是什么</h3><p>Action 用于描述一个动作、行为，可以通过快捷键、点选的方式进行触发。一个 Action 是一个 class，是 AnAction 的子类，actionPerformed 方法在菜单Item或者标题栏按钮被选中的时候会被调用。</p>
+<p>Action 允许添加到右键菜单或者Toolbar菜单上面。Action也可以成组添加到具体的一个Group下面。</p>
+<h3 id="创建Action"><a href="#创建Action" class="headerlink" title="创建Action"></a>创建Action</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinderAction</span> <span class="keyword">extends</span> <span class="title">AnAction</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Project mProject;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actionPerformed</span><span class="params">(AnActionEvent event)</span> </span>&#123;</div><div class="line">        mProject = event.getData(PlatformDataKeys.PROJECT);</div><div class="line">        DataContext dataContext = event.getDataContext();</div><div class="line">        <span class="keyword">if</span> (<span class="string">"apk"</span>.equals(getFileExtension(dataContext))) &#123;</div><div class="line">            <span class="comment">//获取选中的文件</span></div><div class="line">            VirtualFile file = DataKeys.VIRTUAL_FILE.getData(event.getDataContext());</div><div class="line">            <span class="keyword">if</span> (file != <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="comment">// 创建面板  java swing</span></div><div class="line">                </div><div class="line">                <span class="comment">// 后面章节会有 java GUI 面板介绍</span></div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            Messages.showInfoMessage(<span class="string">"请选择.apk文件"</span>, <span class="string">"提示"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(AnActionEvent event)</span> </span>&#123;</div><div class="line">        String extension = getFileExtension(event.getDataContext());</div><div class="line">        <span class="keyword">this</span>.getTemplatePresentation().setEnabled(extension != <span class="keyword">null</span> &amp;&amp; <span class="string">"apk"</span>.equals(extension));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getFileExtension</span><span class="params">(DataContext dataContext)</span> </span>&#123;</div><div class="line">        VirtualFile file = DataKeys.VIRTUAL_FILE.getData(dataContext);</div><div class="line">        <span class="keyword">return</span> file == <span class="keyword">null</span> ? <span class="keyword">null</span> : file.getExtension();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="注册Action"><a href="#注册Action" class="headerlink" title="注册Action"></a>注册Action</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">actions</span>&gt;</span></div><div class="line">  <span class="comment">&lt;!-- 添加单个Action --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">action</span> </span></div><div class="line"><span class="tag">          <span class="attr">id</span>=<span class="string">"FinderAction"</span></span></div><div class="line"><span class="tag">          <span class="attr">class</span>=<span class="string">"com.yuyang.finder.FinderAction"</span></span></div><div class="line"><span class="tag">          <span class="attr">text</span>=<span class="string">"FileFinder"</span></span></div><div class="line"><span class="tag">          <span class="attr">description</span>=<span class="string">"当前插件菜单功能说明"</span> </span></div><div class="line"><span class="tag">          <span class="attr">icon</span>=<span class="string">"icons/garbage.png"</span></span></div><div class="line"><span class="tag">          <span class="attr">keymap</span>=<span class="string">"未知"</span> </span></div><div class="line"><span class="tag">          <span class="attr">popup</span>=<span class="string">""</span> </span></div><div class="line"><span class="tag">          <span class="attr">project-type</span>=<span class="string">""</span></span></div><div class="line"><span class="tag">          <span class="attr">use-shortcut-of</span>=<span class="string">""</span>&gt;</span></div><div class="line"></div><div class="line">          <span class="comment">&lt;!-- 将菜单添加至工程的右击菜单 --&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">add-to-group</span> <span class="attr">group-id</span>=<span class="string">"ProjectViewPopupMenu"</span> </span></div><div class="line"><span class="tag">                        <span class="attr">anchor</span>=<span class="string">"first"</span></span></div><div class="line"><span class="tag">                        <span class="attr">relative-to-action</span>=<span class="string">"GenerateJavadoc"</span> /&gt;</span></div><div class="line">    </div><div class="line">          <span class="comment">&lt;!-- 设置快捷键 --&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">keyboard-shortcut</span> <span class="attr">keymap</span>=<span class="string">"Mac OS X"</span> </span></div><div class="line"><span class="tag">                             <span class="attr">first-keystroke</span>=<span class="string">"control alt G"</span> </span></div><div class="line"><span class="tag">                             <span class="attr">second-keystroke</span>=<span class="string">"C"</span> </span></div><div class="line"><span class="tag">                             <span class="attr">remove</span>=<span class="string">"true"</span>/&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">action</span>&gt;</span></div><div class="line">  </div><div class="line">  <span class="comment">&lt;!-- 添加成组的action --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">group</span> <span class="attr">id</span>=<span class="string">"FinderGroup"</span> <span class="attr">text</span>=<span class="string">"组名"</span> <span class="attr">description</span>=<span class="string">"描述"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">add-to-group</span> <span class="attr">group-id</span>=<span class="string">"MainMenu"</span> <span class="attr">anchor</span>=<span class="string">"last"</span>  /&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">id</span>=<span class="string">"Action1"</span> </span></div><div class="line"><span class="tag">               <span class="attr">class</span>=<span class="string">"com.yuyang.finder.FinderAction1"</span> </span></div><div class="line"><span class="tag">               <span class="attr">text</span>=<span class="string">"名称1"</span> </span></div><div class="line"><span class="tag">               <span class="attr">description</span>=<span class="string">"描述1"</span> /&gt;</span></div><div class="line">        <span class="comment">&lt;!-- 添加分割线 --&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">separator</span>/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">id</span>=<span class="string">"Action2"</span> </span></div><div class="line"><span class="tag">               <span class="attr">class</span>=<span class="string">"com.yuyang.finder.FinderAction2"</span> </span></div><div class="line"><span class="tag">               <span class="attr">text</span>=<span class="string">"名称2"</span> </span></div><div class="line"><span class="tag">               <span class="attr">description</span>=<span class="string">"描述2"</span> /&gt;</span></div><div class="line">        <span class="comment">&lt;!-- 可以添加一个已存在的action到该group --&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">reference</span> <span class="attr">ref</span>=<span class="string">"EditorCopy"</span>/&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">group</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">actions</span>&gt;</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>如果 anchor 设置为 before 或者 after，则必须设置 relative-to-action。</p>
+</blockquote>
+<h3 id="快速创建Action"><a href="#快速创建Action" class="headerlink" title="快速创建Action"></a>快速创建Action</h3><p>Plugin Devkit提供了快捷创建Action的方式。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565869023471-62e42c12-1030-44ca-a54f-43d27fd1e691.png" alt=""></p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565938599236-dc960f1e-9f32-450b-b63e-3cb01a2901f6.png" alt=""></p>
+<blockquote>
+<p>信息填写基本遵循注册Action时的字段内容。</p>
+<ul>
+<li>Action ID: action 唯一 id，推荐使用全类名</li>
+<li>Class Name: 要被创建的 action class 名称</li>
+<li>Name: menu item 的文本</li>
+<li>Description: action 描述，toolbar 上按钮的提示文本，可选</li>
+<li>Add to Group：选择新 action 要被添加到的 action group（Groups, Actions）以及相对其他 actions 的位置（Anchor），比如 EditMenu 就是顶部菜单栏的 Edit 菜单。</li>
+<li>Keyboard Shortcuts：指定 action 的第一和第二快捷键</li>
+</ul>
+</blockquote>
+<h3 id="运行插件"><a href="#运行插件" class="headerlink" title="运行插件"></a>运行插件</h3><p>点击 Run | Edit Configurations，若无配置项，则新建一个，配置一下 Use classpath of module,选择要调试的Module。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565869521177-b72a28e4-6f0e-4750-90be-0b830f3872e3.png" alt=""></p>
+<p>若需要查看调试日志，则需要勾选 Logs的选项。运行插件时将会输出log到console，也可以设置输出到具体文件。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565869464739-25c83abb-f70f-4fd1-be7a-63d91fb7ea4e.png" alt=""></p>
+<h3 id="打包插件"><a href="#打包插件" class="headerlink" title="打包插件"></a>打包插件</h3><p>Build -&gt; Prepare All Plugin Modules For Deployment，一般会将插件输出到工程根目录底下。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565870249337-078ddf38-5d21-4170-bf96-88b8eed2c573.png" alt=""></p>
+<p>如果该插件没有依赖其他的library，则插件会被打包成.jar，否则会被打包成.zip</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">.jar 类型的文件内容结构</div><div class="line">BundleFileFinder.jar/</div><div class="line">  com/yuyang/finder/</div><div class="line">      ...</div><div class="line">  META-INF/</div><div class="line">    plugin.xml</div><div class="line"> </div><div class="line">.zip 类型的文件内容结构</div><div class="line">BundleFileFinder.zip/</div><div class="line">  lib/</div><div class="line">    lib1.jar</div><div class="line">    lib2.jar</div><div class="line">    BundleFileFinder.jar/</div><div class="line">      com/yuyang/finder/</div><div class="line">          ...</div><div class="line">      META-INF/</div><div class="line">        plugin.xml</div></pre></td></tr></table></figure>
+<h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><p>Intellij IDEA -&gt; Preferences -&gt; Plugins -&gt; Install Plugin From Disk，选择打包出来的 .jar 或者 .zip 文件。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565871255841-1509cfed-24f4-4ae8-82dc-c0f63f447043.png" alt=""></p>
+<h2 id="Plugin-Components"><a href="#Plugin-Components" class="headerlink" title="Plugin Components"></a>Plugin Components</h2><h3 id="Components-类型"><a href="#Components-类型" class="headerlink" title="Components 类型"></a>Components 类型</h3><table>
+<thead>
+<tr>
+<th>Components 接口类型</th>
+<th>描述 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Application Component</td>
+<td>IDEA启动时会初始化，IDEA生命周期中仅存在一个实例。 </td>
+</tr>
+<tr>
+<td>Project Component</td>
+<td>IDEA 会为每一个 Project 实例创建一个 Project 级别的component </td>
+</tr>
+<tr>
+<td>Module Component</td>
+<td>IDEA 会为每一个 Project 的加载过的Module实例Module级别的component </td>
+</tr>
+</tbody>
+</table>
+<h3 id="创建-Component"><a href="#创建-Component" class="headerlink" title="创建 Component"></a>创建 Component</h3><p>与 Action 一样，可以通过快捷方式创建。 右击菜单 -&gt; New -&gt; Plugin Devkit -&gt; Application/Project/Module Component。</p>
+<p>例如创建 Application Component，默认会生成一个 Application 类 和 plugin.xml 的配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinderApplication</span> <span class="keyword">implements</span> <span class="title">ApplicationComponent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FinderApplication</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initComponent</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// <span class="doctag">TODO:</span> insert component initialization logic here</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">disposeComponent</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// <span class="doctag">TODO:</span> insert component disposal logic here</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="meta">@NotNull</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getComponentName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"FinderApplication"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">application-components</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">component</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">implementation-class</span>&gt;</span>com.yuyang.finder.FinderApplication<span class="tag">&lt;/<span class="name">implementation-class</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">component</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">application-components</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Project Component</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinderProject</span> <span class="keyword">implements</span> <span class="title">ProjectComponent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FinderProject</span><span class="params">(Project project)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initComponent</span><span class="params">()</span> </span>&#123;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">disposeComponent</span><span class="params">()</span> </span>&#123;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="meta">@NotNull</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getComponentName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"FinderProject"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">projectOpened</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// called when project is opened</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">projectClosed</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// called when project is being closed</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">project-components</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">component</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">implementation-class</span>&gt;</span>com.yuyang.finder.FinderProject<span class="tag">&lt;/<span class="name">implementation-class</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">component</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">project-components</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Module Component</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinderModule</span> <span class="keyword">implements</span> <span class="title">ModuleComponent</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FinderModule</span><span class="params">(Module <span class="keyword">module</span>)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initComponent</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// <span class="doctag">TODO:</span> insert component initialization logic here</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">disposeComponent</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// <span class="doctag">TODO:</span> insert component disposal logic here</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="meta">@NotNull</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getComponentName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"FinderModule"</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">moduleAdded</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// Invoked when the module corresponding to this component instance has been completely</span></div><div class="line">        <span class="comment">// loaded and added to the project.</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">module-components</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">component</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">implementation-class</span>&gt;</span>com.yuyang.finder.FinderModule<span class="tag">&lt;/<span class="name">implementation-class</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">component</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">module-components</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="获取-Component-实例"><a href="#获取-Component-实例" class="headerlink" title="获取 Component 实例"></a>获取 Component 实例</h3><p>例如 获取定义的一个 Application Component 实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获取application容器中的组件</span></div><div class="line">FinderApplication finderApplication = ApplicationManager.getApplication().getComponent(FinderApplication.class);</div></pre></td></tr></table></figure>
+<p>Project 与 Module</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinderProject</span> <span class="keyword">implements</span> <span class="title">ProjectComponent</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Project project;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FinderProject</span><span class="params">(Project project)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.project = project;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initComponent</span><span class="params">()</span> </span>&#123;</div><div class="line">        FinderModule finderModule = project.getComponent(FinderModule.class);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>也可以通过 AnAction 的事件获取。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinderAction</span> <span class="keyword">extends</span> <span class="title">AnAction</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Application mApplication;</div><div class="line">    <span class="keyword">private</span> Project mProject;</div><div class="line">    <span class="keyword">private</span> Module mModule;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actionPerformed</span><span class="params">(AnActionEvent event)</span> </span>&#123;</div><div class="line"></div><div class="line">        DataContext dataContext = event.getDataContext();</div><div class="line"></div><div class="line">        <span class="comment">// DataConstants 被标记为 @deprecated</span></div><div class="line">        mProject = (Project)dataContext.getData(DataConstants.PROJECT);</div><div class="line">        mModule =(Module)dataContext.getData(DataConstants.MODULE);</div><div class="line">        </div><div class="line">        <span class="comment">// OR</span></div><div class="line">        mProject = event.getData(PlatformDataKeys.PROJECT);</div><div class="line">        <span class="comment">// mModule = ???</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><p>对于IDEA插件的一些配置，一般情况下都不会希望用户每次使用插件时都要配置一遍，所以 IntelliJ Platform 提供了一些 API，来做数据的持久化。</p>
+<h3 id="PropertiesComponent"><a href="#PropertiesComponent" class="headerlink" title="PropertiesComponent"></a>PropertiesComponent</h3><p>对于简单的 key - value 数据结构，可以使用 PropertiesComponent，用于保存 application 和 project 级别的数据。用法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获取 application 级别的 PropertiesComponent</span></div><div class="line">PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();</div><div class="line"><span class="comment">//获取 project 级别的 PropertiesComponent，指定相应的 project</span></div><div class="line">PropertiesComponent propertiesComponent = PropertiesComponent.getInstance(Project);</div><div class="line"></div><div class="line"><span class="comment">// set &amp; get</span></div><div class="line">propertiesComponent.setValue(name, value)</div><div class="line">propertiesComponent.getValue(name)</div></pre></td></tr></table></figure>
+<blockquote>
+<p>所有的 PropertiesComponent设置的键值对共用同一个namespance，所以需要避免key冲突。</p>
+</blockquote>
+<h3 id="PersistentStateComponent"><a href="#PersistentStateComponent" class="headerlink" title="PersistentStateComponent"></a>PersistentStateComponent</h3><p>对于复杂的数据结构，可以使用 PersistentStateComponent，PersistentStateComponent 可以指定持久化的存储位置。</p>
+<ul>
+<li>需要提供一个 PersistentStateComponent<t> 的实现类，T代表需要持久化的数据结构类型，然后重写 getState() 和 loadState() 方法。T可以是任意的类，或者是实现类自身。</t></li>
+<li>若需要指定存储位置，则在实现类上增加 @State 注解</li>
+<li>若不希望其中的某个字段被持久化，可以在该字段上增加 @Transient 注解</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@State</span>(name = <span class="string">"PersistentStateComponentImpl"</span>, </div><div class="line">       storages = &#123;</div><div class="line">           <span class="meta">@Storage</span>(value = <span class="string">"PersistentStateComponentImpl.xml"</span>)</div><div class="line">       &#125;)</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">PersistentStateComponentImpl</span> <span class="keyword">implements</span> <span class="title">PersistentStateComponent</span>&lt;<span class="title">State</span>&gt; </span>&#123;</div><div class="line">    State myState;</div><div class="line"></div><div class="line">    <span class="comment">// 当组件被创建或 xml 文件被外部改变（比如git更新）时被调用</span></div><div class="line">    <span class="function"><span class="keyword">public</span> State <span class="title">getState</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> myState;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 当 settings 被保存时，该方法会被调用并保存状态值。</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">loadState</span><span class="params">(State state)</span> </span>&#123;</div><div class="line">        myState = state;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">State</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">State</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 支持基本的数据类型、Map、Collection、enum</span></div><div class="line">    <span class="keyword">public</span> String value;</div><div class="line">    </div><div class="line">    <span class="meta">@Transient</span></div><div class="line">    <span class="keyword">public</span> String disableSave;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>若是 application 级别的组件<ul>
+<li>运行调试时 xml 文件的位置： ~/IdeaICxxxx/system/plugins-sandbox/config/options</li>
+<li>正式安装时 xml 文件的位置： ~/IdeaICxxxx/config/options</li>
+</ul>
+</li>
+<li>若是 project 级别的组件<ul>
+<li>默认为项目的 .idea/misc.xml</li>
+<li>若指定为 StoragePathMacros.WORKSPACE_FILE，则会被保存在 .idea/worksapce.xml</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="注册持久化组件"><a href="#注册持久化组件" class="headerlink" title="注册持久化组件"></a>注册持久化组件</h3><p>持久化组件可以声明为 Service，也可以声明为 Component，声明为 Component 则与前面介绍注册与获取的方法一致，声明为Service如下：<br>获取方式为：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">extensions</span> <span class="attr">defaultExtensionNs</span>=<span class="string">"com.intellij"</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- application 级别--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">applicationService</span> <span class="attr">serviceImplementation</span>=<span class="string">"com.yuyh.finder.PersistentStateComponentImpl1"</span>/&gt;</span></div><div class="line">    <span class="comment">&lt;!-- project 级别 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">projectService</span> <span class="attr">serviceImplementation</span>=<span class="string">"com.yuyh.finder.PersistentStateComponentImpl2"</span>/&gt;</span></div><div class="line"> <span class="tag">&lt;/<span class="name">extensions</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="GUI-面板"><a href="#GUI-面板" class="headerlink" title="GUI 面板"></a>GUI 面板</h2><p>IDEA - Preference - Editor - Gui Designer，勾选 Java Source Code，表示我们通过面板编辑后可以生成 java代码。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565922098378-3020517e-aa6f-4cbc-a8c9-e4eb02dca219.png" alt=""></p>
+<h3 id="创建GUI-Form"><a href="#创建GUI-Form" class="headerlink" title="创建GUI Form"></a>创建GUI Form</h3><p>指定位置右击 - New - GUI Form</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565922351803-a28afe39-a8d7-4998-86f4-a0191f212909.png?x-oss-process=image/resize,w_375" alt=""></p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565923104298-33f08b44-9f61-4e1f-8148-fbf83703b8eb.png" alt=""></p>
+<p>面板编辑完成之后，点击Toolbar工具条那里的  按钮，进行编译。编译完成后，GUI的代码会生成在 对应的 Java文件里面。如图是 Demo.java</p>
+<h3 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h3><p>默认根JPanel是没有配置 “field name”控件属性的，所以我们需要给他配置一下。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565923913837-9409c0c5-3fa7-4103-8dc7-513cb9355262.png" alt=""></p>
+<p>生成的java文件如图，$$$setupUI$$$()方法里面是具体创建布局的代码。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565923913837-9409c0c5-3fa7-4103-8dc7-513cb9355262.png" alt=""></p>
+<h3 id="布局预览"><a href="#布局预览" class="headerlink" title="布局预览"></a>布局预览</h3><p>在需要插入main方法的地方，按下 Command + n，点击 Form main，则会生成可执行的main方法。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924069991-ae8c4b6a-a87c-4920-84c6-dfece536f00f.png" alt=""></p>
+<p>运行 main 方法，可以预览之前创建的布局。</p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924284750-db92c448-36fe-439b-ad96-2a29a08dbfa9.png" alt=""></p>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924303471-4b14bb03-a008-4784-a71d-2ed81ccd2ac5.png" alt=""></p>
+<h2 id="插件上传"><a href="#插件上传" class="headerlink" title="插件上传"></a>插件上传</h2><p>插件也支持上传到 idea 仓库，让其他人搜索到。<br>官方文档：<a href="http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/publishing_plugin.html" target="_blank" rel="external">http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/publishing_plugin.html</a></p>
+<h2 id="示例项目"><a href="#示例项目" class="headerlink" title="示例项目"></a>示例项目</h2><p>实现反编译APK来查找是否引用了某个类；<br>仓库地址：<a href="">BundleFileFinder</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://smuyyh.top/2018/10/11/java-volatile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1567,154 +1840,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://smuyyh.top/2016/11/23/rxjava-1.0-source/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LeBron_Six">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LeBron_Six 的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/11/23/rxjava-1.0-source/" itemprop="url">RxJava 从入门到出轨</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-23T22:13:04+08:00">
-                2016-11-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>使用了RxJava有一段时间了，深深感受到了其“牛逼”之处。下面，就从RxJava的基础开始，一步一步与大家分享一下这个强大的异步库的用法！</p>
-<h2 id="RxJava-概念初步"><a href="#RxJava-概念初步" class="headerlink" title="RxJava 概念初步"></a>RxJava 概念初步</h2><p>RxJava 在<a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="external">Github Repo</a>上给的解释是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">“RxJava is a Java VM implementation of Reactive Extensions: </div><div class="line"></div><div class="line">a library for composing asynchronous and event-based programs by using observable sequences.”</div></pre></td></tr></table></figure></p>
-<p>大概就是说RxJava是Java VM上一个灵活的、使用可观测序列来组成的一个异步的、基于事件的库。咋一看好像不知道是啥东西… … 没事，往下看~</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/23/rxjava-1.0-source/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1769,7 +1894,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1791,7 +1916,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

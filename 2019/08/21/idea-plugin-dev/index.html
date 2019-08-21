@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。  插件工程创建  插件工程结构12345678BundleFileFinder/  resources/    META-INF/      plugin">
+<meta name="description" content="前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
 <meta name="keywords" content="idea plugin,java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IDEA 插件开发">
 <meta property="og:url" content="http://smuyyh.top/2019/08/21/idea-plugin-dev/index.html">
 <meta property="og:site_name" content="LeBron_Six 的博客">
-<meta property="og:description" content="前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。  插件工程创建  插件工程结构12345678BundleFileFinder/  resources/    META-INF/      plugin">
+<meta property="og:description" content="前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://lark-assets-prod-aliyun.oss-cn-hangzhou.aliyuncs.com/lark/0/2019/png/65604/1565749695264-df125e60-8203-44f9-aae9-f2daac624e18.png?OSSAccessKeyId=LTAIX2KDHwZymFhr&Expires=1566391726&Signature=TeyYdEc01KEU/ymI1d8sSeh9jQQ=">
 <meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565750181229-310fc525-45dd-4881-8699-aa9efafb6a51.png">
@@ -104,10 +104,10 @@
 <meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924069991-ae8c4b6a-a87c-4920-84c6-dfece536f00f.png">
 <meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924284750-db92c448-36fe-439b-ad96-2a29a08dbfa9.png">
 <meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924303471-4b14bb03-a008-4784-a71d-2ed81ccd2ac5.png">
-<meta property="og:updated_time" content="2019-08-21T12:45:44.741Z">
+<meta property="og:updated_time" content="2019-08-21T12:48:59.279Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IDEA 插件开发">
-<meta name="twitter:description" content="前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。  插件工程创建  插件工程结构12345678BundleFileFinder/  resources/    META-INF/      plugin">
+<meta name="twitter:description" content="前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
 <meta name="twitter:image" content="https://lark-assets-prod-aliyun.oss-cn-hangzhou.aliyuncs.com/lark/0/2019/png/65604/1565749695264-df125e60-8203-44f9-aae9-f2daac624e18.png?OSSAccessKeyId=LTAIX2KDHwZymFhr&Expires=1566391726&Signature=TeyYdEc01KEU/ymI1d8sSeh9jQQ=">
 
 
@@ -363,6 +363,7 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>官方开发文档：<a href="http://www.jetbrains.org/intellij/sdk/docs/welcome.html" target="_blank" rel="external">http://www.jetbrains.org/intellij/sdk/docs/welcome.html</a></p>
 <p>首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。</p>
 <p><img src="https://lark-assets-prod-aliyun.oss-cn-hangzhou.aliyuncs.com/lark/0/2019/png/65604/1565749695264-df125e60-8203-44f9-aae9-f2daac624e18.png?OSSAccessKeyId=LTAIX2KDHwZymFhr&amp;Expires=1566391726&amp;Signature=TeyYdEc01KEU/ymI1d8sSeh9jQQ=" alt=""></p>
+<a id="more"></a>
 <h2 id="插件工程"><a href="#插件工程" class="headerlink" title="插件工程"></a>插件工程</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565750181229-310fc525-45dd-4881-8699-aa9efafb6a51.png" alt=""></p>
 <p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565750336788-57824676-c060-4964-9c8a-5cbbfe59f228.png" alt=""></p>
 <h3 id="插件工程结构"><a href="#插件工程结构" class="headerlink" title="插件工程结构"></a>插件工程结构</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">BundleFileFinder/</div><div class="line">  resources/</div><div class="line">    META-INF/</div><div class="line">      plugin.xml</div><div class="line">        ...</div><div class="line">    src/</div><div class="line">    com.yuyang.finder</div><div class="line">        ...</div></pre></td></tr></table></figure>

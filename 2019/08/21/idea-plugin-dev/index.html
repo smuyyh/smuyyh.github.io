@@ -79,36 +79,36 @@
 
 
 
-<meta name="description" content="前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
+<meta name="description" content="[toc] 前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
 <meta name="keywords" content="idea plugin,java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IDEA 插件开发">
 <meta property="og:url" content="http://smuyyh.top/2019/08/21/idea-plugin-dev/index.html">
 <meta property="og:site_name" content="LeBron_Six 的博客">
-<meta property="og:description" content="前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
+<meta property="og:description" content="[toc] 前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://lark-assets-prod-aliyun.oss-cn-hangzhou.aliyuncs.com/lark/0/2019/png/65604/1565749695264-df125e60-8203-44f9-aae9-f2daac624e18.png?OSSAccessKeyId=LTAIX2KDHwZymFhr&Expires=1566391726&Signature=TeyYdEc01KEU/ymI1d8sSeh9jQQ=">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565750181229-310fc525-45dd-4881-8699-aa9efafb6a51.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565750336788-57824676-c060-4964-9c8a-5cbbfe59f228.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565869023471-62e42c12-1030-44ca-a54f-43d27fd1e691.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565938599236-dc960f1e-9f32-450b-b63e-3cb01a2901f6.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565869521177-b72a28e4-6f0e-4750-90be-0b830f3872e3.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565869464739-25c83abb-f70f-4fd1-be7a-63d91fb7ea4e.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565870249337-078ddf38-5d21-4170-bf96-88b8eed2c573.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565871255841-1509cfed-24f4-4ae8-82dc-c0f63f447043.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565922098378-3020517e-aa6f-4cbc-a8c9-e4eb02dca219.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565922351803-a28afe39-a8d7-4998-86f4-a0191f212909.png?x-oss-process=image/resize,w_375">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565923104298-33f08b44-9f61-4e1f-8148-fbf83703b8eb.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565923913837-9409c0c5-3fa7-4103-8dc7-513cb9355262.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565923913837-9409c0c5-3fa7-4103-8dc7-513cb9355262.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924069991-ae8c4b6a-a87c-4920-84c6-dfece536f00f.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924284750-db92c448-36fe-439b-ad96-2a29a08dbfa9.png">
-<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924303471-4b14bb03-a008-4784-a71d-2ed81ccd2ac5.png">
-<meta property="og:updated_time" content="2019-08-21T12:50:25.645Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095010460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095033737.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095104101.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095157711.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095257352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095315272.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095334769.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095355169.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095417889.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095510265.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095539172.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095639343.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095745756.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095850748.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095804234.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095901294.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095912753.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-08-22T02:01:55.062Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IDEA 插件开发">
-<meta name="twitter:description" content="前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
-<meta name="twitter:image" content="https://lark-assets-prod-aliyun.oss-cn-hangzhou.aliyuncs.com/lark/0/2019/png/65604/1565749695264-df125e60-8203-44f9-aae9-f2daac624e18.png?OSSAccessKeyId=LTAIX2KDHwZymFhr&Expires=1566391726&Signature=TeyYdEc01KEU/ymI1d8sSeh9jQQ=">
+<meta name="twitter:description" content="[toc] 前言官方开发文档：http://www.jetbrains.org/intellij/sdk/docs/welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190822095010460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
 
 
 
@@ -360,12 +360,13 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>官方开发文档：<a href="http://www.jetbrains.org/intellij/sdk/docs/welcome.html" target="_blank" rel="external">http://www.jetbrains.org/intellij/sdk/docs/welcome.html</a></p>
+        <p>[toc]</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>官方开发文档：<a href="http://www.jetbrains.org/intellij/sdk/docs/welcome.html" target="_blank" rel="external">http://www.jetbrains.org/intellij/sdk/docs/welcome.html</a></p>
 <p>首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。</p>
-<p><img src="https://lark-assets-prod-aliyun.oss-cn-hangzhou.aliyuncs.com/lark/0/2019/png/65604/1565749695264-df125e60-8203-44f9-aae9-f2daac624e18.png?OSSAccessKeyId=LTAIX2KDHwZymFhr&amp;Expires=1566391726&amp;Signature=TeyYdEc01KEU/ymI1d8sSeh9jQQ=" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095010460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <a id="more"></a>
-<h2 id="插件工程"><a href="#插件工程" class="headerlink" title="插件工程"></a>插件工程</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565750181229-310fc525-45dd-4881-8699-aa9efafb6a51.png" alt=""></p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565750336788-57824676-c060-4964-9c8a-5cbbfe59f228.png" alt=""></p>
+<h2 id="插件工程"><a href="#插件工程" class="headerlink" title="插件工程"></a>插件工程</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p><img src="https://img-blog.csdnimg.cn/20190822095033737.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095104101.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h3 id="插件工程结构"><a href="#插件工程结构" class="headerlink" title="插件工程结构"></a>插件工程结构</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">BundleFileFinder/</div><div class="line">  resources/</div><div class="line">    META-INF/</div><div class="line">      plugin.xml</div><div class="line">        ...</div><div class="line">    src/</div><div class="line">    com.yuyang.finder</div><div class="line">        ...</div></pre></td></tr></table></figure>
 <blockquote>
 <ul>
@@ -385,8 +386,7 @@
 <p>如果 anchor 设置为 before 或者 after，则必须设置 relative-to-action。</p>
 </blockquote>
 <h3 id="快速创建Action"><a href="#快速创建Action" class="headerlink" title="快速创建Action"></a>快速创建Action</h3><p>Plugin Devkit提供了快捷创建Action的方式。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565869023471-62e42c12-1030-44ca-a54f-43d27fd1e691.png" alt=""></p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565938599236-dc960f1e-9f32-450b-b63e-3cb01a2901f6.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095157711.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <blockquote>
 <p>信息填写基本遵循注册Action时的字段内容。</p>
 <ul>
@@ -399,15 +399,15 @@
 </ul>
 </blockquote>
 <h3 id="运行插件"><a href="#运行插件" class="headerlink" title="运行插件"></a>运行插件</h3><p>点击 Run | Edit Configurations，若无配置项，则新建一个，配置一下 Use classpath of module,选择要调试的Module。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565869521177-b72a28e4-6f0e-4750-90be-0b830f3872e3.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095257352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <p>若需要查看调试日志，则需要勾选 Logs的选项。运行插件时将会输出log到console，也可以设置输出到具体文件。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565869464739-25c83abb-f70f-4fd1-be7a-63d91fb7ea4e.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095315272.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h3 id="打包插件"><a href="#打包插件" class="headerlink" title="打包插件"></a>打包插件</h3><p>Build -&gt; Prepare All Plugin Modules For Deployment，一般会将插件输出到工程根目录底下。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565870249337-078ddf38-5d21-4170-bf96-88b8eed2c573.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095334769.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <p>如果该插件没有依赖其他的library，则插件会被打包成.jar，否则会被打包成.zip</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">.jar 类型的文件内容结构</div><div class="line">BundleFileFinder.jar/</div><div class="line">  com/yuyang/finder/</div><div class="line">      ...</div><div class="line">  META-INF/</div><div class="line">    plugin.xml</div><div class="line"> </div><div class="line">.zip 类型的文件内容结构</div><div class="line">BundleFileFinder.zip/</div><div class="line">  lib/</div><div class="line">    lib1.jar</div><div class="line">    lib2.jar</div><div class="line">    BundleFileFinder.jar/</div><div class="line">      com/yuyang/finder/</div><div class="line">          ...</div><div class="line">      META-INF/</div><div class="line">        plugin.xml</div></pre></td></tr></table></figure>
 <h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><p>Intellij IDEA -&gt; Preferences -&gt; Plugins -&gt; Install Plugin From Disk，选择打包出来的 .jar 或者 .zip 文件。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565871255841-1509cfed-24f4-4ae8-82dc-c0f63f447043.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095355169.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h2 id="Plugin-Components"><a href="#Plugin-Components" class="headerlink" title="Plugin Components"></a>Plugin Components</h2><h3 id="Components-类型"><a href="#Components-类型" class="headerlink" title="Components 类型"></a>Components 类型</h3><table>
 <thead>
 <tr>
@@ -476,20 +476,20 @@
 <h3 id="注册持久化组件"><a href="#注册持久化组件" class="headerlink" title="注册持久化组件"></a>注册持久化组件</h3><p>持久化组件可以声明为 Service，也可以声明为 Component，声明为 Component 则与前面介绍注册与获取的方法一致，声明为Service如下：<br>获取方式为：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">extensions</span> <span class="attr">defaultExtensionNs</span>=<span class="string">"com.intellij"</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- application 级别--&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">applicationService</span> <span class="attr">serviceImplementation</span>=<span class="string">"com.yuyh.finder.PersistentStateComponentImpl1"</span>/&gt;</span></div><div class="line">    <span class="comment">&lt;!-- project 级别 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">projectService</span> <span class="attr">serviceImplementation</span>=<span class="string">"com.yuyh.finder.PersistentStateComponentImpl2"</span>/&gt;</span></div><div class="line"> <span class="tag">&lt;/<span class="name">extensions</span>&gt;</span></div></pre></td></tr></table></figure>
 <h2 id="GUI-面板"><a href="#GUI-面板" class="headerlink" title="GUI 面板"></a>GUI 面板</h2><p>IDEA - Preference - Editor - Gui Designer，勾选 Java Source Code，表示我们通过面板编辑后可以生成 java代码。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565922098378-3020517e-aa6f-4cbc-a8c9-e4eb02dca219.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095417889.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h3 id="创建GUI-Form"><a href="#创建GUI-Form" class="headerlink" title="创建GUI Form"></a>创建GUI Form</h3><p>指定位置右击 - New - GUI Form</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565922351803-a28afe39-a8d7-4998-86f4-a0191f212909.png?x-oss-process=image/resize,w_375" alt=""></p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565923104298-33f08b44-9f61-4e1f-8148-fbf83703b8eb.png" alt=""></p>
-<p>面板编辑完成之后，点击Toolbar工具条那里的  按钮，进行编译。编译完成后，GUI的代码会生成在 对应的 Java文件里面。如图是 Demo.java</p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095510265.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095539172.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>面板编辑完成之后，点击Toolbar工具条那里的<img src="https://img-blog.csdnimg.cn/20190822095639343.png" alt="在这里插入图片描述">按钮，进行编译。编译完成后，GUI的代码会生成在 对应的 Java文件里面。如图是 Demo.java</p>
 <h3 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h3><p>默认根JPanel是没有配置 “field name”控件属性的，所以我们需要给他配置一下。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565923913837-9409c0c5-3fa7-4103-8dc7-513cb9355262.png" alt=""></p>
-<p>生成的java文件如图，$$$setupUI$$$()方法里面是具体创建布局的代码。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565923913837-9409c0c5-3fa7-4103-8dc7-513cb9355262.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095745756.png" alt="在这里插入图片描述"></p>
+<p>生成的java文件如图，<code>$$$setupUI$$$()</code> 方法里面是具体创建布局的代码。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095850748.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h3 id="布局预览"><a href="#布局预览" class="headerlink" title="布局预览"></a>布局预览</h3><p>在需要插入main方法的地方，按下 Command + n，点击 Form main，则会生成可执行的main方法。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924069991-ae8c4b6a-a87c-4920-84c6-dfece536f00f.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095804234.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <p>运行 main 方法，可以预览之前创建的布局。</p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924284750-db92c448-36fe-439b-ad96-2a29a08dbfa9.png" alt=""></p>
-<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2019/png/65604/1565924303471-4b14bb03-a008-4784-a71d-2ed81ccd2ac5.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095901294.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190822095912753.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h2 id="插件上传"><a href="#插件上传" class="headerlink" title="插件上传"></a>插件上传</h2><p>插件也支持上传到 idea 仓库，让其他人搜索到。<br>官方文档：<a href="http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/publishing_plugin.html" target="_blank" rel="external">http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/publishing_plugin.html</a></p>
 <h2 id="示例项目"><a href="#示例项目" class="headerlink" title="示例项目"></a>示例项目</h2><p>实现反编译APK来查找是否引用了某个类；<br>仓库地址：<a href="">BundleFileFinder</a></p>
 

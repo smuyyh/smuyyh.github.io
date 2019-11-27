@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RecyclerView," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言多Type的列表在App中很常见，例如各种电商类App的首页，甚至是购物车、订单详情页面等。我们暂且将页面上每个ViewType对应的模块称之为楼层。那么，以电商订单详情举例，可能有以下楼层：  订单状态（交易成功、交易关闭等） 物流信息 收货地址 订单商品信息列表 价格相关信息 订单信息（订单号、交易流水号等） 其他一些展示信息  那么，我们可以通过不同的 ViewType 来区分这些模块，">
+<meta name="keywords" content="RecyclerView">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RecyclerView Adapter 实现自动多 ViewType">
+<meta property="og:url" content="http://smuyyh.top/2019/11/26/recyclerview-auto-viewtype/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="前言多Type的列表在App中很常见，例如各种电商类App的首页，甚至是购物车、订单详情页面等。我们暂且将页面上每个ViewType对应的模块称之为楼层。那么，以电商订单详情举例，可能有以下楼层：  订单状态（交易成功、交易关闭等） 物流信息 收货地址 订单商品信息列表 价格相关信息 订单信息（订单号、交易流水号等） 其他一些展示信息  那么，我们可以通过不同的 ViewType 来区分这些模块，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-27T05:42:28.219Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RecyclerView Adapter 实现自动多 ViewType">
+<meta name="twitter:description" content="前言多Type的列表在App中很常见，例如各种电商类App的首页，甚至是购物车、订单详情页面等。我们暂且将页面上每个ViewType对应的模块称之为楼层。那么，以电商订单详情举例，可能有以下楼层：  订单状态（交易成功、交易关闭等） 物流信息 收货地址 订单商品信息列表 价格相关信息 订单信息（订单号、交易流水号等） 其他一些展示信息  那么，我们可以通过不同的 ViewType 来区分这些模块，">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://smuyyh.top/2019/11/26/recyclerview-auto-viewtype/"/>
+
+
+
+
+
+  <title>RecyclerView Adapter 实现自动多 ViewType | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://smuyyh.top/2019/11/26/recyclerview-auto-viewtype/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RecyclerView Adapter 实现自动多 ViewType</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-26T09:24:04+08:00">
+                2019-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>多Type的列表在App中很常见，例如各种电商类App的首页，甚至是购物车、订单详情页面等。我们暂且将页面上每个ViewType对应的模块称之为楼层。那么，以电商订单详情举例，可能有以下楼层：</p>
+<ul>
+<li>订单状态（交易成功、交易关闭等）</li>
+<li>物流信息</li>
+<li>收货地址</li>
+<li>订单商品信息列表</li>
+<li>价格相关信息</li>
+<li>订单信息（订单号、交易流水号等）</li>
+<li>其他一些展示信息</li>
+</ul>
+<p>那么，我们可以通过不同的 ViewType 来区分这些模块，通常的做法是：</p>
+<a id="more"></a>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DetailAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">RecyclerView</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> VIEW_TYPE_EMPTY = <span class="number">0</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> VIEW_TYPE_HEADER = <span class="number">1</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> VIEW_TYPE_ADDRESS = <span class="number">2</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> VIEW_TYPE_GOODS = <span class="number">3</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> List&lt;Model&gt; mData = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">public</span> RecyclerView.<span class="function">ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(viewType == VIEW_TYPE_HEADER) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.header, parent, <span class="keyword">false</span>));</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(viewType == VIEW_TYPE_ADDRESS) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> AddressViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.address, parent, <span class="keyword">false</span>));</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> EmptyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.empty, parent, <span class="keyword">false</span>));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(RecyclerView.ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        <span class="comment">// </span></div><div class="line">        <span class="keyword">if</span>(getItemViewType(position) == VIEW_TYPE_HEADER) &#123;</div><div class="line">            <span class="comment">// 绑定数据....</span></div><div class="line">            HeaderViewHolder headerViewHodlder = (HeaderViewHolder)holder;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(getItemViewType(position) == VIEW_TYPE_ADDRESS) &#123;</div><div class="line">            AddressViewHolder addressViewHolder = (AddressViewHolder)holder;</div><div class="line">            <span class="comment">// 绑定数据...</span></div><div class="line">        &#125;</div><div class="line">        <span class="comment">// ...</span></div><div class="line"></div><div class="line">        <span class="comment">// 或者</span></div><div class="line"></div><div class="line">        <span class="keyword">if</span>(holder <span class="keyword">instanceof</span> HeaderViewHolder) &#123;</div><div class="line">            <span class="comment">// ...</span></div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(holder <span class="keyword">instanceof</span> AddressViewHolder) &#123;</div><div class="line">            <span class="comment">// ...</span></div><div class="line">        &#125;</div><div class="line">        <span class="comment">// ...</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mData.size();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemViewType</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        Model model = mData.get(position);</div><div class="line">        <span class="keyword">if</span>(条件<span class="number">1</span>) &#123;</div><div class="line">            <span class="keyword">return</span> VIEW_TYPE_HEADER;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(条件<span class="number">2</span>) &#123;</div><div class="line">            <span class="keyword">return</span> VIEW_TYPE_ADDRESS;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(条件<span class="number">3</span>) &#123;</div><div class="line">            <span class="keyword">return</span> VIEW_TYPE_GOODS;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> VIEW_TYPE_EMPTY;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">EmptyViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">EmptyViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</div><div class="line">            <span class="keyword">super</span>(itemView);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">HeaderViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">HeaderViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</div><div class="line">            <span class="keyword">super</span>(itemView);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">AddressViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">AddressViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</div><div class="line">            <span class="keyword">super</span>(itemView);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">GoodsViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">GoodsViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</div><div class="line">            <span class="keyword">super</span>(itemView);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面这种做法主要有以下几个弊端：</p>
+<p>1、当 ViewType 种类特别多的情况下，Adapter里面的代码会过于臃肿，难以维护<br>2、每当需要新增一个 ViewType 的时候，改动范围比较大，几乎涉及到了整个Adapter，多人协作容易代码冲突<br>3、Adapter 的代码，复用性比较差。每个页面都需要自己重新写一个庞大的 Adapter<br>4、局部刷新操作实现比较麻烦。比如不通过Model，要动态更改某一个楼层View的展示，就需要查找到对应楼层的 ViewHolder，代码实现要复杂得多<br>5、如果不同的 ViewType 对应的 Model 类型不一样，那么Adapter里面的复杂度又会相应的上升<br>6、<strong>RecyclerView.ViewHolder 的构造函数，需要把View带进来，这个对于ViewHolder实现来说是不合理的。</strong> 为什么这么说呢？因为每个 ViewHolder 对应的是什么样的View，其实应该 ViewHolder 自身最清楚，不应该在 onCreateViewHolder 的时候根据 viewType 来判断要 inflate 什么布局。所以为了实现解耦，这个问题必须优化掉。</p>
+<h2 id="逻辑实现"><a href="#逻辑实现" class="headerlink" title="逻辑实现"></a>逻辑实现</h2><p>为了解决上述问题，我们可以换个思路来实现。</p>
+<p>通常情况下，服务端返回的List里面的Model，可以区分出对应的ViewType，然后对应的创建不同的 ViewHolder。那么，我们为了避免在 Adapter 里面来识别每个 Model 对象所对应的 ViewType，我们可以在组装数据的时候做一层预处理。封装的思路核心就在于以下三点：</p>
+<p>1、<strong>BaseData</strong>, 用于对服务端数据预处理做一层包装，每个 BaseData 对应 Adapter 的一条数据，并且每个 BaseData 应该要知道自己对应 ViewHolder 类。<br>2、<strong>BaseViewHolder</strong>, 所有的 ViewHolder 继承的抽象基类，由子类来返回对应的布局、数据绑定等等<br>3、<strong>BaseAdapter</strong>, 数据类型是List&lt;BaseData&gt;，根据每个 BaseData对应的 <strong>ViewHolderClass</strong>，来自动生成对应的 <strong>ViewType</strong>。<strong>ViewHolderClass</strong> 与 <strong>ViewType</strong> 是一对一的关系。 onCreateViewHolder时，通过 ViewType 来找到对应的 ViewHolderClass，通过反射创建对应的 ViewHolder。在onBindViewHolder时，调用 BaseViewHolder 的 onBindViewHolder 方法。</p>
+<p><strong>BaseData</strong>的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseData</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> BaseViewHolder lastViewHolder;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLastViewHolder</span><span class="params">(BaseViewHolder lastViewHolder)</span> </span>&#123;</div><div class="line">        <span class="comment">// 当数据需要刷新时，可以通过这个找到对应的ViewHolder</span></div><div class="line">        <span class="keyword">this</span>.lastViewHolder = lastViewHolder;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 每一个包装数据，需要知道对应的 ViewHolder 类是什么</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> Class&lt;? extends BaseViewHolder&gt; getViewHolderClass();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>BaseViewHolder</strong> 的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseViewHolder</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">BaseData</span>&gt; <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> FrameLayout <span class="title">createRootLayout</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        FrameLayout layout = <span class="keyword">new</span> FrameLayout(context);</div><div class="line">        layout.setLayoutParams(<span class="keyword">new</span> ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));</div><div class="line">        <span class="keyword">return</span> layout;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> Context mContext;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> View mRootView;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BaseViewHolder</span><span class="params">(@NonNull Context context)</span> </span>&#123;</div><div class="line">        <span class="comment">// 每个楼层最外围会包一个 FrameLayout，主要是为了避免 BaseViewHolder 创建之前就要先创建好View（懒加载思路）</span></div><div class="line">        <span class="keyword">super</span>(createRootLayout(context));</div><div class="line"></div><div class="line">        <span class="keyword">this</span>.mContext = context;</div><div class="line"></div><div class="line">        initView();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initView</span><span class="params">()</span> </span>&#123;</div><div class="line">        mRootView = LayoutInflater.from(mContext).inflate(getLayoutId(), (ViewGroup) itemView, <span class="keyword">false</span>);</div><div class="line">        ((ViewGroup) itemView).addView(mRootView);</div><div class="line"></div><div class="line">        onViewCreated();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 每个 ViewHolder 对应的 Layout，子类实现</span></div><div class="line">    <span class="meta">@LayoutRes</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">getLayoutId</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">onViewCreated</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="meta">@CallSuper</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(T data)</span> </span>&#123;</div><div class="line">        data.setLastViewHolder(<span class="keyword">this</span>);</div><div class="line">        bindData(data);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 绑定数据，子类实现</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">bindData</span><span class="params">(T data)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>BaseAdapter</strong> 的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">BaseViewHolder</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> Context mContext;</div><div class="line"></div><div class="line">    <span class="comment">// 记录 ViewHolderClass 与 ViewType 映射关系，两个Map主要是为了反向查找更方便</span></div><div class="line">    <span class="keyword">private</span> ArrayMap&lt;Class&lt;? extends BaseViewHolder&gt;, Integer&gt; mItemTypeMap = <span class="keyword">new</span> ArrayMap&lt;&gt;();</div><div class="line">    <span class="keyword">private</span> ArrayMap&lt;Integer, Class&lt;? extends BaseViewHolder&gt;&gt; mViewHolderMap = <span class="keyword">new</span> ArrayMap&lt;&gt;();</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> List&lt;BaseData&gt; mData = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> itemViewType = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BaseAdapter</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.mContext = context;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(List&lt;BaseData&gt; data)</span> </span>&#123;</div><div class="line">        mData.clear();</div><div class="line">        <span class="keyword">if</span> (data != <span class="keyword">null</span>) &#123;</div><div class="line">            genItemType(data);</div><div class="line">            mData.addAll(data);</div><div class="line">        &#125;</div><div class="line">        notifyDataSetChanged();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">appendData</span><span class="params">(List&lt;BaseData&gt; data)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (CollectionUtil.isEmpty(data)) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        genItemType(data);</div><div class="line">        <span class="keyword">int</span> start = mData.size();</div><div class="line">        mData.addAll(data);</div><div class="line">        notifyItemRangeInserted(start, data.size());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 自动生成自增长的ViewType</span></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">genItemType</span><span class="params">(List&lt;BaseData&gt; data)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (data == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">for</span> (BaseData item : data) &#123;</div><div class="line">            Class&lt;? extends BaseViewHolder&gt; clazz = item.getViewHolderClass();</div><div class="line">            <span class="keyword">if</span> (!mItemTypeMap.containsKey(item.getViewHolderClass())) &#123;</div><div class="line">                mItemTypeMap.put(clazz, itemViewType);</div><div class="line">                mViewHolderMap.put(itemViewType, clazz);</div><div class="line"></div><div class="line">                itemViewType++;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> BaseViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</div><div class="line">        <span class="comment">// 通过 ViewType 找到对应的 ViewHolderClass</span></div><div class="line">        Class&lt;? extends BaseViewHolder&gt; clazz = mViewHolderMap.get(viewType);</div><div class="line"></div><div class="line">        BaseViewHolder viewHolder = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// 反射创建ViewHolder，解耦</span></div><div class="line">            Constructor&lt;? extends BaseViewHolder&gt; ct = clazz.getDeclaredConstructor(Context.class);</div><div class="line">            ct.setAccessible(<span class="keyword">true</span>);</div><div class="line">            viewHolder = ct.newInstance(mContext);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> viewHolder;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(BaseViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        <span class="comment">//noinspection unchecked</span></div><div class="line">        holder.onBindViewHolder(getItem(position));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mData.size();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemViewType</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> type = <span class="number">0</span>;</div><div class="line">        <span class="keyword">if</span> (position &gt;= <span class="number">0</span> &amp;&amp; position &lt; mData.size()) &#123;</div><div class="line">            <span class="comment">// 通过 ViewHolderClass 找到对应的 ViewType</span></div><div class="line">            type = mItemTypeMap.get(getItem(position).getViewHolderClass());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> type;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> BaseData <span class="title">getItem</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mData.get(position);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><p>每一种楼层，我们需要实现 <strong>BaseData</strong>和 <strong>BaseViewHolder</strong>, 以简单的文本展示做一个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalTextData</span> <span class="keyword">extends</span> <span class="title">BaseData</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> String content;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NormalTextData</span><span class="params">(String content)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.content = content;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">public</span> Class&lt;? extends BaseViewHolder&gt; getViewHolderClass() &#123;</div><div class="line">        <span class="keyword">return</span> NormalTextViewHolder.class;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalTextViewHolder</span> <span class="keyword">extends</span> <span class="title">BaseViewHolder</span>&lt;<span class="title">NormalTextData</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> TextView contentView;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NormalTextViewHolder</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">getLayoutId</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> R.layout.hm_order_cell_text;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onViewCreated</span><span class="params">()</span> </span>&#123;</div><div class="line">        contentView = findViewById(R.id.text_content);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bindData</span><span class="params">(NormalTextData data)</span> </span>&#123;</div><div class="line">        contentView.setText(data.content);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">List&lt;BaseData&gt; data = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">data.add(<span class="keyword">new</span> NormalTextData(<span class="string">"展示一行文本"</span>));</div><div class="line"></div><div class="line">BaseAdapter adapter = <span class="keyword">new</span> BaseAdapter(context);</div><div class="line">adapter.setData(data);</div><div class="line"></div><div class="line">recyclerview.setAdapter(adapter);</div></pre></td></tr></table></figure>
+<p>以后，每当新增一个楼层，只需要新增两个类，分别实现 <strong>BaseData</strong> 和 <strong>BaseViewHolder</strong>，然后adapter插入对应的 BaseData  数据即可。实现极大程度的解耦。</p>
+<p>感谢阅读。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>~沙漠尽头必是绿洲~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="LeBron_Six 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RecyclerView/" rel="tag"># RecyclerView</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/21/idea-plugin-dev/" rel="next" title="IDEA 插件开发">
+                <i class="fa fa-chevron-left"></i> IDEA 插件开发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/27/sticky-header-recyclerview/" rel="prev" title="RecyclerView 悬浮吸顶效果实现，支持数据绑定及Touch事件">
+                RecyclerView 悬浮吸顶效果实现，支持数据绑定及Touch事件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4"
+                alt="LeBron_Six" />
+            
+              <p class="site-author-name" itemprop="name">LeBron_Six</p>
+              <p class="site-description motion-element" itemprop="description">欢迎访问我的博客~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑实现"><span class="nav-number">2.</span> <span class="nav-text">逻辑实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用法"><span class="nav-number">3.</span> <span class="nav-text">用法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"><a href="https://github.com/smuyyh" target="_blank">LeBron_Six</a></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+        <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'smuyyh',
+            repo: 'smuyyh.github.io',
+            
+            oauth: {
+            
+            
+                client_secret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+            
+                client_id: '0a452de0f03398d1ea74'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

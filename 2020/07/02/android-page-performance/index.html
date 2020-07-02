@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,页面性能," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="性能优化是一个长期的过程，并非一劳永逸，需要我们去抠细节，找到可以提升的地方。 针对Android平台祖神特性的一些优化（例如xml布局优化、方法耗时之类）在这里就不展开了，主要还是从逻辑和业务出发~ 数据加载优化网络请求前置也许是因为时序的问题，通常情况下 Activity 启动之后有三个步骤：   加载布局及初始化View 再进行网络请求等待 请求结果json解析 最后再渲染到界面上。   而">
+<meta name="keywords" content="Android,页面性能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 页面秒开优化总结">
+<meta property="og:url" content="http://smuyyh.top/2020/07/02/android-page-performance/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="性能优化是一个长期的过程，并非一劳永逸，需要我们去抠细节，找到可以提升的地方。 针对Android平台祖神特性的一些优化（例如xml布局优化、方法耗时之类）在这里就不展开了，主要还是从逻辑和业务出发~ 数据加载优化网络请求前置也许是因为时序的问题，通常情况下 Activity 启动之后有三个步骤：   加载布局及初始化View 再进行网络请求等待 请求结果json解析 最后再渲染到界面上。   而">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2020/png/646638/1593666546776-9271a77a-e60f-43a5-89ee-4f26ae34fb8f.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2020/png/646638/1593669466261-2d413ed4-2857-4515-b3ec-efee45e48493.png">
+<meta property="og:updated_time" content="2020-07-02T10:00:20.157Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 页面秒开优化总结">
+<meta name="twitter:description" content="性能优化是一个长期的过程，并非一劳永逸，需要我们去抠细节，找到可以提升的地方。 针对Android平台祖神特性的一些优化（例如xml布局优化、方法耗时之类）在这里就不展开了，主要还是从逻辑和业务出发~ 数据加载优化网络请求前置也许是因为时序的问题，通常情况下 Activity 启动之后有三个步骤：   加载布局及初始化View 再进行网络请求等待 请求结果json解析 最后再渲染到界面上。   而">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2020/png/646638/1593666546776-9271a77a-e60f-43a5-89ee-4f26ae34fb8f.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://smuyyh.top/2020/07/02/android-page-performance/"/>
+
+
+
+
+
+  <title>Android 页面秒开优化总结 | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://smuyyh.top/2020/07/02/android-page-performance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LeBron_Six">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeBron_Six 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 页面秒开优化总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-02T05:59:04+08:00">
+                2020-07-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>性能优化是一个长期的过程，并非一劳永逸，需要我们去抠细节，找到可以提升的地方。</p>
+<p>针对Android平台祖神特性的一些优化（例如xml布局优化、方法耗时之类）在这里就不展开了，主要还是从逻辑和业务出发~</p>
+<h2 id="数据加载优化"><a href="#数据加载优化" class="headerlink" title="数据加载优化"></a>数据加载优化</h2><h3 id="网络请求前置"><a href="#网络请求前置" class="headerlink" title="网络请求前置"></a>网络请求前置</h3><p>也许是因为时序的问题，通常情况下 Activity 启动之后有三个步骤：</p>
+<blockquote>
+<ol>
+<li>加载布局及初始化View</li>
+<li>再进行网络请求等待</li>
+<li>请求结果json解析</li>
+<li>最后再渲染到界面上。</li>
+</ol>
+</blockquote>
+<p>而实际上 步骤1、2、3 这三步是可以并行去做的，假设说 加载布局及初始化View 需要 150ms，整个网络请求耗时 200ms，那么并行之后理想情况就可以节省 150ms 的启动时间。</p>
+<p>这时候可能就有疑问了，假设网络请求时间比View初始化来得快，网络请求结束后要去更新UI，就很有可能引起空指针问题。所以针对这种情况，我们需要做一个等待View初始化完的操作。</p>
+<p>其实因为 Android 基于消息机制，并且通常情况下View的更新都在主线程，实际上网络请求结束后，post到主线程后更新UI，onCreate 已经执行完了，所以不需要等待也可以。但如果是在子线程去调用非更新View的方法，比如获取一些状态之类的，那就需要做等待操作。</p>
+<a id="more"></a>
+<h4 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">private</span> ReentrantLock mReentrantLock = <span class="keyword">new</span> ReentrantLock();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            mReentrantLock.lock();</div><div class="line">            onInitData(savedInstanceState);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception ignored) &#123;</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">            onCreateView(savedInstanceState);</div><div class="line">            mReentrantLock.unlock();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">waitViewInitialized</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            mReentrantLock.lock();</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception ignored) &#123;</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            mReentrantLock.unlock();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">onInitData</span><span class="params">(Bundle savedInstanceState)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">onInitView</span><span class="params">(Bundle savedInstanceState)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">private</span> ReentrantLock mReentrantLock = <span class="keyword">new</span> ReentrantLock();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        View rootView;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            mReentrantLock.lock();</div><div class="line">            onInitData(savedInstanceState);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception ignored) &#123;</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            rootView = onInitView(inflater, container, savedInstanceState);</div><div class="line">            mReentrantLock.unlock();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> rootView;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">waitViewInitialized</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            mReentrantLock.lock();</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception ignored) &#123;</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            mReentrantLock.unlock();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">onInitData</span><span class="params">(Bundle savedInstanceState)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> View <span class="title">onInitView</span><span class="params">(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="json异步解析"><a href="#json异步解析" class="headerlink" title="json异步解析"></a>json异步解析</h3><p>在上述步骤1和2并行的情况下，json在子线程解析效率理论上来讲要优于在主线程。View的初始化在主线程，假设网络请求比view初始化来得快，那么view初始化完成还需要等待json解析，那速度可能要更慢一些。我们统计了Android线上搜索结果的fastjson解析时间的平均数据，需要40ms左右。</p>
+<p>json子线程解析在加载更多的场景下对滑动帧率也是有帮助的。</p>
+<h3 id="缓存-amp-预加载"><a href="#缓存-amp-预加载" class="headerlink" title="缓存&amp;预加载"></a>缓存&amp;预加载</h3><h4 id="数据后带"><a href="#数据后带" class="headerlink" title="数据后带"></a>数据后带</h4><p>针对一些特殊场景，例如从 搜索结果列表页 跳 商品详情页，可以把商品主图、标题等信息带过去，提前展示，提升白屏体验。</p>
+<h4 id="数据预加载"><a href="#数据预加载" class="headerlink" title="数据预加载"></a>数据预加载</h4><p>1、空间换时间方案</p>
+<blockquote>
+<p>通过端智能及数据分析（可能需要算法的配合），对高频用户点击或展示的数据，可以在空闲线程做适当的预加载处理。</p>
+</blockquote>
+<p>2、H5等资源内置、离线包或预加载</p>
+<h4 id="数据缓存"><a href="#数据缓存" class="headerlink" title="数据缓存"></a>数据缓存</h4><p>结合业务场景，针对一些非实时更新但是复用性较高的接口，可以做一层网络数据缓存。</p>
+<blockquote>
+<p>通过 LRUCache 做缓存限制<br>缓存失效时间策略，降低数据出错的可能性</p>
+</blockquote>
+<p>附：LRUCache 简单实现，可以做一些定制扩展<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; </span>&#123;</div><div class="line">        <span class="keyword">public</span> K key;</div><div class="line">        <span class="keyword">public</span> V value;</div><div class="line"></div><div class="line">        <span class="keyword">public</span> Entry&lt;K, V&gt; pre;</div><div class="line">        <span class="keyword">public</span> Entry&lt;K, V&gt; next;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Entry</span><span class="params">(K key, V value)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.key = key;</div><div class="line">            <span class="keyword">this</span>.value = value;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_SIZE = <span class="number">2</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size = DEFAULT_SIZE;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Map&lt;K, Entry&lt;K, V&gt;&gt; values;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Entry&lt;K, V&gt; first;</div><div class="line">    <span class="keyword">private</span> Entry&lt;K, V&gt; last;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LRUCache</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (size &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">this</span>.size = size;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 设定初始容量*扩容因子 避免扩容</span></div><div class="line">        values = <span class="keyword">new</span> HashMap&lt;&gt;((<span class="keyword">int</span>)Math.ceil(size * <span class="number">0.75f</span>));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(@NotNull K key, V value)</span> </span>&#123;</div><div class="line">        Entry&lt;K, V&gt; entry = values.get(key);</div><div class="line">        <span class="keyword">if</span> (entry == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (values.size() &gt;= size) &#123;</div><div class="line">                removeLastEntry();</div><div class="line">            &#125;</div><div class="line">            entry = <span class="keyword">new</span> Entry&lt;&gt;(key, value);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            entry.value = value;</div><div class="line">        &#125;</div><div class="line">        moveEntryToFirst(entry);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> V <span class="title">get</span><span class="params">(@NotNull K key)</span> </span>&#123;</div><div class="line">        Entry&lt;K, V&gt; entry = values.get(key);</div><div class="line">        <span class="keyword">if</span> (entry == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        moveEntryToFirst(entry);</div><div class="line">        <span class="keyword">return</span> entry.value;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">moveEntryToFirst</span><span class="params">(@NotNull Entry&lt;K, V&gt; entry)</span> </span>&#123;</div><div class="line">        values.put(entry.key, entry);</div><div class="line">        <span class="keyword">if</span> (first == <span class="keyword">null</span> || last == <span class="keyword">null</span>) &#123;</div><div class="line">            first = last = entry;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (entry == first) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (entry.pre != <span class="keyword">null</span>) &#123;</div><div class="line">            entry.pre.next = entry.next;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (entry.next != <span class="keyword">null</span>) &#123;</div><div class="line">            entry.next.pre = entry.pre;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (entry == last) &#123;</div><div class="line">            last = last.pre;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        entry.next = first;</div><div class="line">        first.pre = entry;</div><div class="line">        first = entry;</div><div class="line">        first.pre = <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">removeLastEntry</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (last != <span class="keyword">null</span>) &#123;</div><div class="line">            values.remove(last.key);</div><div class="line">            last = last.pre;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (last == <span class="keyword">null</span>) &#123;</div><div class="line">                first = <span class="keyword">null</span>;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                last.next = <span class="keyword">null</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="数据-amp-View懒加载"><a href="#数据-amp-View懒加载" class="headerlink" title="数据&amp;View懒加载"></a>数据&amp;View懒加载</h3><p>首屏不使用到的数据或者view，尽量采用懒加载的方式。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/646638/1593666546776-9271a77a-e60f-43a5-89ee-4f26ae34fb8f.png" width="200/"></p>
+<p>例如针对搜索结果页侧边栏筛选，可以在点击展开之后再添加筛选项。并且针对一些使用频率不高的功能，懒加载也能节约一定的运行内存空间。</p>
+<h2 id="布局加载优化"><a href="#布局加载优化" class="headerlink" title="布局加载优化"></a>布局加载优化</h2><h3 id="提前异步Inflate"><a href="#提前异步Inflate" class="headerlink" title="提前异步Inflate"></a>提前异步Inflate</h3><p>布局 Inflate 过程慢主要有两个原因：</p>
+<blockquote>
+<p>1、xml文件读取io过程<br>2、反射创建View</p>
+</blockquote>
+<p>AsyncLayoutInflater：support v4包下面提供的类，用于在 work thread 加载布局，最后回调到主线程。</p>
+<p>通常在网络请求的过程中，页面会处于一个空闲的状态，假设场景是搜索结果列表页，那么我们可以在数据请求前置的同时，去异步 inflate 一些 recyclerview 的 itemview，那么在渲染阶段就可以节约 recyclerview 的 createViewHolder 的时间。</p>
+<h2 id="并发优化"><a href="#并发优化" class="headerlink" title="并发优化"></a>并发优化</h2><p>客户端通常情况下需要并发处理的场景比较少，这里举个特殊场景。</p>
+<p>搜索结果页采用 <a href="https://vizzle.github.io/MIST/" target="_blank" rel="external">Mist</a> 做动态化方案。需要再 view 渲染之前，异步去 build 每个数据对应的节点信息（主要是measure和layout过程），通过测试比较，针对某一款机型，单线程去build 30个数据节点需要300ms以上，多线程并发只需要100ms左右，并发线程数为 CPU核心数-1。</p>
+<p>多线程并发对资源有抢占，但整体效果还是可以的。并且要做好任务分配，让并发的几个线程处理的任务数差不多，减少最后的等待时间。</p>
+<h2 id="日志治理"><a href="#日志治理" class="headerlink" title="日志治理"></a>日志治理</h2><p>大量的打印日志也会影响页面启动性能，需要相应治理。</p>
+<h2 id="交互优化-增强体感"><a href="#交互优化-增强体感" class="headerlink" title="交互优化 增强体感"></a>交互优化 增强体感</h2><h3 id="骨架图"><a href="#骨架图" class="headerlink" title="骨架图"></a>骨架图</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/646638/1593669466261-2d413ed4-2857-4515-b3ec-efee45e48493.png" width="200"></p>
+<p>假设说网络请求的时间要比view初始化慢得多，可以通过骨架图的形式，提前创建好一些itemview，来增强一些用户体感，同事也达到提前创建 view 的效果。</p>
+<h2 id="RPC-优化"><a href="#RPC-优化" class="headerlink" title="RPC 优化"></a>RPC 优化</h2><ul>
+<li>推动服务端进行rt优化</li>
+<li>数据冗余压缩策略，例如接口数据携带大量埋点信息，可以考虑做精简</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>~沙漠尽头必是绿洲~</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="LeBron_Six 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/页面性能/" rel="tag"># 页面性能</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/19/aar-params-proguard/" rel="next" title="关于 aar 接口参数被混淆问题">
+                <i class="fa fa-chevron-left"></i> 关于 aar 接口参数被混淆问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4"
+                alt="LeBron_Six" />
+            
+              <p class="site-author-name" itemprop="name">LeBron_Six</p>
+              <p class="site-description motion-element" itemprop="description">欢迎访问我的博客~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据加载优化"><span class="nav-number">1.</span> <span class="nav-text">数据加载优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络请求前置"><span class="nav-number">1.1.</span> <span class="nav-text">网络请求前置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity"><span class="nav-number">1.1.1.</span> <span class="nav-text">Activity</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fragment"><span class="nav-number">1.1.2.</span> <span class="nav-text">Fragment</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#json异步解析"><span class="nav-number">1.2.</span> <span class="nav-text">json异步解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存-amp-预加载"><span class="nav-number">1.3.</span> <span class="nav-text">缓存&预加载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据后带"><span class="nav-number">1.3.1.</span> <span class="nav-text">数据后带</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据预加载"><span class="nav-number">1.3.2.</span> <span class="nav-text">数据预加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据缓存"><span class="nav-number">1.3.3.</span> <span class="nav-text">数据缓存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据-amp-View懒加载"><span class="nav-number">1.4.</span> <span class="nav-text">数据&View懒加载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#布局加载优化"><span class="nav-number">2.</span> <span class="nav-text">布局加载优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#提前异步Inflate"><span class="nav-number">2.1.</span> <span class="nav-text">提前异步Inflate</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发优化"><span class="nav-number">3.</span> <span class="nav-text">并发优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日志治理"><span class="nav-number">4.</span> <span class="nav-text">日志治理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#交互优化-增强体感"><span class="nav-number">5.</span> <span class="nav-text">交互优化 增强体感</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#骨架图"><span class="nav-number">5.1.</span> <span class="nav-text">骨架图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPC-优化"><span class="nav-number">6.</span> <span class="nav-text">RPC 优化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"><a href="https://github.com/smuyyh" target="_blank">LeBron_Six</a></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+        <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'smuyyh',
+            repo: 'smuyyh.github.io',
+            
+            oauth: {
+            
+            
+                client_secret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+            
+                client_id: '0a452de0f03398d1ea74'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://smuyyh.top/about/index.html</loc>
+    
+    <lastmod>2021-10-09T13:17:12.672Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://smuyyh.top/2020/10/19/android-transition/</loc>
     
     <lastmod>2020-10-20T02:45:43.213Z</lastmod>
@@ -222,13 +229,6 @@
     <loc>http://smuyyh.top/categories/index.html</loc>
     
     <lastmod>2017-09-02T18:57:07.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://smuyyh.top/about/index.html</loc>
-    
-    <lastmod>2017-09-02T18:12:43.000Z</lastmod>
     
   </url>
   

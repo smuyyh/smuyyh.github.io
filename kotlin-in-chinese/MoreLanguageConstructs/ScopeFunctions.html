@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="作用域函数Kotlin标准库包含几个函数，其唯一目的是在指定对象的上下文中执行代码块。当在带有 lambda 表达式的对象上调用此类函数时，它将形成一个临时作用域。在此作用域内，可以访问不带名称的对象。这些功能称为作用域函数。其中有五个：let，run，with，apply 以及 also。 基本上，这些功能执行相同的操作：在 对应对象上执行代码块。不同之处在于此对象如何在块内可用以及整个表达式的">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LeBron_Six 的博客">
+<meta property="og:url" content="http://smuyyh.top/kotlin-in-chinese/MoreLanguageConstructs/ScopeFunctions.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="作用域函数Kotlin标准库包含几个函数，其唯一目的是在指定对象的上下文中执行代码块。当在带有 lambda 表达式的对象上调用此类函数时，它将形成一个临时作用域。在此作用域内，可以访问不带名称的对象。这些功能称为作用域函数。其中有五个：let，run，with，apply 以及 also。 基本上，这些功能执行相同的操作：在 对应对象上执行代码块。不同之处在于此对象如何在块内可用以及整个表达式的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-10-12T02:57:26.169Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeBron_Six 的博客">
+<meta name="twitter:description" content="作用域函数Kotlin标准库包含几个函数，其唯一目的是在指定对象的上下文中执行代码块。当在带有 lambda 表达式的对象上调用此类函数时，它将形成一个临时作用域。在此作用域内，可以访问不带名称的对象。这些功能称为作用域函数。其中有五个：let，run，with，apply 以及 also。 基本上，这些功能执行相同的操作：在 对应对象上执行代码块。不同之处在于此对象如何在块内可用以及整个表达式的">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://smuyyh.top/kotlin-in-chinese/MoreLanguageConstructs/ScopeFunctions.html"/>
+
+
+
+
+
+  <title> | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <h2 id="作用域函数"><a href="#作用域函数" class="headerlink" title="作用域函数"></a>作用域函数</h2><p>Kotlin标准库包含几个函数，其唯一目的是在指定对象的上下文中执行代码块。当在带有 lambda 表达式的对象上调用此类函数时，它将形成一个临时作用域。在此作用域内，可以访问不带名称的对象。这些功能称为作用域函数。其中有五个：<code>let</code>，<code>run</code>，<code>with</code>，<code>apply</code> 以及 <code>also</code>。</p>
+<p>基本上，这些功能执行相同的操作：在 对应对象上执行代码块。不同之处在于此对象如何在块内可用以及整个表达式的返回值是什么。</p>
+<p>下面是作用域函数的典型用法：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Person(<span class="string">"Alice"</span>, <span class="number">20</span>, <span class="string">"Amsterdam"</span>).let &#123;</div><div class="line">    println(it)</div><div class="line">    it.moveTo(<span class="string">"London"</span>)</div><div class="line">    it.incrementAge()</div><div class="line">    println(it)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果不同 let 实现相同功能,则必须引入一个新变量，并在每次使用它时重复其名称。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> alice = Person(<span class="string">"Alice"</span>, <span class="number">20</span>, <span class="string">"Amsterdam"</span>)</div><div class="line">println(alice)</div><div class="line">alice.moveTo(<span class="string">"London"</span>)</div><div class="line">alice.incrementAge()</div><div class="line">println(alice)</div></pre></td></tr></table></figure>
+<p>作用域函数没有引入任何新的技术能力，但是它们可以使您的代码更加简洁和易读。</p>
+<p>由于作用域函数的相似性质，选择合适的作用域函数可能会有些棘手。主要取决于你的意图和项目中使用的一致性。下面，我们将详细描述作用域函数之间的区别及其用法约定。</p>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><p>因为作用域函数本质上都非常相似，所以了解它们之间的差异很重要。每个作用域函数之间有两个主要区别：</p>
+<ul>
+<li>引用上下文对象的方式</li>
+<li>返回值</li>
+</ul>
+<h3 id="上下文对象：this或it"><a href="#上下文对象：this或it" class="headerlink" title="上下文对象：this或it"></a>上下文对象：this或it</h3><p>在作用域函数的 lambda 中，可以通过短引用而不是其实际名称来使用上下文对象。每个作用域函数使用两种访问上下文对象的方式之一：作为lambda接收器（this）或作为lambda自变量（it）。两者都提供相同的功能，因此我们将描述每种情况在每种情况下的优缺点，并提供有关其用法的建议。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">val</span> str = <span class="string">"Hello"</span></div><div class="line">    <span class="comment">// this</span></div><div class="line">    str.run &#123;</div><div class="line">        println(<span class="string">"The receiver string length: <span class="variable">$length</span>"</span>)</div><div class="line">        <span class="comment">//println("The receiver string length: $&#123;this.length&#125;") // does the same</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// it</span></div><div class="line">    str.let &#123;</div><div class="line">        println(<span class="string">"The receiver string's length is <span class="subst">$&#123;it.length&#125;</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>this</strong></p>
+<p><code>run</code>，<code>with</code> 以及 <code>apply</code> 将上下文对象称为lambda接收器-即关键字 <code>this</code> 。因此，在其lambda中，该对象是可用的，就像在普通类函数中一样。在大多数情况下，访问接收器对象的成员时可以省略此代码，从而缩短代码。另一方面，如果省略，则很难区分接收器构件和外部对象或功能。因此，对于主要对对象成员进行操作的lambda，建议将上下文对象作为接收器（即<code>this</code>）：调用其函数或分配属性。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> adam = Person(<span class="string">"Adam"</span>).apply &#123; </div><div class="line">    age = <span class="number">20</span>                       <span class="comment">// same as this.age = 20 or adam.age = 20</span></div><div class="line">    city = <span class="string">"London"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>it</strong></p>
+<p>反过来，<code>let</code> 和 <code>also</code> 则将上下文对象作为lambda参数。如果未指定参数名称，则使用隐式默认名称 <code>it</code> 来访问该对象。<code>it</code> 比 <code>this</code> 更短，并且带有 <code>it</code> 的表达式通常更易于阅读。但是，在调用对象函数或属性时，没有像<code>this</code>那样隐式可用的对象。因此，将上下文对象作为<code>it</code>时,更适合当函数调用需要参数时, 如果在代码块中使用多个变量时,<code>it</code>也是更好的选择。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">getRandomInt</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</div><div class="line">    <span class="keyword">return</span> Random.nextInt(<span class="number">100</span>).also &#123;</div><div class="line">        writeToLog(<span class="string">"getRandomInt() generated value <span class="variable">$it</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">val</span> i = getRandomInt()</div></pre></td></tr></table></figure>
+<p>此外，当您将上下文对象作为参数传递时，可以在作用域内为上下文对象提供自定义名称。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">getRandomInt</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</div><div class="line">    <span class="keyword">return</span> Random.nextInt(<span class="number">100</span>).also &#123; value -&gt;</div><div class="line">        writeToLog(<span class="string">"getRandomInt() generated value <span class="variable">$value</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">val</span> i = getRandomInt()</div></pre></td></tr></table></figure>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>从返回结果上区分作用域函数如下:</p>
+<ul>
+<li><code>apply</code> <code>also</code> 返回上下文对象</li>
+<li><code>let</code> <code>run</code> <code>with</code> 返回 lambda 结果</li>
+</ul>
+<p>这两个选项使您可以根据下一步在代码中的选择来选择适当的功能。</p>
+<p><strong>上下文对象</strong></p>
+<p><code>apply</code> 和 <code>also</code> 返回值就是上下文对象本身。因此，它们可以作为副步骤包含在调用链中：可以在它们之后继续在同一对象上链接函数调用。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numberList = mutableListOf&lt;<span class="built_in">Double</span>&gt;()</div><div class="line">numberList.also &#123; println(<span class="string">"Populating the list"</span>) &#125;</div><div class="line">    .apply &#123;</div><div class="line">        add(<span class="number">2.71</span>)</div><div class="line">        add(<span class="number">3.14</span>)</div><div class="line">        add(<span class="number">1.0</span>)</div><div class="line">    &#125;</div><div class="line">    .also &#123; println(<span class="string">"Sorting the list"</span>) &#125;</div><div class="line">    .sort()</div></pre></td></tr></table></figure>
+<p>它们还可以用于返回上下文对象的函数的return语句中。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">getRandomInt</span><span class="params">()</span></span>: <span class="built_in">Int</span> &#123;</div><div class="line">    <span class="keyword">return</span> Random.nextInt(<span class="number">100</span>).also &#123;</div><div class="line">        writeToLog(<span class="string">"getRandomInt() generated value <span class="variable">$it</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">val</span> i = getRandomInt()</div></pre></td></tr></table></figure>
+<p><strong>Lambda结果</strong></p>
+<p><code>let</code> <code>run</code> <code>with</code> 返回lambda结果。因此，在将结果分配给变量，对结果进行链接操作等时，可以使用它们。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = mutableListOf(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>)</div><div class="line"><span class="keyword">val</span> countEndsWithE = numbers.run &#123; </div><div class="line">    add(<span class="string">"four"</span>)</div><div class="line">    add(<span class="string">"five"</span>)</div><div class="line">    count &#123; it.endsWith(<span class="string">"e"</span>) &#125;</div><div class="line">&#125;</div><div class="line">println(<span class="string">"There are <span class="variable">$countEndsWithE</span> elements that end with e."</span>)</div></pre></td></tr></table></figure>
+<p>此外，您可以忽略返回值，并使用范围函数为变量创建临时范围。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = mutableListOf(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>)</div><div class="line">with(numbers) &#123;</div><div class="line">    <span class="keyword">val</span> firstItem = first()</div><div class="line">    <span class="keyword">val</span> lastItem = last()        </div><div class="line">    println(<span class="string">"First item: <span class="variable">$firstItem</span>, last item: <span class="variable">$lastItem</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>为了帮助你选择合适的作用域函数，我们将详细描述它们并提供使用建议。从技术上讲，函数在许多情况下是可以互换的，因此示例提供了定义常用用法样式的约定。</p>
+<p><strong>let</strong></p>
+<p>上下文对象可通过作参数 <code>it</code> 访问。返回值是lambda结果。</p>
+<p><code>let</code> 可以用于在调用链的结果上调用一个或多个函数。例如，以下代码在集合上打印两个操作的结果：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = mutableListOf(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>, <span class="string">"four"</span>, <span class="string">"five"</span>)</div><div class="line"><span class="keyword">val</span> resultList = numbers.map &#123; it.length &#125;.filter &#123; it &gt; <span class="number">3</span> &#125;</div><div class="line">println(resultList)</div></pre></td></tr></table></figure>
+<p>使用let，可以将其重写为：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = mutableListOf(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>, <span class="string">"four"</span>, <span class="string">"five"</span>)</div><div class="line">numbers.map &#123; it.length &#125;.filter &#123; it &gt; <span class="number">3</span> &#125;.let &#123; </div><div class="line">    println(it)</div><div class="line">    <span class="comment">// and more function calls if needed</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果代码块包含一个函数作为参数，则可以使用方法引用（::)代替lambda：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = mutableListOf(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>, <span class="string">"four"</span>, <span class="string">"five"</span>)</div><div class="line">numbers.map &#123; it.length &#125;.filter &#123; it &gt; <span class="number">3</span> &#125;.let(::println)</div></pre></td></tr></table></figure>
+<p><code>let</code> 通常用于仅使用非空值执行代码块。要对非空对象执行操作，请使用安全调用运算符<code>?</code>对其进行调用，并在lambda 中用<code>it</code>操作。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> str: String? = <span class="string">"Hello"</span>   </div><div class="line"><span class="comment">//processNonNullString(str)       // compilation error: str can be null</span></div><div class="line"><span class="keyword">val</span> length = str?.let &#123; </div><div class="line">    println(<span class="string">"let() called on <span class="variable">$it</span>"</span>)        </div><div class="line">    processNonNullString(it)      <span class="comment">// OK: 'it' is not null inside '?.let &#123; &#125;'</span></div><div class="line">    it.length</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用let的另一种情况是引入范围有限的局部变量以提高代码的可读性。要为上下文对象定义一个新变量，请提供其名称作为lambda参数，以便使用而不是默认值<code>it</code>。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = listOf(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>, <span class="string">"four"</span>)</div><div class="line"><span class="keyword">val</span> modifiedFirstItem = numbers.first().let &#123; firstItem -&gt;</div><div class="line">    println(<span class="string">"The first item of the list is '<span class="variable">$firstItem</span>'"</span>)</div><div class="line">    <span class="keyword">if</span> (firstItem.length &gt;= <span class="number">5</span>) firstItem <span class="keyword">else</span> <span class="string">"!"</span> + firstItem + <span class="string">"!"</span></div><div class="line">&#125;.toUpperCase()</div><div class="line">println(<span class="string">"First item after modifications: '<span class="variable">$modifiedFirstItem</span>'"</span>)</div></pre></td></tr></table></figure>
+<p><strong>with</strong></p>
+<p>一个非扩展函数：上下文对象作为参数传递，但是在lambda内部，它可用作接收器（this）使用。返回值是lambda结果。</p>
+<p>我们建议在不需要 lambda 结果的情况下在上下文对象上调用函数。在代码中，with可以理解为“使用此对象，请执行以下操作”。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = mutableListOf(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>)</div><div class="line">with(numbers) &#123;</div><div class="line">    println(<span class="string">"'with' is called with argument <span class="variable">$this</span>"</span>)</div><div class="line">    println(<span class="string">"It contains <span class="variable">$size</span> elements"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>with</code> 的另一个用例是引入一个辅助对象，该对象的属性或函数将用于计算值。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = mutableListOf(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>)</div><div class="line"><span class="keyword">val</span> firstAndLast = with(numbers) &#123;</div><div class="line">    <span class="string">"The first element is <span class="subst">$&#123;first()&#125;</span>,"</span> +</div><div class="line">    <span class="string">" the last element is <span class="subst">$&#123;last()&#125;</span>"</span></div><div class="line">&#125;</div><div class="line">println(firstAndLast)</div></pre></td></tr></table></figure>
+<p><strong>run</strong></p>
+<p>上下文对象可用作接收者（this）使用。返回值是lambda结果。</p>
+<p><code>run</code> 与 <code>with</code> 相同，作为 <code>let</code> 调用 - 上下文对象的扩展函数 (run does the same as with but invokes as let - as an extension function of the context object.)</p>
+<p>当lambda同时包含对象初始化和返回值的计算时，<code>run</code> 很有用。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> service = MultiportService(<span class="string">"https://example.kotlinlang.org"</span>, <span class="number">80</span>)</div><div class="line"></div><div class="line"><span class="keyword">val</span> result = service.run &#123;</div><div class="line">    port = <span class="number">8080</span></div><div class="line">    query(prepareRequest() + <span class="string">" to port <span class="variable">$port</span>"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// the same code written with let() function:</span></div><div class="line"><span class="keyword">val</span> letResult = service.let &#123;</div><div class="line">    it.port = <span class="number">8080</span></div><div class="line">    it.query(it.prepareRequest() + <span class="string">" to port <span class="subst">$&#123;it.port&#125;</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>除了在接收者对象上调用<code>run</code>之外，还可以将其用作非扩展函数。非扩展<code>run</code>可以在需要表达式的地方执行包含多个语句的块。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> hexNumberRegex = run &#123;</div><div class="line">    <span class="keyword">val</span> digits = <span class="string">"0-9"</span></div><div class="line">    <span class="keyword">val</span> hexDigits = <span class="string">"A-Fa-f"</span></div><div class="line">    <span class="keyword">val</span> sign = <span class="string">"+-"</span></div><div class="line"></div><div class="line">    Regex(<span class="string">"[<span class="variable">$sign</span>]?[<span class="variable">$digits</span><span class="variable">$hexDigits</span>]+"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">for</span> (match <span class="keyword">in</span> hexNumberRegex.findAll(<span class="string">"+1234 -FFFF not-a-number"</span>)) &#123;</div><div class="line">    println(match.value)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>apply</code></p>
+<p>上下文对象可用作接收者（this）。返回值是对象本身。</p>
+<p><code>apply</code> 适合用于不返回值且主要在接收者对象的成员上运行的代码块。适用的常见情况是对象配置。此类调用可以理解为“将以下赋值操作应用于对象”。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> adam = Person(<span class="string">"Adam"</span>).apply &#123;</div><div class="line">    age = <span class="number">32</span></div><div class="line">    city = <span class="string">"London"</span>        </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>将接收者作为返回值，可以轻松地将<code>apply</code>应用于调用链以进行更复杂的处理。</p>
+<p><strong>also</strong></p>
+<p>上下文对象可用作参数（<code>it</code>）。返回值是对象本身。</p>
+<p><code>also</code> 有助于执行一些将上下文对象作为参数的操作。<code>also</code> 用于不改变对象的其他操作，例如日志或打印调试信息。通常可以在不打破程序逻辑的情况下从调用链中将 <code>also</code> 调用删除。</p>
+<p>当在代码中看到时 <code>also</code> 时，可以将其理解为“并且还可以执行以下操作”。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> numbers = mutableListOf(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>)</div><div class="line">numbers</div><div class="line">    .also &#123; println(<span class="string">"The list elements before adding new one: <span class="variable">$it</span>"</span>) &#125;</div><div class="line">    .add(<span class="string">"four"</span>)</div></pre></td></tr></table></figure>
+<h2 id="选择函数"><a href="#选择函数" class="headerlink" title="选择函数"></a>选择函数</h2><p>为了帮助选择合适的作用域函数，我们提供了它们之间的主要区别表。</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>对象应用</th>
+<th>返回值</th>
+<th>是否是扩展函数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>let</td>
+<td>it</td>
+<td>lambda 结果</td>
+<td>是</td>
+</tr>
+<tr>
+<td>run</td>
+<td>this</td>
+<td>lambda 结果</td>
+<td>是</td>
+</tr>
+<tr>
+<td>run</td>
+<td>_</td>
+<td>lambda 结果</td>
+<td>否(不需要上下文对象进行调用)</td>
+</tr>
+<tr>
+<td>with</td>
+<td>this</td>
+<td>lambda 结果</td>
+<td>否(需要上下文对象作为参数)</td>
+</tr>
+<tr>
+<td>apply</td>
+<td>this</td>
+<td>上下文对象</td>
+<td>是</td>
+</tr>
+<tr>
+<td>also</td>
+<td>it</td>
+<td>上下文对象</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p>以下是根据预期目的选择作用域函数的简短指南：</p>
+<ul>
+<li>在非空对象上执行lambda：let</li>
+<li>将表达式引入为局部作用域中的变量：let</li>
+<li>对象配置：apply</li>
+<li>对象配置和计算结果：run</li>
+<li>需要表达式的运行语句：非扩展 run</li>
+<li>附加效果：also</li>
+<li>对对象进行成组的函数调用：with</li>
+</ul>
+<p>不同功能的用例重叠，因此您可以根据项目或团队中使用的特定约定选择功能。</p>
+<p>尽管作用域函数是使代码更简洁的一种方法，但请避免过度使用它们：这会降低代码的可读性并导致错误。 避免嵌套作用域函数，并在链接它们时要小心：很容易混淆当前上下文对象及其值。</p>
+<h2 id="takeIf-和-takeUnless"><a href="#takeIf-和-takeUnless" class="headerlink" title="takeIf 和 takeUnless"></a>takeIf 和 takeUnless</h2><p>除了范围函数外，标准库还包含函数 <code>takeIf</code> 和 <code>takeUnless</code> 。这些功能可以将对对象状态的检查嵌入到调用链中。</p>
+<p>在提供谓词的对象上调用时，takeIf 返回与谓词匹配的对象。否则，它返回null。因此，takeIf 是单个对象的过滤功能。反过来，如果takeUnless与谓词不匹配，则返回该对象；如果与谓词不匹配，则返回null。该对象可用作lambda参数（it）。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> number = Random.nextInt(<span class="number">100</span>)</div><div class="line"></div><div class="line"><span class="keyword">val</span> evenOrNull = number.takeIf &#123; it % <span class="number">2</span> == <span class="number">0</span> &#125;</div><div class="line"><span class="keyword">val</span> oddOrNull = number.takeUnless &#123; it % <span class="number">2</span> == <span class="number">0</span> &#125;</div><div class="line">println(<span class="string">"even: <span class="variable">$evenOrNull</span>, odd: <span class="variable">$oddOrNull</span>"</span>)</div></pre></td></tr></table></figure>
+<p>在takeIf和takeUnless之后链接其他函数时，不要忘记执行空检查或安全调用（?.），因为它们的返回值是可为空的。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> str = <span class="string">"Hello"</span></div><div class="line"><span class="keyword">val</span> caps = str.takeIf &#123; it.isNotEmpty() &#125;?.toUpperCase()</div><div class="line"><span class="comment">//val caps = str.takeIf &#123; it.isNotEmpty() &#125;.toUpperCase() //compilation error</span></div><div class="line">println(caps)</div></pre></td></tr></table></figure>
+<p>takeIf和takeUnless与作用域函数结合很有用。一个很好的例子是让它们链接在一起，以便在与给定谓词匹配的对象上运行代码块。为此，请在对象上调用takeIf，然后使用安全调用（？）调用let。对于与谓词不匹配的对象，takeIf返回null且不调用let。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">displaySubstringPosition</span><span class="params">(input: <span class="type">String</span>, sub: <span class="type">String</span>)</span></span> &#123;</div><div class="line">    input.indexOf(sub).takeIf &#123; it &gt;= <span class="number">0</span> &#125;?.let &#123;</div><div class="line">        println(<span class="string">"The substring <span class="variable">$sub</span> is found in <span class="variable">$input</span>."</span>)</div><div class="line">        println(<span class="string">"Its start position is <span class="variable">$it</span>."</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">displaySubstringPosition(<span class="string">"010000011"</span>, <span class="string">"11"</span>)</div><div class="line">displaySubstringPosition(<span class="string">"010000011"</span>, <span class="string">"12"</span>)</div></pre></td></tr></table></figure>
+<p>在不适用标准库函数时相同功能的实现如下:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">displaySubstringPosition</span><span class="params">(input: <span class="type">String</span>, sub: <span class="type">String</span>)</span></span> &#123;</div><div class="line">    <span class="keyword">val</span> index = input.indexOf(sub)</div><div class="line">    <span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</div><div class="line">        println(<span class="string">"The substring <span class="variable">$sub</span> is found in <span class="variable">$input</span>."</span>)</div><div class="line">        println(<span class="string">"Its start position is <span class="variable">$index</span>."</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">displaySubstringPosition(<span class="string">"010000011"</span>, <span class="string">"11"</span>)</div><div class="line">displaySubstringPosition(<span class="string">"010000011"</span>, <span class="string">"12"</span>)</div></pre></td></tr></table></figure>
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4"
+                alt="LeBron_Six" />
+            
+              <p class="site-author-name" itemprop="name">LeBron_Six</p>
+              <p class="site-description motion-element" itemprop="description">欢迎访问我的博客~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#作用域函数"><span class="nav-number">1.</span> <span class="nav-text">作用域函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#区别"><span class="nav-number">2.</span> <span class="nav-text">区别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#上下文对象：this或it"><span class="nav-number">2.1.</span> <span class="nav-text">上下文对象：this或it</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回值"><span class="nav-number">2.2.</span> <span class="nav-text">返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数"><span class="nav-number">2.3.</span> <span class="nav-text">函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择函数"><span class="nav-number">3.</span> <span class="nav-text">选择函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#takeIf-和-takeUnless"><span class="nav-number">4.</span> <span class="nav-text">takeIf 和 takeUnless</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"><a href="https://github.com/smuyyh" target="_blank">LeBron_Six</a></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+        <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'smuyyh',
+            repo: 'smuyyh.github.io',
+            
+            oauth: {
+            
+            
+                client_secret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+            
+                client_id: '0a452de0f03398d1ea74'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

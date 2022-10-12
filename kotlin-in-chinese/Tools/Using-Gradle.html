@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="使用Gradle · GitBook">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LeBron_Six 的博客">
+<meta property="og:url" content="http://smuyyh.top/kotlin-in-chinese/Tools/Using-Gradle.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="使用Gradle · GitBook">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-10-12T02:57:28.205Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeBron_Six 的博客">
+<meta name="twitter:description" content="使用Gradle · GitBook">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://smuyyh.top/kotlin-in-chinese/Tools/Using-Gradle.html"/>
+
+
+
+
+
+  <title> | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          
+<!DOCTYPE HTML>
+<html lang="">
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>使用Gradle · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../FAQ/">
+    
+    
+    <link rel="prev" href="Using-Griffon.html">
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../GettingStarted/">
+            
+                <a href="../GettingStarted/">
+            
+                    
+                    准备开始
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../GettingStarted/Basic-Syntax.html">
+            
+                <a href="../GettingStarted/Basic-Syntax.html">
+            
+                    
+                    基本语法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../GettingStarted/Idioms.html">
+            
+                <a href="../GettingStarted/Idioms.html">
+            
+                    
+                    习惯用语
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../GettingStarted/Coding-Conventions.html">
+            
+                <a href="../GettingStarted/Coding-Conventions.html">
+            
+                    
+                    编码风格
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../Basics/">
+            
+                <a href="../Basics/">
+            
+                    
+                    基础
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../Basics/Basic-Types.html">
+            
+                <a href="../Basics/Basic-Types.html">
+            
+                    
+                    基本类型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../Basics/Packages.html">
+            
+                <a href="../Basics/Packages.html">
+            
+                    
+                    包
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../Basics/Control-Flow.html">
+            
+                <a href="../Basics/Control-Flow.html">
+            
+                    
+                    控制流
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../Basics/Returns-and-Jumps.html">
+            
+                <a href="../Basics/Returns-and-Jumps.html">
+            
+                    
+                    返回与跳转
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../ClassesAndObjects/">
+            
+                <a href="../ClassesAndObjects/">
+            
+                    
+                    类和对象
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../ClassesAndObjects/Classes-and-Inheritance.html">
+            
+                <a href="../ClassesAndObjects/Classes-and-Inheritance.html">
+            
+                    
+                    类和继承
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../ClassesAndObjects/Properties-and-Fields.html">
+            
+                <a href="../ClassesAndObjects/Properties-and-Fields.html">
+            
+                    
+                    属性和字段
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../ClassesAndObjects/Interfaces.html">
+            
+                <a href="../ClassesAndObjects/Interfaces.html">
+            
+                    
+                    接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../ClassesAndObjects/Visibility-Modifiers.html">
+            
+                <a href="../ClassesAndObjects/Visibility-Modifiers.html">
+            
+                    
+                    可见性修饰词
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../ClassesAndObjects/Extensions.html">
+            
+                <a href="../ClassesAndObjects/Extensions.html">
+            
+                    
+                    扩展
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../ClassesAndObjects/Data-Classes.html">
+            
+                <a href="../ClassesAndObjects/Data-Classes.html">
+            
+                    
+                    数据对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="../ClassesAndObjects/Generics.html">
+            
+                <a href="../ClassesAndObjects/Generics.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="../ClassesAndObjects/NestedClasses.html">
+            
+                <a href="../ClassesAndObjects/NestedClasses.html">
+            
+                    
+                    嵌套类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="../ClassesAndObjects/EnumClasses.html">
+            
+                <a href="../ClassesAndObjects/EnumClasses.html">
+            
+                    
+                    枚举类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="../ClassesAndObjects/ObjectExpressicAndDeclarations.html">
+            
+                <a href="../ClassesAndObjects/ObjectExpressicAndDeclarations.html">
+            
+                    
+                    对象表达式和声明
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="../ClassesAndObjects/Delegation.html">
+            
+                <a href="../ClassesAndObjects/Delegation.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="../ClassesAndObjects/DelegationProperties.html">
+            
+                <a href="../ClassesAndObjects/DelegationProperties.html">
+            
+                    
+                    代理属性
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../FunctionsAndLambdas/">
+            
+                <a href="../FunctionsAndLambdas/">
+            
+                    
+                    函数和lambda表达式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../FunctionsAndLambdas/Functions.html">
+            
+                <a href="../FunctionsAndLambdas/Functions.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../FunctionsAndLambdas/Higher-OrderFunctionsAndLambdas.html">
+            
+                <a href="../FunctionsAndLambdas/Higher-OrderFunctionsAndLambdas.html">
+            
+                    
+                    高阶函数和lambda表达式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../FunctionsAndLambdas/InlineFunctions.html">
+            
+                <a href="../FunctionsAndLambdas/InlineFunctions.html">
+            
+                    
+                    内联函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../FunctionsAndLambdas/Cocroutines.html">
+            
+                <a href="../FunctionsAndLambdas/Cocroutines.html">
+            
+                    
+                    协程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../Other/README.md">
+            
+                <span>
+            
+                    
+                    其它
+            
+                
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../Other/Multi-Declarations.md">
+            
+                <span>
+            
+                    
+                    多重申明
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../Other/Ranges.md">
+            
+                <span>
+            
+                    
+                    Ranges
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../Other/Type-Checks-and-Casts.md">
+            
+                <span>
+            
+                    
+                    类型检查和自动转换
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="../Other/This-Expression.md">
+            
+                <span>
+            
+                    
+                    This表达式
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../Other/Equality.md">
+            
+                <span>
+            
+                    
+                    等式
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.6" data-path="../Other/Opetator-overloading.md">
+            
+                <span>
+            
+                    
+                    运算符重载
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.7" data-path="../Other/Null-Safety.md">
+            
+                <span>
+            
+                    
+                    空安全
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.8" data-path="../Other/Exceptions.md">
+            
+                <span>
+            
+                    
+                    异常
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.9" data-path="../Other/Annotations.md">
+            
+                <span>
+            
+                    
+                    注解
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.10" data-path="../Other/Reflection.md">
+            
+                <span>
+            
+                    
+                    反射
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.11" data-path="../Other/Dynamic-Type.md">
+            
+                <span>
+            
+                    
+                    动态类型
+            
+                
+            
+
+            
+        </span></li>
+    
+
+            </ul>
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.7" data-path="../Reference/">
+            
+                <a href="../Reference/">
+            
+                    
+                    参考
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../Interop/">
+            
+                <a href="../Interop/">
+            
+                    
+                    互用性
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../Interop/Java-Interop.html">
+            
+                <a href="../Interop/Java-Interop.html">
+            
+                    
+                    动态类型
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="Documenting-Kotlin-Code.html">
+            
+                <a href="Documenting-Kotlin-Code.html">
+            
+                    
+                    Kotlin代码文档
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="Using-Maven.html">
+            
+                <a href="Using-Maven.html">
+            
+                    
+                    使用Maven
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="Using-Ant.html">
+            
+                <a href="Using-Ant.html">
+            
+                    
+                    使用Ant
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.4" data-path="Using-Griffon.html">
+            
+                <a href="Using-Griffon.html">
+            
+                    
+                    使用Griffon
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.9.5" data-path="Using-Gradle.html">
+            
+                <a href="Using-Gradle.html">
+            
+                    
+                    使用Gradle
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../FAQ/">
+            
+                <a href="../FAQ/">
+            
+                    
+                    FAQ
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="../FAQ/Comparison2java.html">
+            
+                <a href="../FAQ/Comparison2java.html">
+            
+                    
+                    与java对比
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10.2" data-path="../FAQ/Comparison2Scala.html">
+            
+                <a href="../FAQ/Comparison2Scala.html">
+            
+                    
+                    与Scala对比
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="..">使用Gradle</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h2 id="&#x4F7F;&#x7528;-gradle">&#x4F7F;&#x7528; Gradle</h2>
+<h3 id="&#x63D2;&#x4EF6;&#x548C;&#x7248;&#x672C;">&#x63D2;&#x4EF6;&#x548C;&#x7248;&#x672C;</h3>
+<p>kotlin-gradle-plugin &#x53EF;&#x4EE5;&#x7F16;&#x8BD1; Kotlin &#x6587;&#x4EF6;&#x548C;&#x6A21;&#x5757;</p>
+<blockquote>
+<p>X.Y.SNAPSHOT:&#x5BF9;&#x5E94;&#x7248;&#x672C; X.Y &#x7684;&#x5FEB;&#x7167;&#xFF0C;&#x5728; CI &#x670D;&#x52A1;&#x5668;&#x4E0A;&#x7684;&#x6BCF;&#x6B21;&#x6210;&#x529F;&#x6784;&#x5EFA;&#x7684;&#x7248;&#x672C;&#x3002;&#x8FD9;&#x4E9B;&#x7248;&#x672C;&#x4E0D;&#x662F;&#x771F;&#x6B63;&#x7684;&#x7A33;&#x5B9A;&#x7248;&#xFF0C;&#x53EA;&#x662F;&#x63A8;&#x8350;&#x7528;&#x6765;&#x6D4B;&#x8BD5;&#x65B0;&#x7F16;&#x8F91;&#x5668;&#x7684;&#x529F;&#x80FD;&#x7684;&#x3002;&#x73B0;&#x5728;&#x6240;&#x6709;&#x7684;&#x6784;&#x5EFA;&#x90FD;&#x662F;&#x4F5C;&#x4E3A; 0.1-SNAPSHOT &#x53D1;&#x8868;&#x7684;&#x3002;&#x4F60;&#x53EF;&#x4EE5;&#x53C2;&#x770B;<a href="">configure a snapshot repository in the pom file</a></p>
+<p>X.Y.X: &#x5BF9;&#x5E94;&#x7248;&#x672C; X.Y.Z &#x7684; release &#x6216; milestone &#xFF0C;&#x81EA;&#x52A8;&#x5347;&#x7EA7;&#x3002;&#x5B83;&#x4EEC;&#x662F;&#x6587;&#x4EF6;&#x6784;&#x5EFA;&#x3002;Release &#x7248;&#x672C;&#x53D1;&#x5E03;&#x5728; Maven Central &#x4ED3;&#x5E93;&#x3002;&#x5728; pom &#x6587;&#x4EF6;&#x91CC;&#x4E0D;&#x9700;&#x8981;&#x591A;&#x4F59;&#x7684;&#x914D;&#x7F6E;&#x3002;</p>
+</blockquote>
+<p>milestone &#x548C; &#x7248;&#x672C;&#x7684;&#x5BF9;&#x5E94;&#x5173;&#x7CFB;&#x5982;&#x4E0B;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th><strong>Milestone</strong></th>
+<th><strong>Version</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M12.1</td>
+<td>0.12.613</td>
+</tr>
+<tr>
+<td>M12</td>
+<td>0.12.200</td>
+</tr>
+<tr>
+<td>M11.1</td>
+<td>0.11.91.1</td>
+</tr>
+<tr>
+<td>M11</td>
+<td>0.11.91</td>
+</tr>
+<tr>
+<td>M10.1</td>
+<td>0.10.195</td>
+</tr>
+<tr>
+<td>M10</td>
+<td>0.10.4</td>
+</tr>
+<tr>
+<td>M9</td>
+<td>0.9.66</td>
+</tr>
+<tr>
+<td>M8</td>
+<td>0.8.11</td>
+</tr>
+<tr>
+<td>M7</td>
+<td>0.7.270</td>
+</tr>
+<tr>
+<td>M6.2</td>
+<td>0.6.1673</td>
+</tr>
+<tr>
+<td>M6.1</td>
+<td>0.6.602</td>
+</tr>
+<tr>
+<td>M6</td>
+<td>0.6.69</td>
+</tr>
+<tr>
+<td>M5.3</td>
+<td>0.5.998</td>
+</tr>
+</tbody>
+</table>
+<h3 id="&#x9762;&#x5411;-jvm">&#x9762;&#x5411; Jvm</h3>
+<p>&#x5BF9;&#x4E8E; jvm&#xFF0C;&#x9700;&#x8981;&#x5E94;&#x7528; kotlin &#x63D2;&#x4EF6;</p>
+<blockquote>
+<p>apply plugin: &quot;kotlin&quot;</p>
+</blockquote>
+<p>&#x81F3;&#x4E8E; M11 &#xFF0C;kotlin &#x6587;&#x4EF6;&#x53EF;&#x4EE5;&#x4E0E; java &#x6DF7;&#x7528;&#x3002;&#x9ED8;&#x8BA4;&#x4F7F;&#x7528;&#x4E0D;&#x540C;&#x6587;&#x4EF6;&#x5939;&#xFF1A;</p>
+<pre><code>project
+    - src
+        - main (root)
+            - kotlin
+            - java
+</code></pre><p>&#x5982;&#x679C;&#x4E0D;&#x4F7F;&#x7528;&#x9ED8;&#x8BA4;&#x7684;&#x8BBE;&#x7F6E;&#x5219;&#x5BF9;&#x5E94;&#x7684;&#x6587;&#x4EF6;&#x5C5E;&#x6027;&#x8981;&#x4FEE;&#x6539;&#xFF1A;</p>
+<pre><code class="lang-gradle"><span class="hljs-keyword">sourceSets</span> {
+    main.kotlin.srcDirs += <span class="hljs-string">&apos;src/main/myKotlin&apos;</span>
+    main.java.srcDirs += <span class="hljs-string">&apos;src/main/myJava&apos;</span>
+}
+</code></pre>
+<h3 id="&#x9762;&#x5411;javascript">&#x9762;&#x5411;JavaScript</h3>
+<p>&#x4F46;&#x76EE;&#x6807;&#x662F; JavaScript &#x65F6;&#xFF1A;</p>
+<blockquote>
+<p>apply plugin: &quot;kotln2js&quot;</p>
+</blockquote>
+<p>&#x8FD9;&#x4E2A;&#x63D2;&#x4EF6;&#x53EA;&#x5BF9; kotlin &#x6587;&#x4EF6;&#x8D77;&#x4F5C;&#x7528;&#xFF0C;&#x56E0;&#x6B64;&#x5EFA;&#x8BAE;&#x628A; kotlin &#x548C; java &#x6587;&#x4EF6;&#x5206;&#x5F00;&#x3002;&#x5BF9;&#x4E8E; jvm &#x5982;&#x679C;&#x4E0D;&#x7528;&#x9ED8;&#x8BA4;&#x7684;&#x503C;&#x5219;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x6E90;&#x6587;&#x4EF6;&#x5939;&#xFF1A;</p>
+<pre><code>sourceSets {
+    main.kotlin.srcDirs += &apos;src/main/myKotlin&apos;
+}
+</code></pre><p>&#x5982;&#x679C;&#x4F60;&#x60F3;&#x5EFA;&#x7ACB;&#x4E00;&#x4E2A;&#x590D;&#x7528;&#x7684;&#x5E93;&#xFF0C;&#x4F7F;&#x7528; <code>kotlinOptions.metaInfo</code> &#x751F;&#x6210;&#x9644;&#x52A0;&#x7684;&#x5E26;&#x9644;&#x52A0;&#x4E8C;&#x8FDB;&#x5236;&#x63CF;&#x8FF0;&#x7684; js &#x6587;&#x4EF6;</p>
+<pre><code>compileKotlin2Js {
+    kotlinOptions.metaInfo = true
+}
+</code></pre><h3 id="&#x76EE;&#x6807;&#x662F;-android">&#x76EE;&#x6807;&#x662F; android</h3>
+<p>Android Gradle &#x6A21;&#x5757;&#x4E0E;&#x666E;&#x901A;&#x7684; Gradle &#x6A21;&#x5757;&#x6709;&#x4E9B;&#x4E0D;&#x540C;&#xFF0C;&#x6240;&#x4EE5;&#x5982;&#x679C;&#x4F60;&#x60F3;&#x5EFA;&#x7ACB; kotlin &#x5199;&#x7684;android &#x9879;&#x76EE;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x4E0B;&#x9762;&#x8FD9;&#x6837;&#xFF1A;</p>
+<pre><code>buildscript {
+    ...
+}
+apply plugin: &apos;com.android.application&apos;
+apply plugin: &apos;kotlin-android&apos;
+</code></pre><h4 id="android-studio">Android Studio</h4>
+<p>&#x5982;&#x679C;&#x4F7F;&#x7528; Android Studio,&#x9700;&#x8981;&#x6DFB;&#x52A0;&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#xFF1A;</p>
+<pre><code>android {
+  ...
+
+  sourceSets {
+    main.java.srcDirs += &apos;src/main/kotlin&apos;
+  }
+}
+</code></pre><p>&#x8FD9;&#x662F;&#x544A;&#x8BC9; android studio kotlin &#x6587;&#x4EF6;&#x7684;&#x76EE;&#x5F55;&#x4F4D;&#x7F6E;&#x65B9;&#x4FBF; IDE &#x8BC6;&#x522B;</p>
+<h3 id="&#x914D;&#x7F6E;&#x4F9D;&#x8D56;">&#x914D;&#x7F6E;&#x4F9D;&#x8D56;</h3>
+<p>&#x6211;&#x4EEC;&#x9700;&#x8981;&#x6DFB;&#x52A0; kotlin-gradle-plugin &#x548C; kotlin &#x6807;&#x51C6;&#x5E93;&#x4F9D;&#x8D56;</p>
+<pre><code>buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath &apos;org.jetbrains.kotlin:kotlin-gradle-plugin:&lt;version&gt;&apos;
+  }
+}
+
+apply plugin: &quot;kotlin&quot; // or apply plugin: &quot;kotlin2js&quot; if targeting JavaScript
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile &apos;org.jetbrains.kotlin:kotlin-stdlib:&lt;version&gt;&apos;
+}
+</code></pre><h3 id="&#x4F7F;&#x7528;&#x5FEB;&#x7167;&#x7248;&#x672C;">&#x4F7F;&#x7528;&#x5FEB;&#x7167;&#x7248;&#x672C;</h3>
+<p>&#x5982;&#x679C;&#x4F7F;&#x7528;&#x5FEB;&#x7167;&#x7248;&#x672C;&#x5219;&#x5982;&#x4E0B;&#x6240;&#x793A;&#xFF1A;</p>
+<pre><code>buildscript {
+  repositories {
+    mavenCentral()
+    maven {
+      url &apos;http://oss.sonatype.org/content/repositories/snapshots&apos;
+    }
+  }
+  dependencies {
+    classpath &apos;org.jetbrains.kotlin:kotlin-gradle-plugin:0.1-SNAPSHOT&apos;
+  }
+}
+
+apply plugin: &quot;kotlin&quot; // or apply plugin: &quot;kotlin2js&quot; if targeting JavaScript
+
+repositories {
+  mavenCentral()
+  maven {
+    url &apos;http://oss.sonatype.org/content/repositories/snapshots&apos;
+  }
+}
+
+dependencies {
+  compile &apos;org.jetbrains.kotlin:kotlin-stdlib:0.1-SNAPSHOT&apos;
+}
+</code></pre><h3 id="&#x4F8B;&#x5B50;">&#x4F8B;&#x5B50;</h3>
+<p><a href="https://github.com/jetbrains/kotlin" target="_blank">Kotlin</a>&#x4ED3;&#x5E93;&#x6709;&#x5982;&#x4E0B;&#x4F8B;&#x5B50;&#xFF1A;</p>
+<blockquote>
+<p><a href="https://github.com/JetBrains/kotlin-examples/tree/master/gradle/hello-world" target="_blank">Kotlin</a>
+<a href="https://github.com/JetBrains/kotlin-examples/tree/master/gradle/mixed-java-kotlin-hello-world" target="_blank">Mixed java and Kotlin</a>
+<a href="https://github.com/JetBrains/kotlin-examples/tree/master/gradle/android-mixed-java-kotlin-project" target="_blank">Android</a>
+<a href="https://github.com/JetBrains/kotlin/tree/master/libraries/tools/kotlin-gradle-plugin/src/test/resources/testProject/kotlin2JsProject" target="_blank">javaScript</a></p>
+</blockquote>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class="search-results-count"></span> results matching "<span class="search-query"></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class="search-query"></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="Using-Griffon.html" class="navigation navigation-prev " aria-label="Previous page: 使用Griffon">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../FAQ/" class="navigation navigation-next " aria-label="Next page: FAQ">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"使用Gradle","level":"1.9.5","depth":2,"next":{"title":"FAQ","level":"1.10","depth":1,"path":"FAQ/README.md","ref":"FAQ/README.md","articles":[{"title":"与java对比","level":"1.10.1","depth":2,"path":"FAQ/Comparison2java.md","ref":"FAQ/Comparison2java.md","articles":[]},{"title":"与Scala对比","level":"1.10.2","depth":2,"path":"FAQ/Comparison2Scala.md","ref":"FAQ/Comparison2Scala.md","articles":[]}]},"previous":{"title":"使用Griffon","level":"1.9.4","depth":2,"path":"Tools/Using-Griffon.md","ref":"Tools/Using-Griffon.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Tools/Using-Gradle.md","mtime":"2020-02-12T08:45:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-12T02:57:25.064Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
+
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4"
+                alt="LeBron_Six" />
+            
+              <p class="site-author-name" itemprop="name">LeBron_Six</p>
+              <p class="site-description motion-element" itemprop="description">欢迎访问我的博客~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">
+        
+        使用Gradle
+    </span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-gradle"><span class="nav-number">1.1.</span> <span class="nav-text">使用 Gradle</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#插件和版本"><span class="nav-number">1.1.1.</span> <span class="nav-text">插件和版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#面向-jvm"><span class="nav-number">1.1.2.</span> <span class="nav-text">面向 Jvm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#面向javascript"><span class="nav-number">1.1.3.</span> <span class="nav-text">面向JavaScript</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标是-android"><span class="nav-number">1.1.4.</span> <span class="nav-text">目标是 android</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#android-studio"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">Android Studio</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置依赖"><span class="nav-number">1.1.5.</span> <span class="nav-text">配置依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用快照版本"><span class="nav-number">1.1.6.</span> <span class="nav-text">使用快照版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">1.1.7.</span> <span class="nav-text">例子</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text"> results matching ""</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">No results matching ""</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"><a href="https://github.com/smuyyh" target="_blank">LeBron_Six</a></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+        <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'smuyyh',
+            repo: 'smuyyh.github.io',
+            
+            oauth: {
+            
+            
+                client_secret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+            
+                client_id: '0a452de0f03398d1ea74'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

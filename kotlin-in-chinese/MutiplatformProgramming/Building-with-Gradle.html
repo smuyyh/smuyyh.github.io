@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="使用 Gradle 构建多平台项目是 Kotlin 1.2 和 1.3 中的实验性特性。本文档中描述的所有语言和工具功能都可能在将来的Kotlin版本中发生变更 这篇文档解释了 Kotlin 多平台项目 并且描述了gradle 中是如何配置的。 内容目录  项目结构 设置多平台项目 gradle 插件 设置 Targets（目标） 支持的平台 配置编译   配置源集 链接源集 添加依赖 语言设置">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LeBron_Six 的博客">
+<meta property="og:url" content="http://smuyyh.top/kotlin-in-chinese/MutiplatformProgramming/Building-with-Gradle.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="使用 Gradle 构建多平台项目是 Kotlin 1.2 和 1.3 中的实验性特性。本文档中描述的所有语言和工具功能都可能在将来的Kotlin版本中发生变更 这篇文档解释了 Kotlin 多平台项目 并且描述了gradle 中是如何配置的。 内容目录  项目结构 设置多平台项目 gradle 插件 设置 Targets（目标） 支持的平台 配置编译   配置源集 链接源集 添加依赖 语言设置">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://smuyyh.top/kotlin-in-chinese/MutiplatformProgramming/mpp-structure-default-jvm-js.png">
+<meta property="og:image" content="http://smuyyh.top/kotlin-in-chinese/MutiplatformProgramming/mpp-one-compilation.png">
+<meta property="og:updated_time" content="2022-10-12T02:57:26.172Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeBron_Six 的博客">
+<meta name="twitter:description" content="使用 Gradle 构建多平台项目是 Kotlin 1.2 和 1.3 中的实验性特性。本文档中描述的所有语言和工具功能都可能在将来的Kotlin版本中发生变更 这篇文档解释了 Kotlin 多平台项目 并且描述了gradle 中是如何配置的。 内容目录  项目结构 设置多平台项目 gradle 插件 设置 Targets（目标） 支持的平台 配置编译   配置源集 链接源集 添加依赖 语言设置">
+<meta name="twitter:image" content="http://smuyyh.top/kotlin-in-chinese/MutiplatformProgramming/mpp-structure-default-jvm-js.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://smuyyh.top/kotlin-in-chinese/MutiplatformProgramming/Building-with-Gradle.html"/>
+
+
+
+
+
+  <title> | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <h2 id="使用-Gradle-构建"><a href="#使用-Gradle-构建" class="headerlink" title="使用 Gradle 构建"></a>使用 Gradle 构建</h2><p><strong>多平台项目是 Kotlin 1.2 和 1.3 中的实验性特性。本文档中描述的所有语言和工具功能都可能在将来的Kotlin版本中发生变更</strong></p>
+<p>这篇文档解释了 <a href="https://kotlinlang.org/docs/reference/multiplatform.html" target="_blank" rel="external">Kotlin 多平台项目</a> 并且描述了gradle 中是如何配置的。</p>
+<p>内容目录</p>
+<ul>
+<li>项目结构</li>
+<li>设置多平台项目</li>
+<li>gradle 插件</li>
+<li>设置 Targets（目标）<ul>
+<li>支持的平台</li>
+<li>配置编译</li>
+</ul>
+</li>
+<li>配置源集<ul>
+<li>链接源集</li>
+<li>添加依赖</li>
+<li>语言设置</li>
+</ul>
+</li>
+<li>默认项目结构</li>
+<li>运行测试</li>
+<li>发布多平台库</li>
+<li>JVM 目标的Java 支持</li>
+<li>Android支持<ul>
+<li>发布 Android 库</li>
+</ul>
+</li>
+<li>使用 Kotlin/Native 目标<ul>
+<li>目标捷径</li>
+<li>构建最终native二进制</li>
+</ul>
+</li>
+</ul>
+<h2 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h2><p>Kotlin 多平台项目的结构由下面的构建块组成：</p>
+<ul>
+<li><p><a href="https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-targets" target="_blank" rel="external">targets(目标)</a> 是构建的一部分，负责构建，测试和打包用于其中一个平台的完整软件。因此，一个多平台项目通常包含多个目标。</p>
+</li>
+<li><p>建立每个目标涉及一次或多次编译 Kotlin 资源。 换句话说，目标可能具有一个或多个<a href="https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#configuring-compilations" target="_blank" rel="external">编译</a>。 例如，一个编译用于生产资源，另一个用于测试。</p>
+</li>
+<li><p>Kotlin 资源被安排在<a href="https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#configuring-source-sets" target="_blank" rel="external">源集(源码集合)</a>中。 除了Kotlin源文件和资源外，每个源集可能都有自己的依赖性。 源集根据“依赖”关系构建层次结构。 源集本身与平台无关，但如果仅针对单个平台进行编译，则它可能包含特定于平台的代码和依赖项。</p>
+</li>
+</ul>
+<p>每个编译都有默认的源集，这部分用于设置特定于该编译的源和依赖项。 默认源集还用于通过“依赖”关系将其他源集定向到编译。</p>
+<p>这是一个针对JVM和JS的项目的图示：</p>
+<p><img src="./mpp-structure-default-jvm-js.png" alt="mpp-structure-default-jvm-js"></p>
+<p>这里 <code>jvm</code> 和 <code>js</code>, 两个目标分别编译了生产和测试源，并且其中的一些源是共享的。 通过仅创建两个目标即可实现此布局，而无需为编译和源集进行其他配置：这些是为该目标构建的默认设置。</p>
+<p>在上面的示例中，JVM目标的生产源通过其main编译进行编译，因此包括来自源集<code>jvmMain</code>和 <code>commonMain</code> 的源和依赖（由于取决于关系）：</p>
+<p><img src="./mpp-one-compilation.png" alt="mpp-one-compilation"></p>
+<p>这里，<code>jvmMain</code> 源集为共享 <code>commonMain</code> 源中的预期(expected)API提供了平台特定的实现。 这是在平台之间以灵活的方式在需要的地方使用特定于平台的实现方式共享代码的方式。</p>
+<p>在后面章节中，将更详细地描述这些概念以及用于在项目中对其进行配置的DSL。</p>
+<h2 id="设置多平台项目"><a href="#设置多平台项目" class="headerlink" title="设置多平台项目"></a>设置多平台项目</h2><p>可以在IDE中创建一个新的多平台项目,在 “Kotlin” 下的“新建项目”对话框中选择一个多平台项目模板.</p>
+<p>例如，如果选择 “Kotlin (Multiplatform Library)”，则会创建一个库项目，该项目具有三个目标，一个目标用于JVM，一个目标用于JS，一个目标用于正在使用的Native平台。 这些是通过以下方式在build.gradle脚本中配置的：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">plugins &#123;</div><div class="line">    kotlin(<span class="string">"multiplatform"</span>) version <span class="string">"1.3.61"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">repositories &#123;</div><div class="line">    mavenCentral()</div><div class="line">&#125;</div><div class="line"></div><div class="line">kotlin &#123;</div><div class="line">    jvm() <span class="comment">// Creates a JVM target with the default name 'jvm'</span></div><div class="line">    js()  <span class="comment">// JS target named 'js'</span></div><div class="line">    mingwX64(<span class="string">"mingw"</span>) <span class="comment">// Windows (MinGW X64) target named 'mingw'</span></div><div class="line">    </div><div class="line">    sourceSets &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这三个目标是使用预设函数jvm（），js（）和mingwX64（）创建的,它们各自有一些默认配置。 每个<a href="https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#supported-platforms" target="_blank" rel="external">受支持的平台</a>都有预设。</p>
+<p>源集及其依赖通过如下配置：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">plugins &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line"></div><div class="line">kotlin &#123;</div><div class="line">    <span class="comment">/* Targets declarations omitted */</span></div><div class="line"></div><div class="line">    sourceSets &#123;</div><div class="line">        <span class="keyword">val</span> commonMain <span class="keyword">by</span> getting &#123;</div><div class="line">            dependencies &#123;</div><div class="line">                implementation(kotlin(<span class="string">"stdlib-common"</span>))</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">val</span> commonTest <span class="keyword">by</span> getting &#123;</div><div class="line">            dependencies &#123;</div><div class="line">                implementation(kotlin(<span class="string">"test-common"</span>))</div><div class="line">                implementation(kotlin(<span class="string">"test-annotations-common"</span>))</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// Default source set for JVM-specific sources and dependencies:</span></div><div class="line">        jvm().compilations[<span class="string">"main"</span>].defaultSourceSet &#123;</div><div class="line">            dependencies &#123;</div><div class="line">                implementation(kotlin(<span class="string">"stdlib-jdk8"</span>))</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// JVM-specific tests and their dependencies:</span></div><div class="line">        jvm().compilations[<span class="string">"test"</span>].defaultSourceSet &#123;</div><div class="line">            dependencies &#123;</div><div class="line">                implementation(kotlin(<span class="string">"test-junit"</span>))</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        js().compilations[<span class="string">"main"</span>].defaultSourceSet  &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">        js().compilations[<span class="string">"test"</span>].defaultSourceSet &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">        </div><div class="line">        mingwX64(<span class="string">"mingw"</span>).compilations[<span class="string">"main"</span>].defaultSourceSet &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">        mingwX64(<span class="string">"mingw"</span>).compilations[<span class="string">"test"</span>].defaultSourceSet &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这些是上面配置目标生产和测试源的默认源集合。 源集commonMain和commonTest分别包含在所有目标的生产和测试编译中。 请注意，公共源集commonMain和commonTest的依赖项是公共的，平台相关库应该添加到特定目标的源集。</p>
+<h2 id="Gradle-插件"><a href="#Gradle-插件" class="headerlink" title="Gradle 插件"></a>Gradle 插件</h2><p>Kotlin Multiplatform项目需要Gradle 4.7及更高版本，不支持较旧的Gradle版本。</p>
+<p>要从零开始在Gradle项目中设置多平台项目，请首先在build.gradle文件的开头添加以下内容，将kotlin-multiplatform插件应用于该项目：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">plugins &#123;</div><div class="line">    kotlin(<span class="string">"multiplatform"</span>) version <span class="string">"1.3.61"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这将在顶层创建 <code>kotlin</code> 扩展。接下来你就可以在构建脚本中使用它：</p>
+<ul>
+<li>为多平台设置目标(默认是不会创建目标的)</li>
+<li>配置源集和各自依赖</li>
+</ul>
+<h2 id="设置目标"><a href="#设置目标" class="headerlink" title="设置目标"></a>设置目标</h2><p>目标是构建的一部分，负责编译，测试和打包针对某个受支持平台的软件。</p>
+<p>所有目标都可以共享某些资源，也可以具有特定于平台的资源。</p>
+<p>由于平台不同，目标也以不同的方式构建，并具有各种特定于平台的设置。 Gradle插件为支持的平台捆绑了许多预设。</p>
+<p>要创建目标，请使用预设函数，这些函数根据目标进行命名，并可以选择接受目标名称和配置代码块：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    jvm() <span class="comment">// Create a JVM target with the default name 'jvm'</span></div><div class="line">    js(<span class="string">"nodeJs"</span>) <span class="comment">// Create a JS target with a custom name 'nodeJs'</span></div><div class="line">        </div><div class="line">    linuxX64(<span class="string">"linux"</span>) &#123;</div><div class="line">        <span class="comment">/* Specify additional settings for the 'linux' target here */</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>预设函数会根据目标函数是否存在返回目标,该返回可用于配置已存在目标:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    <span class="comment">/* ... */</span></div><div class="line">    </div><div class="line">    <span class="comment">// Configure the attributes of the 'jvm6' target:</span></div><div class="line">    jvm(<span class="string">"jvm6"</span>).attributes &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意这里的目标平台和名字都很重要,如果目标是用 <code>jvm(&#39;jvm6&#39;)</code> 创建,再次使用 <code>jvm()</code> 会创建另一个mub(名字默认是 <code>jvm</code> ). 如果用于创建该名称下的目标的预设功能不同，则会报错。</p>
+<p>从预设创建的目标将添加到kotlin.targets域对象集合中，该集合可用于按其名称访问它们或配置所有目标：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    jvm()</div><div class="line">    js(<span class="string">"nodeJs"</span>)</div><div class="line">    </div><div class="line">    println(targets.names) <span class="comment">// Prints: [jvm, metadata, nodeJs]</span></div><div class="line">    </div><div class="line">    <span class="comment">// Configure all targets, including those which will be added later:</span></div><div class="line">    targets.all &#123;</div><div class="line">        compilations[<span class="string">"main"</span>].defaultSourceSet &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在多个预设中动态创建或者访问不同目标,可以使用 <code>targetFromPreset</code> 函数,该函数接收一个预设(包含在 <code>kotlin.presets</code> 域对象集合中),以及可选的,目标名字和一段配置代码块.</p>
+<p>比如下面的代码,可以为所有 Kotlin/Native 支持的平台都创建一个目标:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">mport org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetPreset</div><div class="line"></div><div class="line"><span class="comment">/* ... */</span></div><div class="line"></div><div class="line">kotlin &#123;</div><div class="line">    presets.withType&lt;KotlinNativeTargetPreset&gt;().forEach &#123;</div><div class="line">        targetFromPreset(it) &#123; </div><div class="line">            <span class="comment">/* Configure each of the created targets */</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="支持的平台"><a href="#支持的平台" class="headerlink" title="支持的平台"></a>支持的平台</h3><p>下面是一些预设目标,这些可以通过预设函数设置:</p>
+<ul>
+<li><code>jvm</code> Kotlin/JVM </li>
+<li><code>js</code> Kotlin/JS</li>
+<li><code>android</code> 安卓应用和库,注意在该目标创建前要先应用安卓 Gradle 插件.</li>
+<li><p>Kotlin/Native 预设目标(参看下面的<a href="https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#using-kotlinnative-targets" target="_blank" rel="external">笔记</a>)</p>
+<ul>
+<li><code>androidNativeArm32</code> <code>androidNativeArm64</code> 对应安卓 NDK</li>
+<li><code>iosArm32</code> <code>iosArm64</code> <code>iosX64</code> 对应 iOS</li>
+<li><code>watchosArm32</code> <code>watchosArm64</code> <code>watchosX86</code> 对应 watchOS</li>
+<li><code>tvosArm64</code> <code>tvosX64</code> 对应 tvOS</li>
+<li><code>linuxArm32Hfp</code>, <code>linuxMips32</code>, <code>linuxMipsel32</code>, <code>linuxX64</code> 对应 linux</li>
+<li><code>macosX64</code> 对应 macOS</li>
+<li><code>mingwX64</code> <code>mingwX86</code> 对应 Windows</li>
+<li><p><code>wasm32</code> 对应 WebAssemnly</p>
+<p>注意这里有些 Kotlin/Native 目标需要<a href="https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#using-kotlinnative-targets" target="_blank" rel="external">适当的硬件主机</a>构建</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>一些目标需要附加的配置. 关于 Android 和 iOS 例子,可以参看<a href="https://kotlinlang.org/docs/tutorials/native/mpp-ios-android.html" target="_blank" rel="external">多平台项目:Android 和 iOS</a>教程</p>
+<h3 id="配置编译"><a href="#配置编译" class="headerlink" title="配置编译"></a>配置编译</h3><p>构建目标需要一次或多次编译Kotlin。 目标的每个Kotlin编译都可以用于不同的目的（例如，生产代码，测试），并包含不同的源集。 可以在DSL中可以访问目标的编译，例如，获取任务，配置Kotlin编译器选项或获取依赖文件和编译输出：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    jvm &#123;</div><div class="line">        <span class="keyword">val</span> main <span class="keyword">by</span> compilations.getting &#123;</div><div class="line">            kotlinOptions &#123; </div><div class="line">                <span class="comment">// Setup the Kotlin compiler options for the 'main' compilation:</span></div><div class="line">                jvmTarget = <span class="string">"1.8"</span></div><div class="line">            &#125;</div><div class="line">        </div><div class="line">            compileKotlinTask <span class="comment">// get the Kotlin task 'compileKotlinJvm' </span></div><div class="line">            output <span class="comment">// get the main compilation output</span></div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        compilations[<span class="string">"test"</span>].runtimeDependencyFiles <span class="comment">// get the test runtime classpath</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// Configure all compilations of all targets:</span></div><div class="line">    targets.all &#123;</div><div class="line">        compilations.all &#123;</div><div class="line">            kotlinOptions &#123;</div><div class="line">                allWarningsAsErrors = <span class="literal">true</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>每个编译都附带一个默认源集，该默认源集存储特定于该编译的源和依赖项。 目标 <code>bar</code> 的编译 <code>foo</code> 的默认源集名字是 <code>barFoo</code> . 可以使用 <code>defaultSourceSet</code> 从编译中访问它：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    jvm() <span class="comment">// Create a JVM target with the default name 'jvm'</span></div><div class="line">    </div><div class="line">    sourceSets &#123;</div><div class="line">        <span class="comment">// The default source set for the 'main` compilation of the 'jvm' target:</span></div><div class="line">        <span class="keyword">val</span> jvmMain <span class="keyword">by</span> getting &#123;</div><div class="line">            <span class="comment">/* ... */</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// Alternatively, access it from the target's compilation:</span></div><div class="line">    jvm().compilations[<span class="string">"main"</span>].defaultSourceSet &#123; </div><div class="line">        <span class="comment">/* ... */</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>要收集所有参与编译的源集，包括通过依赖关系添加的源集，可以使用属性 <code>allKotlinSourceSets</code> 。</p>
+<p>对于某些特定用例，可能需要创建自定义编译。 这可以在目标的 <code>compilations</code> 域对象集合中完成。 请注意，需要为所有定制编译手动设置依赖项，并且定制编译输出的使用取决于构建作者。 例如，下面可以针对jvm（）目标的集成测试的定制编译：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    jvm() &#123;</div><div class="line">        compilations &#123;</div><div class="line">            <span class="keyword">val</span> main <span class="keyword">by</span> getting</div><div class="line"></div><div class="line">            <span class="keyword">val</span> integrationTest <span class="keyword">by</span> compilations.creating &#123;</div><div class="line">                defaultSourceSet &#123;</div><div class="line">                    dependencies &#123;</div><div class="line">                        <span class="comment">// Compile against the main compilation's compile classpath and outputs:</span></div><div class="line">                        implementation(main.compileDependencyFiles + main.output.classesDirs)</div><div class="line">                        implementation(kotlin(<span class="string">"test-junit"</span>))</div><div class="line">                        <span class="comment">/* ... */</span></div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                <span class="comment">// Create a test task to run the tests produced by this compilation:</span></div><div class="line">                tasks.create&lt;Test&gt;(<span class="string">"integrationTest"</span>) &#123;</div><div class="line">                    <span class="comment">// Run the tests with the classpath containing the compile dependencies (including 'main'),</span></div><div class="line">                    <span class="comment">// runtime dependencies, and the outputs of this compilation:</span></div><div class="line">                    classpath = compileDependencyFiles + runtimeDependencyFiles + output.allOutputs</div><div class="line"></div><div class="line">                    <span class="comment">// Run only the tests from this compilation's outputs:</span></div><div class="line">                    testClassesDirs = output.classesDirs</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>还要注意，默认情况下，自定义编译的默认源集既不依赖于commonMain也不依赖于commonTest。</p>
+<h2 id="配置源集"><a href="#配置源集" class="headerlink" title="配置源集"></a>配置源集</h2><p>Kotlin 源集是 Kotlin源及其资源，依赖关系和语言设置的集合，这些源可能会参与一个或多个目标的Kotlin编译。</p>
+<p>源集不限于平台特定的或“共享的”； 允许包含的内容取决于其用法：添加到多个编译中的源集仅限于通用语言功能和依赖项，而仅由单个目标使用的源集可以具有特定于平台的依赖项，并且其代码可以使用特定于目标平台的语言功能。</p>
+<p>默认情况下会创建和配置一些源集：commonMain，commonTest和编译的默认源集。 请参阅默认项目结构。</p>
+<p>源集在kotlin {…}扩展的sourceSets {…}块内配置：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">kotlin &#123; </div><div class="line">    sourceSets &#123; </div><div class="line">        <span class="keyword">val</span> foo <span class="keyword">by</span> creating &#123; <span class="comment">/* ... */</span> &#125; <span class="comment">// create a new source set by the name 'foo'</span></div><div class="line">        <span class="keyword">val</span> bar <span class="keyword">by</span> getting &#123; <span class="comment">/* ... */</span> &#125; <span class="comment">// configure an existing source set by the name 'bar' </span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>注意：创建源集不会将其链接到任何目标。 一些源集是预定义的，因此会默认进行编译。 但是，自定义的源集必须明确指向编译,请参阅：<a href="https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#connecting-source-sets" target="_blank" rel="external">链接源集</a>。</strong></p>
+<p>源集名称是大小写敏感的. 当通过名称引用默认源集时,确定前缀和目标名称匹配,比如源集 <code>iosX64Main</code> 对应 <code>iosX64</code>目标.</p>
+<p>源集本身是平台无关的,但如果它只编译到某个平台则可以看做平台相关的. 源集可以既包含平台共享公共代码,也可以包含平台相关代码.</p>
+<p>每个源集对于 Kotlin 源都有默认的源码目录: <code>src/&lt;source set name&gt;/kotlin</code> . 给源集添加 Kotlin 源码和资源,可以通过 <code>kotlin</code> <code>resource</code> 的 <code>SourceDirectorySet</code>:</p>
+<p>默认源集的文件存储在如下目录:</p>
+<ul>
+<li>源代码文件: <code>src/&lt;source set name&gt;/kotlin</code></li>
+<li>资源文件: <code>src/&lt;source set name&gt;/resources</code></li>
+</ul>
+<p>你需要手动创建这些目录</p>
+<p>添加自定义 Kotlin 源码目录和资源目录可以通过以下方式:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">kotlin &#123; </div><div class="line">    sourceSets &#123; </div><div class="line">        <span class="keyword">val</span> commonMain <span class="keyword">by</span> getting &#123;</div><div class="line">            kotlin.srcDir(<span class="string">"src"</span>)</div><div class="line">            resources.srcDir(<span class="string">"res"</span>)</div><div class="line">        &#125; </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="链接源集"><a href="#链接源集" class="headerlink" title="链接源集"></a>链接源集</h3><p>Kotlin 源集可以通过依赖关系链接,如果源集 <code>foo</code> 依赖 源集<code>bar</code> 则会如下:</p>
+<ul>
+<li>不论 <code>foo</code> 编译到任何平台, <code>bar</code> 都会参与到编译中,并会编译为目标二进制形式,比如 JVM class 文件或者 JS 代码</li>
+<li>源集 <code>foo</code> 可以’看到’ <code>bar</code> 的声明,也包括 <code>internal</code>声明,以及 <code>bar</code> 的依赖,尽管这些是通过 <code>implementation</code> 指定的依赖</li>
+<li><code>foo</code> 可能包含针对 <code>bar</code> 的预期(expected)声明在特定于平台上的实现</li>
+<li>源集 <code>bar</code> 总是与 <code>foo</code> 的资源一起处理和复制；</li>
+<li><code>foo</code> <code>bar</code> 的语言设置应该是一致的</li>
+</ul>
+<p>不允许源集循环依赖</p>
+<p>源集的 DSL 可以定义源集间的链接:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">kotlin &#123; </div><div class="line">    sourceSets &#123; </div><div class="line">        <span class="keyword">val</span> commonMain <span class="keyword">by</span> getting &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">        <span class="keyword">val</span> allJvm <span class="keyword">by</span> creating &#123;</div><div class="line">            dependsOn(commonMain)</div><div class="line">            <span class="comment">/* ... */</span></div><div class="line">        &#125; </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>除了默认源集之外，还应将创建的自定义源集显式包含到依赖关系层次结构中，以便能够使用来自其他源集的声明，并且最重要的是可以参与编译。 大多数情况下，它们需要一个dependsOn（commonMain）或dependsOn（commonTest）语句，并且某些特定于平台的默认源集应直接或间接依赖于自定义源集：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">kotlin &#123; </div><div class="line">    mingwX64()</div><div class="line">    linuxX64()</div><div class="line">    </div><div class="line">    sourceSets &#123;</div><div class="line">        <span class="comment">// custom source set with tests for the two targets</span></div><div class="line">        <span class="keyword">val</span> desktopTest <span class="keyword">by</span> creating &#123; </div><div class="line">            dependsOn(getByName(<span class="string">"commonTest"</span>))</div><div class="line">            <span class="comment">/* ... */</span></div><div class="line">        &#125;</div><div class="line">        <span class="comment">// Make the 'windows' default test source set for depend on 'desktopTest'</span></div><div class="line">        mingwX64().compilations[<span class="string">"test"</span>].defaultSourceSet &#123; </div><div class="line">            dependsOn(desktopTest)</div><div class="line">            <span class="comment">/* ... */</span></div><div class="line">        &#125;</div><div class="line">        <span class="comment">// And do the same for the other target:</span></div><div class="line">        linuxX64().compilations[<span class="string">"test"</span>].defaultSourceSet &#123;</div><div class="line">            dependsOn(desktopTest)</div><div class="line">            <span class="comment">/* ... */</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><p>要将依赖项添加到源集，请使用源集DSL的 <code>dependencies { ... }</code> 块。支持四种依赖项：</p>
+<ul>
+<li><p><code>api</code> 依赖项在编译期间和运行时均会使用，并会导出到库使用者。如果当前模块的公共API中使用了依赖关系中的任何类型，则它应该是api依赖关系；</p>
+</li>
+<li><p><code>implementation</code> 依赖在当前模块的编译期间和运行时使用，但对其他模块通过 <code>implementation</code> 依赖当前模块时，不会导出该依赖。<code>implementation</code> 依赖关系类型应用于模块内部逻辑所需的依赖关系。如果模块是未发布的终结点应用程序，则它应该使用 <code>implementation</code> 而不是 <code>api</code> 依赖。</p>
+</li>
+<li><p><code>compileOnly</code> 依赖项仅用于编译当前模块，并且在运行时或其他模块的编译期间均不可用。这些依赖项应用于在运行时具有第三方实现的API。</p>
+</li>
+<li><p><code>runtimeOnlyOnly</code> 仅运行时可用，但在任何模块的编译过程中都不可见。</p>
+</li>
+</ul>
+<p>每个源集都指定了依赖种类，如下所示：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    sourceSets &#123;</div><div class="line">        <span class="keyword">val</span> commonMain <span class="keyword">by</span> getting &#123;</div><div class="line">            dependencies &#123;</div><div class="line">                api(<span class="string">"com.example:foo-metadata:1.0"</span>)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">val</span> jvm6Main <span class="keyword">by</span> getting &#123;</div><div class="line">            dependencies &#123;</div><div class="line">                api(<span class="string">"com.example:foo-jvm6:1.0"</span>)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意，为了使IDE能够正确分析公共源的依赖关系，除了平台特定源集需要声明与平台特定组件依赖之外，公共源集还必须具有与 Kotlin 元数据包相对应的依赖关系。 通常，在使用已发布的库时（除非它与Gradle元数据一起发布，如下所述），需要后缀为-common（如kotlin-stdlib-common）或-metadata的组件。</p>
+<p>然而 project（’…’）依赖于另一个多平台项目时会自动解析为适当的目标。 在源集的依赖项中指定单个project（’…’）依赖项就足够了，并且包含源集的编译将收到该项目的对应平台特定产物，只要它具有兼容的目标即可：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    sourceSets &#123;</div><div class="line">        <span class="keyword">val</span> commonMain <span class="keyword">by</span> getting &#123;</div><div class="line">            dependencies &#123;</div><div class="line">                <span class="comment">// All of the compilations that include source set 'commonMain'</span></div><div class="line">                <span class="comment">// will get this dependency resolved to a compatible target, if any:</span></div><div class="line">                api(project(<span class="string">":foo-lib"</span>))</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>同样，如果以实验性 Gradle 元数据发布模式发布了多平台库，并且该项目也设置为使用元数据，那么只需为公共源集指定一次依赖项就足够了。 否则，除了公共模块之外，每个平台特定的源集还应提供库的相应平台模块，如上所示。</p>
+<p>指定依赖关系的另一种方法是在顶层使用Gradle内置DSL，其配置名称遵循模式<sourcesetname> <dependencykind>：</dependencykind></sourcesetname></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dependencies &#123;</div><div class="line">    <span class="string">"commonMainApi"</span>(<span class="string">"com.example:foo-common:1.0"</span>)</div><div class="line">    <span class="string">"jvm6MainApi"</span>(<span class="string">"com.example:foo-jvm6:1.0"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>源集合依赖项DSL中不提供某些Gradle内置依赖项，例如 <code>gradleApi()</code> ,<code>localGroovy()</code>或<code>gradleTestKit()</code>。 但你可以将它们添加到顶级依赖项块中，如上所示。</p>
+<p>可以使用 kotlin(“stdlib”) 添加像 <code>kotlin-stdlib</code> 或 <code>kotlin-reflect</code> 之类的Kotlin 依赖模块，这是 <code>org.jetbrains.kotlin：kotlin-stdlib</code> 的缩写。</p>
+<h3 id="语言设定"><a href="#语言设定" class="headerlink" title="语言设定"></a>语言设定</h3><p>可以如下指定源集的语言设置：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    sourceSets &#123;</div><div class="line">        <span class="keyword">val</span> commonMain <span class="keyword">by</span> getting &#123;</div><div class="line">            languageSettings.apply &#123;</div><div class="line">                languageVersion = <span class="string">"1.3"</span> <span class="comment">// possible values: '1.0', '1.1', '1.2', '1.3'</span></div><div class="line">                apiVersion = <span class="string">"1.3"</span> <span class="comment">// possible values: '1.0', '1.1', '1.2', '1.3'</span></div><div class="line">                enableLanguageFeature(<span class="string">"InlineClasses"</span>) <span class="comment">// language feature name</span></div><div class="line">                useExperimentalAnnotation(<span class="string">"kotlin.ExperimentalUnsignedTypes"</span>) <span class="comment">// annotation FQ-name</span></div><div class="line">                progressiveMode = <span class="literal">true</span> <span class="comment">// false by default</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>也可以为所有源集配置语言:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">kotlin.sourceSets.all &#123;</div><div class="line">    languageSettings.progressiveMode = <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>源集的语言设置会影响在IDE中分析来源的方式。 由于当前的限制，在Gradle构建中，仅使用编译的默认源集的语言设置并将其应用于参与编译的所有源。</p>
+<p>检查语言设置是否相互依赖，以确保源集之间的一致性。 即，如果 <code>foo</code> 依赖 <code>bar</code>：</p>
+<ul>
+<li>foo应该将languageVersion设置为大于或等于bar的语言；</li>
+<li>foo应该启用bar启用的所有不稳定的语言功能（错误修正功能没有这种要求）；</li>
+<li>foo应该使用bar使用的所有实验性注释；</li>
+<li>可以任意设置apiVersion，错误修正语言功能和ProgressiveMode。</li>
+</ul>
+<h2 id="默认项目结构"><a href="#默认项目结构" class="headerlink" title="默认项目结构"></a>默认项目结构</h2><p>默认情况下，每个项目都包含两个源集，<code>commonMain</code> 和 <code>commonTest</code>，在其中可以放置应在所有目标平台之间共享的所有代码。这些源集分别添加到各自生产和测试编译中。</p>
+<p>添加目标后，将为其创建默认编译：</p>
+<ul>
+<li>为 JAM,JS,以及原生目标创建 <code>main</code> 和 <code>test</code> 编译</li>
+<li>针对Android目标的每个<a href="https://developer.android.com/studio/build/build-variants" target="_blank" rel="external">Android构建变体</a>的编译；</li>
+</ul>
+<p>对于每个编译，在由 <code>&lt;targetName&gt; &lt;CompilationName&gt;</code> 组成的名称下都有一个默认源集。此默认源集参与了编译，因此应将其用于特定于平台的代码和依赖项，并通过“依赖于”的方式将其他源集添加到编译中。例如，目标为jvm6（JVM）和nodeJs（JS）的项目将具有源集：commonMain，commonTest，jvm6Main，jvm6Test，nodeJsMain，nodeJsTest。</p>
+<p>默认用例集涵盖了绝大多数用例，不需要自定义用例集。</p>
+<p>默认情况下，每个源集在 <code>src/&lt;sourceSetName&gt;/kotlin</code> 目录是Kotlin源码，在 <code>src/&lt;sourceSetName&gt;/resources下</code> 有资源文件。</p>
+<p>在Android项目中，会为不同 <a href="https://developer.android.com/studio/build/#sourcesets" target="_blank" rel="external">Android 源集</a>创建对应的 Kotlin 源集。如果Android目标的名称为foo，则Android源集 bar 将会有 与Kotlin源集合对应的fooBar。但是，Kotlin编译能够从所有目录 <code>src/bar/java</code>，<code>src/bar/kotlin</code> 以及 <code>`src/foobar/kotlin</code>中使用Kotlin源。 Java源仅从这些目录中的第一个读取。</p>
+<h2 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h2><p>JVM，Android，Linux，Windows和macOS当前默认支持在Gradle构建中运行测试。 JS和其他Kotlin/Native 目标需要手动配置以在适当的环境，模拟器或测试框架下运行测试。</p>
+<p>每个适合测试的目标以名称 <code>&lt;targetName&gt;Test</code> 创建一个测试任务。<code>Check</code> 会运行所有目标的测试。</p>
+<p>在将 <code>commonTest</code> 默认源集添加到所有测试编译后，所有目标平台上所需的测试和测试工具都可以添加在此处。</p>
+<p><a href="https://kotlinlang.org/api/latest/kotlin.test/index.html" target="_blank" rel="external">kotlin.test API</a> 可用于多平台测试。将 <code>kotlin-test-common</code> 和 <code>kotlin-test-annotations-common</code> 依赖项添加到 <code>commonTest</code> 以使用诸如 <code>kotlin.test.assertTrue（...）</code> 断言函数,以及 <code>@Test</code> / <code>@Ignore</code> / <code>@BeforeTest</code> / <code>@AfterTest</code> 等注解。</p>
+<p>对于JVM目标，可以使用 <code>kotlin-test-junit</code> 或 <code>kotlin-test-testng</code> 用于相应的断言器实现和注解映射。</p>
+<p>对于 Kotlin/JS 目标，添加 <code>kotlin-test-js</code> 作为测试依赖项。至此，创建了 Kotlin/JS 的测试任务，但默认情况下不运行测试。应该手动配置它们以使用JavaScript测试框架运行测试。</p>
+<p>Kotlin/Native 目标不需要其他测试依赖项，内置了 <code>kotlin.test</code> API实现。</p>
+<h2 id="发布多平台库"><a href="#发布多平台库" class="headerlink" title="发布多平台库"></a>发布多平台库</h2><p>可以使用 <a href="https://docs.gradle.org/current/userguide/publishing_maven.html" target="_blank" rel="external">maven-publish Gradle</a> 插件将由多平台项目构建的库发布到Maven存储库，该插件可以按以下方式使用：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">plugins &#123;</div><div class="line">    <span class="comment">/* ... */</span></div><div class="line">    id(<span class="string">"maven-publish"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>库还需要在项目中设置 <code>group</code> 和 <code>version</code>:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">plugins &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line"></div><div class="line">group = <span class="string">"com.example.my.library"</span></div><div class="line">version = <span class="string">"0.0.1"</span></div></pre></td></tr></table></figure>
+<p>与发布普通的 Kotlin/JVM 或 Java 项目相比，不需要通过 <code>publishing{...}</code> DSL手动创建发布。将自动为可在当前主机上构建的每个目标 创建发布，但Android目标除外，Android目标需要额外的步骤来配置发布，请参阅<a href="https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#publishing-android-libraries" target="_blank" rel="external">发布Android库</a>。</p>
+<p>如 <a href="https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:repositories" target="_blank" rel="external">Maven Publish插件</a> 中所述，将通过 <code>publishing{...}</code> DSL中的 <code>repositories</code> 块添加将要发布库的存储库。</p>
+<p>默认工件ID遵循如下格式 <code>&lt;projectName&gt;-&lt;targetNameToLowerCase&gt;</code> ，例如，<code>sample-lib-nodejs</code> 是指 <code>sample-lib</code> 中名为 <code>nodeJs</code> 的目标.</p>
+<p>默认情况下，除了其主要工件之外，还将源JAR添加到每个发布中。源JAR包含目标<code>main</code>编译所使用的源。如果还需要发布文档工件（如Javadoc JAR），则需要手动配置其构建并将其作为工件添加到相关发布中，像下面这样。</p>
+<p>另外，默认情况下会添加一个名为 <code>metadata</code> 的附加发布，其中包含序列化的 Kotlin 声明，并且IDE可以使用它来分析多平台库。该发布的默认工件ID形成为 <code>&lt;projectName&gt;-metadata</code>。</p>
+<p>可以更改Maven，并且可以将其他工件文件添加到 <code>targets { ... }</code> 块或  <code>publishing{...}</code> DSL中：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    jvm(<span class="string">"jvm6"</span>) &#123;</div><div class="line">        mavenPublication &#123; <span class="comment">// Setup the publication for the target 'jvm6'</span></div><div class="line">            <span class="comment">// The default artifactId was 'foo-jvm6', change it:  </span></div><div class="line">            artifactId = <span class="string">"foo-jvm"</span></div><div class="line">            <span class="comment">// Add a docs JAR artifact (it should be a custom task): </span></div><div class="line">            artifact(jvmDocsJar)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Alternatively, configure the publications with the `publishing &#123; ... &#125;` DSL:</span></div><div class="line">publishing &#123;</div><div class="line">    publications.withType&lt;MavenPublication&gt;().apply &#123;</div><div class="line">        <span class="keyword">val</span> jvm6 <span class="keyword">by</span> getting &#123; <span class="comment">/* Setup the publication for target 'jvm6' */</span> &#125;</div><div class="line">        <span class="keyword">val</span> metadata <span class="keyword">by</span> getting &#123; <span class="comment">/* Setup the publication for Kotlin metadata */</span> &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于组装 Kotlin/Native 工件需要在不同的主机平台上运行的多个版本，因此发布包含 Kotlin/Native  目标的多平台库需要使用同一套主机完成。 为了避免重复发布可以在多个平台（例如JVM，JS，Kotlin元数据，WebAssembly）上构建的模块，可以将这些模块的发布任务配置为有条件地运行。</p>
+<p>这个简化的示例确保仅在将 <code>-PisLinux = true</code> 传递到命令行中的构建时，才上载JVM，JS和Kotlin元数据发布：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    jvm()</div><div class="line">    js()</div><div class="line">    mingwX64()</div><div class="line">    linuxX64()</div><div class="line">       </div><div class="line">    <span class="comment">// Note that the Kotlin metadata is here, too. </span></div><div class="line">    <span class="comment">// The mingwx64() target is automatically skipped as incompatible in Linux builds.</span></div><div class="line">    configure(listOf(metadata(), jvm(), js())) &#123;</div><div class="line">        mavenPublication &#123; </div><div class="line">            <span class="keyword">val</span> targetPublication = <span class="keyword">this</span><span class="symbol">@mavenPublication</span></div><div class="line">            tasks.withType&lt;AbstractPublishToMaven&gt;()</div><div class="line">                .matching &#123; it.publication == targetPublication &#125;</div><div class="line">                .all &#123; onlyIf &#123; findProperty(<span class="string">"isLinux"</span>) == <span class="string">"true"</span> &#125; &#125;            </div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="实验性元数据发布模式"><a href="#实验性元数据发布模式" class="headerlink" title="实验性元数据发布模式"></a>实验性元数据发布模式</h3><p>Gradle模块元数据提供了丰富的发布和依赖关系解析功能，这些功能在Kotlin多平台项目中使用，可简化构建作者的依赖关系配置。特别是，多平台库的出版物可能包括一个特殊的 root 模块，该模块代表整个库，并在作为依赖项添加时自动解析为适当的特定于平台的工件，如下所述。</p>
+<p>在Gradle 5.3及更高版本中，模块元数据始终在依赖关系解析期间使用，但默认情况下发布不包含任何模块元数据。要启用模块元数据发布，请将 <code>enableFeaturePreview(&quot;GRADLE_METADATA&quot;)</code> 添加到根项目的settings.gradle文件中。对于较旧的Gradle版本，模块元数据消费也需要此功能。</p>
+<p>请注意，Gradle 5.3及更高版本发布的模块元数据不能被5.3之前的Gradle版本读取。</p>
+<p>启用Gradle元数据后，会将名为 <code>kotlinMultiplatform</code> “root” 发布添加到项目的发布中。该发布的默认工件(artifact)ID与项目名称匹配，没有任何其他后缀。要配置此发布，请通过 <code>maven-publish</code> 插件的 <code>publishing{...}</code> DSL操作：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">kotlin &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line"></div><div class="line">publishing &#123;</div><div class="line">    publications &#123;</div><div class="line">        <span class="keyword">val</span> kotlinMultiplatform <span class="keyword">by</span> getting &#123;</div><div class="line">            artifactId = <span class="string">"foo"</span>        </div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>该出发布不包含任何工件(artifact)，仅引用其他发布作为其变体。 但是，如果存储库需要，则可能需要源和文档工件。 在这种情况下，请使用发布区域内使用artifact（…）添加这些工件，如上所示进行访问。</p>
+<p>如果某个库具有 “root” 发布，则使用者可以在一个通用源集中指定对整个库的单个依赖项，并且将为包括以下内容的每个编译选择一个对应的特定于平台的变体（如果有）。下面的 <code>sample-lib</code> 就是一个以作为 root 发布的面向JVM和JS构建的示例库：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    jvm(<span class="string">"jvm6"</span>)</div><div class="line">    js(<span class="string">"nodeJs"</span>)</div><div class="line">        </div><div class="line">    sourceSets &#123;</div><div class="line">        <span class="keyword">val</span> commonMain <span class="keyword">by</span> getting &#123;</div><div class="line">            dependencies &#123;</div><div class="line">                <span class="comment">// This single dependency is resolved to the appropriate target modules, </span></div><div class="line">                <span class="comment">// for example, `sample-lib-jvm6` for JVM, `sample-lib-js` for JS:</span></div><div class="line">                api(<span class="string">"com.example:sample-lib:1.0"</span>) </div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这要求使用者的 Gradle 构建能够读取 Gradle 模块的元数据,要么使用 Gradle 5.3+ ,要么在 <code>settings.gradle</code> 中显示声明 <code>enableFeaturePreview(&quot;GRADLE_METADATA&quot;)</code></p>
+<p>###明确构建目标</p>
+<p>在多平台库中，单个平台可能有多个目标。例如，这些目标可以提供相同的API，但在运行时与它们交互的库（例如测试框架或日志记录解决方案）不同。</p>
+<p>但是，对这种多平台库的依赖性可能是模棱两可的，因此可能无法解决，因为没有足够的信息来决定选择哪个目标。</p>
+<p>解决方案是用自定义属性标记目标，Gradle在依赖关系解析过程中会考虑到该属性。但是，这必须在库作者和使用者方面同时进行，库作者有责任将属性及其可能的值传达给使用者。</p>
+<p>添加属性时需要对称添加,需要在库和使用项目中对称添加. 比如,在一个测试库中,在两个目标中都支持JUnit和TestNG。库作者需要向两个目标添加一个属性，如下所示：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> testFrameworkAttribute = Attribute.of(<span class="string">"com.example.testFramework"</span>, String::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></div><div class="line">  </div><div class="line">kotlin &#123;</div><div class="line">    jvm(<span class="string">"junit"</span>) &#123;</div><div class="line">        attributes.attribute(testFrameworkAttribute, <span class="string">"junit"</span>)</div><div class="line">    &#125;</div><div class="line">    jvm(<span class="string">"testng"</span>) &#123;</div><div class="line">        attributes.attribute(testFrameworkAttribute, <span class="string">"testng"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用者只需要只需要将属性添加到产生歧义的单个目标即可。</p>
+<p>如果将依赖项添加到自定义配置而不是插件创建的配置之一时出现了相同的歧义，则可以通过相同的方式将属性添加到配置中：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> testFrameworkAttribute = Attribute.of(<span class="string">"com.example.testFramework"</span>, String::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></div><div class="line"></div><div class="line">configurations &#123;</div><div class="line">    <span class="keyword">val</span> myConfiguration <span class="keyword">by</span> creating &#123;</div><div class="line">        attributes.attribute(testFrameworkAttribute, <span class="string">"junit"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="JVM-目标中的-Java-支持"><a href="#JVM-目标中的-Java-支持" class="headerlink" title="JVM 目标中的 Java 支持"></a>JVM 目标中的 Java 支持</h2><p>从Kotlin 1.3.40开始，此功能可用。</p>
+<p>默认情况下，JVM目标会忽略Java源代码，仅编译Kotlin源文件。<br>要将Java源代码包含在JVM目标的编译中，或应用要求Java插件起作用的Gradle插件，需要显式启用对目标的Java支持：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    jvm &#123;</div><div class="line">        withJava()</div><div class="line">    &#125; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这可以调用 Gradle Java 插件并配置目标与之交互。注意，仅应用Java插件而不在JVM目标中指定withJava（）不会对目标产生影响。</p>
+<p>Java源文件系统的位置与Java插件的默认位置不同。 Java源文件需要放置在Kotlin源根目录的同级目录中。例如，如果JVM目标具有默认名称jvm，则路径为：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">src</div><div class="line">├── jvmMain</div><div class="line">│   ├── java <span class="comment">// production Java sources</span></div><div class="line">│   ├── kotlin</div><div class="line">│   └── resources</div><div class="line">├── jvmTest</div><div class="line">│   ├── java <span class="comment">// test Java sources</span></div><div class="line">│   ├── kotlin</div><div class="line">…   └── resources</div></pre></td></tr></table></figure>
+<p>通用源集不能包括Java源。</p>
+<p>由于当前的限制，禁用了Java插件配置的某些任务，而使用了Kotlin插件添加的相应任务：</p>
+<ul>
+<li>禁用 <code>jar</code> 以便支持目标的JAR任务（例如jvmJar）</li>
+<li>禁用 <code>test</code>，并使用目标的测试任务（例如jvmTest）</li>
+<li><code>* ProcessResources</code> 任务被禁用，并且资源由编译的等效任务处理</li>
+</ul>
+<p>该目标的发布由Kotlin插件处理，不需要特定于 Java 插件的步骤，例如手动创建发布并将其配置为 <code>from（components.java）</code>.</p>
+<h2 id="Android-支持"><a href="#Android-支持" class="headerlink" title="Android 支持"></a>Android 支持</h2><p>Kotlin Multiplatform项目通过提供android预设来支持Android平台。创建Android目标需要手动将一个Android Gradle插件（例如com.android.application或com.android.library）应用到项目。每个Gradle子项目只能创建一个Android目标：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">plugins &#123;</div><div class="line">    id(<span class="string">"com.android.library"</span>)</div><div class="line">    kotlin(<span class="string">"multiplatform"</span>).version(<span class="string">"1.3.61"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line">android &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line"></div><div class="line">kotlin &#123;</div><div class="line">    android &#123; <span class="comment">// Create the Android target</span></div><div class="line">        <span class="comment">// Provide additional configuration if necessary</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>默认情况下创建的Android目标的编译与<a href="https://developer.android.com/studio/build/build-variants" target="_blank" rel="external">Android构建变体</a>相关：对于每个构建变体，均以相同的名称创建Kotlin编译。</p>
+<p>然后，对于由变体编译的每个Android源集，将在目标名称前的源集名称下创建Kotlin源集，例如Kotlin源集 <code>androidDebug</code> 是为Android 源集 <code>debug</code> 和名为android的Kotlin目标。这些Kotlin源集将相应地添加到变体编辑中。</p>
+<p>默认的源集commonMain被添加到每个生产（应用程序或库）变体的编译中。同样，将commonTest源集添加到单元测试和检测测试变体的编译中。</p>
+<p>还支持使用 <a href="https://kotlinlang.org/docs/reference/kapt.html" target="_blank" rel="external">kapt</a> 进行注释处理，但是由于当前的限制，它要求在配置kapt依赖项之前创建Android目标，这需要在最外层 <code>depedencies{...}</code> 块中完成，而不是在内部Kotlin源设置依赖项。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ...</span></div><div class="line"></div><div class="line">kotlin &#123;</div><div class="line">    android &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    kapt(<span class="string">"com.my.annotation:processor:1.0.0"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="发布Android库"><a href="#发布Android库" class="headerlink" title="发布Android库"></a>发布Android库</h3><p>要将Android库发布为多平台库的一部分，需要设置该库的发布并为Android库目标提供其他配置。</p>
+<p>默认情况下，不发布Android库的任何工件。要发布由一组Android变体产生的工件，请在Android目标块中指定变体名称，如下所示：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    android &#123;</div><div class="line">        publishLibraryVariants(<span class="string">"release"</span>, <span class="string">"debug"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的示例适用于没有产品特性的Android库。对于具有产品特性的库，变体名称也包含样式，例如fooBarDebug或fooBazRelease。</p>
+<p>请注意，如果库使用者定义了库中缺少的变体，则它们需要提供匹配和回滚。例如，如果库不具有或不发布 <code>staging</code> 构建类型，则必须为具有这种构建类型的使用者提供备用，并至少指定该库发布的构建类型之一：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    buildTypes &#123;</div><div class="line">        <span class="keyword">val</span> staging <span class="keyword">by</span> creating &#123;</div><div class="line">            <span class="comment">// ...</span></div><div class="line">            matchingFallbacks = listOf(<span class="string">"release"</span>, <span class="string">"debug"</span>) </div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>类似地，如果库发布中缺少某些特性，则库使用者可能需要为定制产品特性提供匹配的回滚。</p>
+<p>可以选择发布按产品特性分组的变体，以便将不同构建类型的输出放置在单个模块中，并使构建类型成为工件的分类器（发布构建类型仍未发布而没有分类器）。此模式默认情况下处于禁用状态，可以按以下方式启用：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    android &#123;</div><div class="line">        publishLibraryVariantsGroupedByFlavor = <span class="literal">true</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果它们具有不同的依赖性，则不建议发布按产品特性分组的变体，因为这些变体将合并到一个依赖列表中。</p>
+<h2 id="使用-Kotlin-Native-目标"><a href="#使用-Kotlin-Native-目标" class="headerlink" title="使用 Kotlin/Native 目标"></a>使用 Kotlin/Native 目标</h2><p>需要特别注意某些 Kotlin/Native 目标只能使用适当的主机构建：</p>
+<ul>
+<li>Linux MIPS目标（linuxMips32和linuxMipsel32）需要Linux主机。可以在任何受支持的主机上构建其他Linux目标。</li>
+<li>Windows目标需要Windows主机；</li>
+<li>macOS和iOS目标只能在macOS主机上构建；</li>
+<li>64位 Android Native 目标需要Linux或macOS主机。可以在任何受支持的主机上构建32位 Android Native目标。</li>
+</ul>
+<p>当前主机不支持的目标在构建期间将被忽略，不会发布。库作者可能希望按照库目标平台的要求从不同的主机上进行构建和发布。</p>
+<h3 id="目标快捷方式"><a href="#目标快捷方式" class="headerlink" title="目标快捷方式"></a>目标快捷方式</h3><p>某些 native 目标通常一起创建并使用相同的源。例如，为iOS设备和模拟器进行构建由不同的目标（分别为iosArm64和iosX64）表示，但它们的源代码通常相同。在多平台项目模型中表达此类共享代码的一种规范方法是创建一个中间源集（iosMain）并配置它与平台源集之间的链接：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> commonMain <span class="keyword">by</span> sourceSets.getting</div><div class="line"><span class="keyword">val</span> iosDeviceMain <span class="keyword">by</span> sourceSets.getting</div><div class="line"><span class="keyword">val</span> iosSimulatorMain <span class="keyword">by</span> sourceSets.getting</div><div class="line"></div><div class="line"><span class="keyword">val</span> iosMain <span class="keyword">by</span> sourceSets.creating &#123;</div><div class="line">    dependsOn(commonMain)</div><div class="line">    iosDeviceMain.dependsOn(<span class="keyword">this</span>)</div><div class="line">    iosSimulatorMain.dependsOn(<span class="keyword">this</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从1.3.60版本开始，<code>kotlin-multiplaform</code> 插件提供了可自动执行此类配置的快捷方式：他们允许用户使用单个DSL方法为用户创建一组目标以及一个通用源集。</p>
+<p>可以使用以下快捷方式：</p>
+<ul>
+<li><code>ios</code> 为 <code>iosArm64</code> 和 <code>iosX64</code> 创建目标。</li>
+<li><code>watchos</code> 为 <code>watchosArm32</code>，<code>watchosArm64</code> 和 <code>watchosX86</code> 创建目标。</li>
+<li><code>tvos</code> 为 <code>tvosArm64</code> 和 <code>tvosX64</code> 创建目标。</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Create two targets for iOS.</span></div><div class="line"><span class="comment">// Create common source sets: iosMain and iosTest.</span></div><div class="line">ios &#123;</div><div class="line">    <span class="comment">// Configure targets.</span></div><div class="line">    <span class="comment">// Note: this lambda will be called for each target.</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// You can also specify a name prefix for created targets.</span></div><div class="line"><span class="comment">// Common source sets will also have this prefix:</span></div><div class="line"><span class="comment">// anotherIosMain and anotherIosTest.</span></div><div class="line">ios(<span class="string">"anotherIos"</span>)</div></pre></td></tr></table></figure>
+<h3 id="构建最终的-native-二进制文件"><a href="#构建最终的-native-二进制文件" class="headerlink" title="构建最终的 native 二进制文件"></a>构建最终的 native 二进制文件</h3><p>默认情况下，Kotlin/Native目标被编译为 <em>.klib，Kotlin/Native 本身可以将其作为依赖项使用，但不能执行或用作 native 库。要声明最终的 native 二进制文件（如可执行文件或共享库），请使用 native 目标的 <code>binaries</code> 属性。除了默认的 </em>.klib工件之外，此属性还代表为此目标构建的本机二进制文件的集合，并提供了一组声明和配置它们的方法。</p>
+<p>请注意，默认情况下，<code>kotlin-multiplaform</code> 插件不会创建任何生产二进制文件。默认情况下，唯一可用的二进制文件是调试可执行文件，该文件允许运行来自测试编译的测试。</p>
+<h4 id="声明二进制"><a href="#声明二进制" class="headerlink" title="声明二进制"></a><strong>声明二进制</strong></h4><p>一组工厂方法用于声明 <code>binaries</code> 集合的元素。这些方法允许指定创建的二进制类型并对其进行配置。支持以下二进制种类（请注意，并非所有种类都可用于所有native平台）：</p>
+<table>
+<thead>
+<tr>
+<th>工厂方法</th>
+<th>二进制种类</th>
+<th>可用于</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>excutable</td>
+<td>用于生产的可执行文件</td>
+<td>所有 native 目标</td>
+</tr>
+<tr>
+<td>test</td>
+<td>用于 test 的可执行文件</td>
+<td>所有 native 目标</td>
+</tr>
+<tr>
+<td>sharedLib</td>
+<td>共享的 native 库</td>
+<td>所有 native 目标除了 wasm32</td>
+</tr>
+<tr>
+<td>staticLib</td>
+<td>静态 native 库</td>
+<td>所有 native 目标除了 wasm32</td>
+</tr>
+<tr>
+<td>framework</td>
+<td>Objective-C framework</td>
+<td>只用于 macOS, iOS, watchOS, tvOS 目标</td>
+</tr>
+</tbody>
+</table>
+<p>每个工厂方法都有多个版本。通过 <code>executable</code> 方法示例学习使用它们。所有相同的版本对于所有其他工厂方法均可使用。</p>
+<p>最简单的版本不需要任何其他参数，并为每种构建类型创建一个二进制文件。当前有两种可用的构建类型：DEBUG（产生带有调试信息的未优化的二进制文件）和RELEASE（产生没有调试信息的已优化的二进制文件）。因此，以下代码段创建了两个可执行二进制文件：debug和release。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    linuxX64 &#123; <span class="comment">// Use your target instead.</span></div><div class="line">        binaries &#123;</div><div class="line">            executable &#123;</div><div class="line">                <span class="comment">// Binary configuration.</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上例中的 <code>executable</code> 方法接受的lambda表达式将应用于所创建的每个二进制文件，并允许其配置二进制文件（请参见相应部分）。请注意，如果不需要其他配置，则可以删除此lambda：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">binaries &#123;</div><div class="line">    executable()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以指定将使用哪些构建类型来创建二进制文件，而不使用哪些构建类型。在以下示例中，仅创建调试可执行文件。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">binaries &#123;</div><div class="line">    executable(listOf(DEBUG)) &#123;</div><div class="line">        <span class="comment">// Binary configuration.</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后一个工厂方法版本允许自定义二进制名称。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">binaries &#123;</div><div class="line">    executable(<span class="string">"foo"</span>, listOf(DEBUG)) &#123;</div><div class="line">        <span class="comment">// Binary configuration.</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// It's possible to drop the list of build types (all the available build types will be used in this case).</span></div><div class="line">    executable(<span class="string">"bar"</span>) &#123;</div><div class="line">        <span class="comment">// Binary configuration.</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在此示例中，第一个参数允许为所创建的二进制文件设置名称前缀，该名称前缀用于在构建脚本中访问它们（请参阅<a href="https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#accessing-binaries" target="_blank" rel="external">“访问二进制文件”</a>部分）。此前缀也用作二进制文件的默认名称。例如，在Windows上，以上示例生成文件foo.exe和bar.exe。</p>
+<h3 id="访问二进制文件"><a href="#访问二进制文件" class="headerlink" title="访问二进制文件"></a><strong>访问二进制文件</strong></h3><p>二进制 DSL 不仅允许创建二进制文件，还可以访问已创建的二进制文件以配置它们或获取其属性（例如，输出文件的路径）。 <code>binaries</code> 集合实现 <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/DomainObjectSet.html" target="_blank" rel="external"><code>DomainObjectSet</code></a> 接口，并提供 <code>all</code> 或 <code>matching</code> 方法，允许配置元素组。</p>
+<p>也有可以获得集合的某个元素。有两种方法可以做到这一点。首先，每个二进制文件都有一个唯一的名称。该名称基于名称前缀（如果已指定），构建类型和二进制种类，根据以下模式：<code>&lt;optional-name-prefix&gt;&lt;build-type&gt;&lt;binary-kind&gt;</code> ，例如 <code>releaseFramework</code> 或 <code>testDebugExecutable</code>。</p>
+<p>注意：静态库和共享库的后缀分别为 Static 和 Shared，例如 fooDebugStatic 或 barReleaseShared</p>
+<p>此名称可用于访问二进制文件：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Fails if there is no such a binary.</span></div><div class="line">binaries[<span class="string">"fooDebugExecutable"</span>]</div><div class="line">binaries.getByName(<span class="string">"fooDebugExecutable"</span>)</div><div class="line"></div><div class="line"> <span class="comment">// Returns null if there is no such a binary.</span></div><div class="line">binaries.findByName(<span class="string">"fooDebugExecutable"</span>)</div></pre></td></tr></table></figure>
+<p>第二种方法是使用类型化的获取器(getter) 。这些获取器允许通过其名称前缀和构建类型来访问某种类型的二进制文件。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Fails if there is no such a binary.</span></div><div class="line">binaries.getExecutable(<span class="string">"foo"</span>, DEBUG)</div><div class="line">binaries.getExecutable(DEBUG)          <span class="comment">// Skip the first argument if the name prefix isn't set.</span></div><div class="line">binaries.getExecutable(<span class="string">"bar"</span>, <span class="string">"DEBUG"</span>) <span class="comment">// You also can use a string for build type.</span></div><div class="line"></div><div class="line"><span class="comment">// Similar getters are available for other binary kinds:</span></div><div class="line"><span class="comment">// getFramework, getStaticLib and getSharedLib.</span></div><div class="line"></div><div class="line"><span class="comment">// Returns null if there is no such a binary.</span></div><div class="line">binaries.findExecutable(<span class="string">"foo"</span>, DEBUG)</div><div class="line"></div><div class="line"><span class="comment">// Similar getters are available for other binary kinds:</span></div><div class="line"><span class="comment">// findFramework, findStaticLib and findSharedLib.</span></div></pre></td></tr></table></figure>
+<h3 id="配置二进制文件"><a href="#配置二进制文件" class="headerlink" title="配置二进制文件"></a><strong>配置二进制文件</strong></h3><p>二进制文件具有一组属性，以下选项可用于配置：</p>
+<ul>
+<li><p><strong>Compliation</strong> 每个二进制文件都是基于同一目标中可用的一些编译构建的。此参数的默认值取决于二进制类型：测试二进制基于 <code>test</code> 编译，而其他二进制基于 <code>main</code> 编译。</p>
+</li>
+<li><p><strong>Linker options</strong> 选项在二进制构建过程中传递给系统链接器。可以使用此设置链接到某些 native 库。</p>
+</li>
+<li><p><em>Output file name</em> 默认情况下，输出文件名基于二进制名称前缀，或者，如果未指定名称前缀，则基于项目名称。但是可以使用baseName属性独立配置输出文件名。请注意，最终文件名将通过在该基本名称中添加与系统相关的前缀和后缀来形成。例如。将为基本名称为foo的Linux共享库生成libfoo.so。</p>
+</li>
+<li><p><strong>Entry point</strong> （仅适用于可执行二进制文件）默认情况下，Kotlin/Native 程序的入口点是位于根包中的 <code>main</code> 方法。此设置允许更改此默认设置，并使用自定义函数作为入口点。例如，可以使用它从根包中移出 <code>main</code> 方法。</p>
+</li>
+<li><p><strong>Access to the output file</strong></p>
+</li>
+<li><p><strong>Access to a link task</strong></p>
+</li>
+<li><p><strong>Access to a run task</strong>（仅适用于可执行二进制文件）。 <code>kotlin-multiplatform</code> 插件为 native 平台（Windows，Linux和macOS）的所有可执行二进制文件创建运行任务。此类任务的名称基于二进制名称，例如 <code>runReleaseExecutable&lt;target-name&gt;</code> 或者 <code>runFooDebugExecutable&lt;target-name&gt;</code>。可以使用可执行二进制文件的 <code>runTask</code> 属性访问运行任务。</p>
+</li>
+<li><p><strong>Framework type</strong>（仅适用于Objective-C框架） 默认情况下，由Kotlin/Native 构建的框架包含一个动态库。但是可以用静态库替换它。</p>
+</li>
+</ul>
+<p>以下示例显示如何使用这些设置。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">binaries &#123;</div><div class="line">    executable(<span class="string">"my_executable"</span>, listOf(RELEASE)) &#123;</div><div class="line">        <span class="comment">// Build a binary on the basis of the test compilation.</span></div><div class="line">        compilation = compilations[<span class="string">"test"</span>]</div><div class="line"></div><div class="line">        <span class="comment">// Custom command line options for the linker.</span></div><div class="line">        linkerOpts = mutableListOf(<span class="string">"-L/lib/search/path"</span>, <span class="string">"-L/another/search/path"</span>, <span class="string">"-lmylib"</span>)</div><div class="line"></div><div class="line">        <span class="comment">// Base name for the output file.</span></div><div class="line">        baseName = <span class="string">"foo"</span></div><div class="line"></div><div class="line">        <span class="comment">// Custom entry point function.</span></div><div class="line">        entryPoint = <span class="string">"org.example.main"</span></div><div class="line"></div><div class="line">        <span class="comment">// Accessing the output file.</span></div><div class="line">        println(<span class="string">"Executable path: <span class="subst">$&#123;outputFile.absolutePath&#125;</span>"</span>)</div><div class="line"></div><div class="line">        <span class="comment">// Accessing the link task.</span></div><div class="line">        linkTask.dependsOn(additionalPreprocessingTask)</div><div class="line"></div><div class="line">        <span class="comment">// Accessing the run task.</span></div><div class="line">        <span class="comment">// Note that the runTask is null for non-host platforms.</span></div><div class="line">        runTask?.dependsOn(prepareForRun)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    framework(<span class="string">"my_framework"</span> listOf(RELEASE)) &#123;</div><div class="line">        <span class="comment">// Include a static library instead of a dynamic one into the framework.</span></div><div class="line">        isStatic = <span class="literal">true</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="在框架中导出依赖项"><a href="#在框架中导出依赖项" class="headerlink" title="在框架中导出依赖项"></a>在框架中导出依赖项</h3><p>在构建 Objective-C 框架时，通常不仅要打包当前项目的类，还要打包其某些依赖项的类。 Binaries DSL允许使用 <code>export</code> 方法来指定将在框架中导出哪些依赖项。请注意，只能导出相应源集的API依赖项。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    sourceSets &#123;</div><div class="line">        macosMain.dependencies &#123;</div><div class="line">            <span class="comment">// Will be exported in the framework.</span></div><div class="line">            api(project(<span class="string">":dependency"</span>))</div><div class="line">            api(<span class="string">"org.example:exported-library:1.0"</span>)</div><div class="line"></div><div class="line">            <span class="comment">// Will not be exported in the framework.</span></div><div class="line">            api(<span class="string">"org.example:not-exported-library:1.0"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    macosX64(<span class="string">"macos"</span>).binaries &#123;</div><div class="line">        framework &#123;</div><div class="line">            export(project(<span class="string">":dependency"</span>))</div><div class="line">            export(<span class="string">"org.example:exported-library:1.0"</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如本例所示，还可以导出maven依赖项。但是由于Gradle元数据的当前限制，这种依赖关系应该是平台依赖项(例如kotlinx-coroutines-core-native_debug_macos_x64 而不是 kotlinx-coroutines-core-传递性地导出（请参见下文）。</p>
+<p>默认情况下，导出工作是非传递的。如果导出了依赖于库 <code>bar</code> 的库 <code>foo</code> ，则只会在输出框架中添加 foo 。可以通过 <code>transitiveiveExport</code> 标志更改此行为。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">binaries &#123;</div><div class="line">    framework &#123;</div><div class="line">        export(project(<span class="string">":dependency"</span>))</div><div class="line">        <span class="comment">// Export transitively.</span></div><div class="line">        transitiveExport = <span class="literal">true</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="建立通用框架"><a href="#建立通用框架" class="headerlink" title="建立通用框架"></a><strong>建立通用框架</strong></h3><p>默认情况下，由Kotlin / Native生产的Objective-C框架仅支持一个平台。但是，可以使用 <code>lipo</code> 实用程序将此类框架合并为单个通用（富）二进制文件。特别是，这种操作对于32位和64位iOS框架是有意义的。在这种情况下，最终的通用框架可以在32位和64位设备上使用。</p>
+<p>Gradle插件提供了一个单独的任务，该任务从多个常规目标为iOS目标创建通用框架。下面的示例显示如何使用此任务。请注意，富框架必须具有与初始框架相同的基本名称。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask</div><div class="line"></div><div class="line">kotlin &#123;</div><div class="line">    <span class="comment">// Create and configure the targets.</span></div><div class="line">    <span class="keyword">val</span> ios32 = iosArm32(<span class="string">"ios32"</span>)</div><div class="line">    <span class="keyword">val</span> ios64 = iosArm64(<span class="string">"ios64"</span>)</div><div class="line"></div><div class="line">    configure(listOf(ios32, ios64)) &#123;</div><div class="line">        binaries.framework &#123;</div><div class="line">            baseName = <span class="string">"my_framework"</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Create a task building a fat framework.</span></div><div class="line">    tasks.create(<span class="string">"debugFatFramework"</span>, FatFrameworkTask::<span class="class"><span class="keyword">class</span>) </span>&#123;</div><div class="line">        <span class="comment">// The fat framework must have the same base name as the initial frameworks.</span></div><div class="line">        baseName = <span class="string">"my_framework"</span></div><div class="line"></div><div class="line">        <span class="comment">// The default destination directory is '&lt;build directory&gt;/fat-framework'.</span></div><div class="line">        destinationDir = buildDir.resolve(<span class="string">"fat-framework/debug"</span>)</div><div class="line"></div><div class="line">        <span class="comment">// Specify the frameworks to be merged.</span></div><div class="line">        from(</div><div class="line">            ios32.binaries.getFramework(<span class="string">"DEBUG"</span>),</div><div class="line">            ios64.binaries.getFramework(<span class="string">"DEBUG"</span>)</div><div class="line">        )</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>CInterop支持</p>
+<p>由于Kotlin/Native提供了<a href="https://kotlinlang.org/docs/reference/native/c_interop.html" target="_blank" rel="external">与 native 语言的互操作性</a>，因此有DSL允许人们为特定的编译配置此功能。</p>
+<p>编译可以与多个本机库交互。可以在编译的 <code>cinterops</code> 块中配置与它们每个的互操作性：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">kotlin &#123;</div><div class="line">    linuxX64 &#123;  <span class="comment">// Replace with a target you need.</span></div><div class="line">        compilations.getByName(<span class="string">"main"</span>) &#123;</div><div class="line">            <span class="keyword">val</span> myInterop <span class="keyword">by</span> cinterops.creating &#123;</div><div class="line">                <span class="comment">// Def-file describing the native API.</span></div><div class="line">                <span class="comment">// The default path is src/nativeInterop/cinterop/&lt;interop-name&gt;.def</span></div><div class="line">                defFile(project.file(<span class="string">"def-file.def"</span>))</div><div class="line"></div><div class="line">                <span class="comment">// Package to place the Kotlin API generated.</span></div><div class="line">                packageName(<span class="string">"org.sample"</span>)</div><div class="line"></div><div class="line">                <span class="comment">// Options to be passed to compiler by cinterop tool.</span></div><div class="line">                compilerOpts(<span class="string">"-Ipath/to/headers"</span>)</div><div class="line"></div><div class="line">                <span class="comment">// Directories to look for headers.</span></div><div class="line">                includeDirs.apply &#123;</div><div class="line">                    <span class="comment">// Directories for header search (an analogue of the -I&lt;path&gt; compiler option).</span></div><div class="line">                    allHeaders(<span class="string">"path1"</span>, <span class="string">"path2"</span>)</div><div class="line"></div><div class="line">                    <span class="comment">// Additional directories to search headers listed in the 'headerFilter' def-file option.</span></div><div class="line">                    <span class="comment">// -headerFilterAdditionalSearchPrefix command line option analogue.</span></div><div class="line">                    headerFilterOnly(<span class="string">"path1"</span>, <span class="string">"path2"</span>)</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// A shortcut for includeDirs.allHeaders.</span></div><div class="line">                includeDirs(<span class="string">"include/directory"</span>, <span class="string">"another/directory"</span>)</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="keyword">val</span> anotherInterop <span class="keyword">by</span> cinterops.creating &#123; <span class="comment">/* ... */</span> &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通常，需要为使用 native 库的二进制文件指定特定于目标的链接器选项。 可以通过使用二进制文件的 linkerOpts 属性来完成。 有关详细信息，请参见“配置二进制文件”部分。</p>
+
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4"
+                alt="LeBron_Six" />
+            
+              <p class="site-author-name" itemprop="name">LeBron_Six</p>
+              <p class="site-description motion-element" itemprop="description">欢迎访问我的博客~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Gradle-构建"><span class="nav-number">1.</span> <span class="nav-text">使用 Gradle 构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目结构"><span class="nav-number">2.</span> <span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置多平台项目"><span class="nav-number">3.</span> <span class="nav-text">设置多平台项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gradle-插件"><span class="nav-number">4.</span> <span class="nav-text">Gradle 插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置目标"><span class="nav-number">5.</span> <span class="nav-text">设置目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#支持的平台"><span class="nav-number">5.1.</span> <span class="nav-text">支持的平台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置编译"><span class="nav-number">5.2.</span> <span class="nav-text">配置编译</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置源集"><span class="nav-number">6.</span> <span class="nav-text">配置源集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#链接源集"><span class="nav-number">6.1.</span> <span class="nav-text">链接源集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加依赖"><span class="nav-number">6.2.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语言设定"><span class="nav-number">6.3.</span> <span class="nav-text">语言设定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#默认项目结构"><span class="nav-number">7.</span> <span class="nav-text">默认项目结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行测试"><span class="nav-number">8.</span> <span class="nav-text">运行测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发布多平台库"><span class="nav-number">9.</span> <span class="nav-text">发布多平台库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实验性元数据发布模式"><span class="nav-number">9.1.</span> <span class="nav-text">实验性元数据发布模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM-目标中的-Java-支持"><span class="nav-number">10.</span> <span class="nav-text">JVM 目标中的 Java 支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-支持"><span class="nav-number">11.</span> <span class="nav-text">Android 支持</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#发布Android库"><span class="nav-number">11.1.</span> <span class="nav-text">发布Android库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Kotlin-Native-目标"><span class="nav-number">12.</span> <span class="nav-text">使用 Kotlin/Native 目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标快捷方式"><span class="nav-number">12.1.</span> <span class="nav-text">目标快捷方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建最终的-native-二进制文件"><span class="nav-number">12.2.</span> <span class="nav-text">构建最终的 native 二进制文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#声明二进制"><span class="nav-number">12.2.1.</span> <span class="nav-text">声明二进制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问二进制文件"><span class="nav-number">12.3.</span> <span class="nav-text">访问二进制文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置二进制文件"><span class="nav-number">12.4.</span> <span class="nav-text">配置二进制文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在框架中导出依赖项"><span class="nav-number">12.5.</span> <span class="nav-text">在框架中导出依赖项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立通用框架"><span class="nav-number">12.6.</span> <span class="nav-text">建立通用框架</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"><a href="https://github.com/smuyyh" target="_blank">LeBron_Six</a></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+        <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'smuyyh',
+            repo: 'smuyyh.github.io',
+            
+            oauth: {
+            
+            
+                client_secret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+            
+                client_id: '0a452de0f03398d1ea74'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

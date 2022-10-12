@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="扩展 · GitBook">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LeBron_Six 的博客">
+<meta property="og:url" content="http://smuyyh.top/kotlin-in-chinese/ClassesAndObjects/Extensions.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="扩展 · GitBook">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-10-12T02:57:27.212Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeBron_Six 的博客">
+<meta name="twitter:description" content="扩展 · GitBook">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://smuyyh.top/kotlin-in-chinese/ClassesAndObjects/Extensions.html"/>
+
+
+
+
+
+  <title> | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          
+<!DOCTYPE HTML>
+<html lang="">
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>扩展 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="Data-Classes.html">
+    
+    
+    <link rel="prev" href="Visibility-Modifiers.html">
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../GettingStarted/">
+            
+                <a href="../GettingStarted/">
+            
+                    
+                    准备开始
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../GettingStarted/Basic-Syntax.html">
+            
+                <a href="../GettingStarted/Basic-Syntax.html">
+            
+                    
+                    基本语法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../GettingStarted/Idioms.html">
+            
+                <a href="../GettingStarted/Idioms.html">
+            
+                    
+                    习惯用语
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../GettingStarted/Coding-Conventions.html">
+            
+                <a href="../GettingStarted/Coding-Conventions.html">
+            
+                    
+                    编码风格
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../Basics/">
+            
+                <a href="../Basics/">
+            
+                    
+                    基础
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../Basics/Basic-Types.html">
+            
+                <a href="../Basics/Basic-Types.html">
+            
+                    
+                    基本类型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../Basics/Packages.html">
+            
+                <a href="../Basics/Packages.html">
+            
+                    
+                    包
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../Basics/Control-Flow.html">
+            
+                <a href="../Basics/Control-Flow.html">
+            
+                    
+                    控制流
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../Basics/Returns-and-Jumps.html">
+            
+                <a href="../Basics/Returns-and-Jumps.html">
+            
+                    
+                    返回与跳转
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    类和对象
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="Classes-and-Inheritance.html">
+            
+                <a href="Classes-and-Inheritance.html">
+            
+                    
+                    类和继承
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="Properties-and-Fields.html">
+            
+                <a href="Properties-and-Fields.html">
+            
+                    
+                    属性和字段
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="Interfaces.html">
+            
+                <a href="Interfaces.html">
+            
+                    
+                    接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="Visibility-Modifiers.html">
+            
+                <a href="Visibility-Modifiers.html">
+            
+                    
+                    可见性修饰词
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.5" data-path="Extensions.html">
+            
+                <a href="Extensions.html">
+            
+                    
+                    扩展
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="Data-Classes.html">
+            
+                <a href="Data-Classes.html">
+            
+                    
+                    数据对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="Generics.html">
+            
+                <a href="Generics.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="NestedClasses.html">
+            
+                <a href="NestedClasses.html">
+            
+                    
+                    嵌套类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="EnumClasses.html">
+            
+                <a href="EnumClasses.html">
+            
+                    
+                    枚举类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="ObjectExpressicAndDeclarations.html">
+            
+                <a href="ObjectExpressicAndDeclarations.html">
+            
+                    
+                    对象表达式和声明
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="Delegation.html">
+            
+                <a href="Delegation.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="DelegationProperties.html">
+            
+                <a href="DelegationProperties.html">
+            
+                    
+                    代理属性
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../FunctionsAndLambdas/">
+            
+                <a href="../FunctionsAndLambdas/">
+            
+                    
+                    函数和lambda表达式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../FunctionsAndLambdas/Functions.html">
+            
+                <a href="../FunctionsAndLambdas/Functions.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../FunctionsAndLambdas/Higher-OrderFunctionsAndLambdas.html">
+            
+                <a href="../FunctionsAndLambdas/Higher-OrderFunctionsAndLambdas.html">
+            
+                    
+                    高阶函数和lambda表达式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../FunctionsAndLambdas/InlineFunctions.html">
+            
+                <a href="../FunctionsAndLambdas/InlineFunctions.html">
+            
+                    
+                    内联函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../FunctionsAndLambdas/Cocroutines.html">
+            
+                <a href="../FunctionsAndLambdas/Cocroutines.html">
+            
+                    
+                    协程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../Other/README.md">
+            
+                <span>
+            
+                    
+                    其它
+            
+                
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../Other/Multi-Declarations.md">
+            
+                <span>
+            
+                    
+                    多重申明
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../Other/Ranges.md">
+            
+                <span>
+            
+                    
+                    Ranges
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../Other/Type-Checks-and-Casts.md">
+            
+                <span>
+            
+                    
+                    类型检查和自动转换
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="../Other/This-Expression.md">
+            
+                <span>
+            
+                    
+                    This表达式
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../Other/Equality.md">
+            
+                <span>
+            
+                    
+                    等式
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.6" data-path="../Other/Opetator-overloading.md">
+            
+                <span>
+            
+                    
+                    运算符重载
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.7" data-path="../Other/Null-Safety.md">
+            
+                <span>
+            
+                    
+                    空安全
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.8" data-path="../Other/Exceptions.md">
+            
+                <span>
+            
+                    
+                    异常
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.9" data-path="../Other/Annotations.md">
+            
+                <span>
+            
+                    
+                    注解
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.10" data-path="../Other/Reflection.md">
+            
+                <span>
+            
+                    
+                    反射
+            
+                
+            
+
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.6.11" data-path="../Other/Dynamic-Type.md">
+            
+                <span>
+            
+                    
+                    动态类型
+            
+                
+            
+
+            
+        </span></li>
+    
+
+            </ul>
+            
+        </span></li>
+    
+        <li class="chapter " data-level="1.7" data-path="../Reference/">
+            
+                <a href="../Reference/">
+            
+                    
+                    参考
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../Interop/">
+            
+                <a href="../Interop/">
+            
+                    
+                    互用性
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../Interop/Java-Interop.html">
+            
+                <a href="../Interop/Java-Interop.html">
+            
+                    
+                    动态类型
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../Tools/">
+            
+                <a href="../Tools/">
+            
+                    
+                    工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../Tools/Documenting-Kotlin-Code.html">
+            
+                <a href="../Tools/Documenting-Kotlin-Code.html">
+            
+                    
+                    Kotlin代码文档
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../Tools/Using-Maven.html">
+            
+                <a href="../Tools/Using-Maven.html">
+            
+                    
+                    使用Maven
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="../Tools/Using-Ant.html">
+            
+                <a href="../Tools/Using-Ant.html">
+            
+                    
+                    使用Ant
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.4" data-path="../Tools/Using-Griffon.html">
+            
+                <a href="../Tools/Using-Griffon.html">
+            
+                    
+                    使用Griffon
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.5" data-path="../Tools/Using-Gradle.html">
+            
+                <a href="../Tools/Using-Gradle.html">
+            
+                    
+                    使用Gradle
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="../FAQ/">
+            
+                <a href="../FAQ/">
+            
+                    
+                    FAQ
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="../FAQ/Comparison2java.html">
+            
+                <a href="../FAQ/Comparison2java.html">
+            
+                    
+                    与java对比
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10.2" data-path="../FAQ/Comparison2Scala.html">
+            
+                <a href="../FAQ/Comparison2Scala.html">
+            
+                    
+                    与Scala对比
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="..">扩展</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h2 id="&#x6269;&#x5C55;">&#x6269;&#x5C55;</h2>
+<p>&#x4E0E; C# &#x548C; Gosu &#x7C7B;&#x4F3C;, Kotlin &#x4E5F;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x79CD;,&#x53EF;&#x4EE5;&#x5728;&#x4E0D;&#x7EE7;&#x627F;&#x7236;&#x7C7B;&#xFF0C;&#x4E5F;&#x4E0D;&#x4F7F;&#x7528;&#x7C7B;&#x4F3C;&#x88C5;&#x9970;&#x5668;&#x8FD9;&#x6837;&#x7684;&#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x5BF9;&#x6307;&#x5B9A;&#x7C7B;&#x8FDB;&#x884C;&#x6269;&#x5C55;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x4E00;&#x79CD;&#x53EB;&#x505A;&#x6269;&#x5C55;&#x7684;&#x7279;&#x6B8A;&#x58F0;&#x660E;&#x6765;&#x5B9E;&#x73B0;&#x4ED6;&#x3002;Kotlin &#x652F;&#x6301;&#x51FD;&#x6570;&#x6269;&#x5C55;&#x548C;&#x5C5E;&#x6027;&#x6269;&#x5C55;&#x3002;</p>
+<h3 id="&#x51FD;&#x6570;&#x6269;&#x5C55;">&#x51FD;&#x6570;&#x6269;&#x5C55;</h3>
+<p>&#x4E3A;&#x4E86;&#x58F0;&#x660E;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x6269;&#x5C55;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5728;&#x51FD;&#x6570;&#x524D;&#x52A0;&#x4E00;&#x4E2A;&#x63A5;&#x6536;&#x8005;&#x7C7B;&#x578B;&#x4F5C;&#x4E3A;&#x524D;&#x7F00;&#x3002;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x4F1A;&#x4E3A; <code>MutableList&lt;Int&gt;</code> &#x6DFB;&#x52A0;&#x4E00;&#x4E2A; <code>swap</code> &#x51FD;&#x6570;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> MutableList<span class="hljs-type">&lt;Int&gt;</span>.<span class="hljs-title">swap</span><span class="hljs-params">(x: <span class="hljs-type">Int, y: Int</span>)</span> {</span>
+    <span class="hljs-variable"><span class="hljs-keyword">val</span> tmp</span> = this[x] <span class="hljs-comment">// this &#x5BF9;&#x5E94; list</span>
+    this[x] = this[y]
+    this[y] = tmp
+}
+</code></pre>
+<p>&#x5728;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x4E2D;&#x7684; this &#x5173;&#x952E;&#x5B57;&#x5BF9;&#x5E94;&#x63A5;&#x6536;&#x8005;&#x5BF9;&#x8C61;&#x3002;&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5728;&#x4EFB;&#x4F55; <code>MutableList&lt;Int&gt;</code> &#x5B9E;&#x4F8B;&#x4E2D;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x4E86;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-variable"><span class="hljs-keyword">val</span> l</span> = mutableListOf(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)
+l.swap(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>)<span class="hljs-comment">// &#x5728; `swap()` &#x51FD;&#x6570;&#x4E2D; `this` &#x6301;&#x6709;&#x7684;&#x503C;&#x662F; `l`</span>
+</code></pre>
+<p>&#x5F53;&#x7136;&#xFF0C;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x5BF9;&#x4EFB;&#x610F;&#x7684; <code>MutableList&lt;T&gt;</code> &#x90FD;&#x662F;&#x9002;&#x7528;&#x7684;&#xFF0C;&#x800C;&#x4E14;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x628A;&#x5B83;&#x53D8;&#x7684;&#x901A;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-type">&lt;T&gt;</span> MutableList<span class="hljs-type">&lt;T&gt;</span>.<span class="hljs-title">swap</span><span class="hljs-params">(x: <span class="hljs-type">Int, y: Int</span>)</span> {</span>
+  <span class="hljs-variable"><span class="hljs-keyword">val</span> tmp</span> = this[x] <span class="hljs-comment">// &apos;this&apos; corresponds to the list</span>
+  this[x] = this[y]
+  this[y] = tmp
+}
+</code></pre>
+<p>&#x6211;&#x4EEC;&#x5728;&#x51FD;&#x6570;&#x540D;&#x524D;&#x58F0;&#x660E;&#x4E86;&#x901A;&#x7528;&#x7C7B;&#x578B;&#xFF0C;&#x4ECE;&#x800C;&#x4F7F;&#x5B83;&#x53EF;&#x4EE5;&#x63A5;&#x53D7;&#x4EFB;&#x4F55;&#x53C2;&#x6570;&#x3002;&#x53C2;&#x770B;<a href="http://kotlinlang.org/docs/reference/generics.html" target="_blank">&#x6CDB;&#x578B;&#x51FD;&#x6570;</a>&#x3002;</p>
+<h3 id="&#x6269;&#x5C55;&#x662F;&#x88AB;&#x9759;&#x6001;&#x89E3;&#x6790;&#x7684;">&#x6269;&#x5C55;&#x662F;&#x88AB;<strong>&#x9759;&#x6001;</strong>&#x89E3;&#x6790;&#x7684;</h3>
+<p>&#x6269;&#x5C55;&#x5B9E;&#x9645;&#x4E0A;&#x5E76;&#x6CA1;&#x6709;&#x4FEE;&#x6539;&#x5B83;&#x6240;&#x6269;&#x5C55;&#x7684;&#x7C7B;&#x3002;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x6269;&#x5C55;&#xFF0C;&#x4F60;&#x5E76;&#x6CA1;&#x6709;&#x5728;&#x7C7B;&#x4E2D;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x6210;&#x5458;&#xFF0C;&#x53EA;&#x662F;&#x8BA9;&#x8FD9;&#x4E2A;&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;&#x5BF9;&#x8C61;&#x80FD;&#x591F;&#x901A;&#x8FC7;<code>.</code>&#x8C03;&#x7528;&#x65B0;&#x7684;&#x51FD;&#x6570;&#x3002;</p>
+<p>&#x9700;&#x8981;&#x5F3A;&#x8C03;&#x7684;&#x662F;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x662F;&#x9759;&#x6001;&#x5206;&#x53D1;&#x7684;&#xFF0C;&#x4E3E;&#x4E2A;&#x4F8B;&#x5B50;,&#x5B83;&#x4EEC;&#x5E76;&#x4E0D;&#x662F;&#x63A5;&#x53D7;&#x8005;&#x7C7B;&#x578B;&#x7684;&#x865A;&#x62DF;&#x65B9;&#x6CD5;&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x7684;&#x8C03;&#x7528;&#x662F;&#x7531;&#x53D1;&#x8D77;&#x51FD;&#x6570;&#x8C03;&#x7528;&#x7684;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x7C7B;&#x578B;&#x51B3;&#x5B9A;&#x7684;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x52A8;&#x6001;&#x83B7;&#x5F97;&#x7684;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x7C7B;&#x578B;&#x51B3;&#x5B9A;&#x3002;&#x6BD4;&#x5982;</p>
+<pre><code class="lang-Kotlin"><span class="hljs-keyword">open</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">C</span> </span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">D</span>: <span class="hljs-type">C</span></span>()
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> C.<span class="hljs-title">foo</span><span class="hljs-params">()</span> = &quot;c&quot; </span>
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> D.<span class="hljs-title">foo</span><span class="hljs-params">()</span> = &quot;d&quot;</span>
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">printFoo</span><span class="hljs-params">(c: <span class="hljs-type">C</span>)</span> { </span>
+    println(c.foo())
+} 
+
+printFoo(D())
+</code></pre>
+<p>&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x4F1A;&#x8F93;&#x51FA; <code>c</code>&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x91CC;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x7684;&#x8C03;&#x7528;&#x51B3;&#x5B9A;&#x4E8E;&#x58F0;&#x660E;&#x7684;&#x53C2;&#x6570; <code>c</code> &#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x4E5F;&#x5C31;&#x662F; <code>C</code>&#x3002;</p>
+<p>&#x5982;&#x679C;&#x6709;&#x540C;&#x540D;&#x540C;&#x53C2;&#x6570;&#x7684;&#x6210;&#x5458;&#x51FD;&#x6570;&#x548C;&#x6269;&#x5C55;&#x51FD;&#x6570;&#xFF0C;&#x8C03;&#x7528;&#x7684;&#x65F6;&#x5019;&#x5FC5;&#x7136;&#x4F1A;&#x4F7F;&#x7528;&#x6210;&#x5458;&#x51FD;&#x6570;&#xFF0C;&#x6BD4;&#x5982;&#xFF1A;</p>
+<pre><code class="lang-kotlin">
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">C</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span> { <span class="hljs-title">println</span><span class="hljs-params">(&quot;member&quot;)</span> }</span>
+
+}
+<span class="hljs-function"><span class="hljs-keyword">fun</span> C.<span class="hljs-title">foo</span><span class="hljs-params">()</span> { <span class="hljs-title">println</span><span class="hljs-params">(&quot;extension&quot;)</span> }</span>
+</code></pre>
+<p>&#x5F53;&#x6211;&#x4EEC;&#x5BF9;C&#x7684;&#x5B9E;&#x4F8B;c&#x8C03;&#x7528;<code>c.foo()</code>&#x7684;&#x65F6;&#x5019;,&#x4ED6;&#x4F1A;&#x8F93;&#x51FA;&quot;member&quot;,&#x800C;&#x4E0D;&#x662F;&quot;extension&quot;</p>
+<p>&#x4F46;&#x4F60;&#x53EF;&#x4EE5;&#x7528;&#x4E0D;&#x540C;&#x7684;&#x51FD;&#x6570;&#x7B7E;&#x540D;&#x901A;&#x8FC7;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x7684;&#x65B9;&#x5F0F;&#x91CD;&#x8F7D;&#x51FD;&#x6570;&#x7684;&#x6210;&#x5458;&#x51FD;&#x6570;&#xFF0C;&#x6BD4;&#x5982;&#x4E0B;&#x9762;&#x8FD9;&#x6837;&#xFF1A;</p>
+<pre><code class="lang-Kotlin"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">C</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span> { <span class="hljs-title">println</span><span class="hljs-params">(&quot;number&quot;)</span> }</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> C.<span class="hljs-title">foo</span><span class="hljs-params">(i:<span class="hljs-type">Int</span>)</span> { <span class="hljs-title">println</span><span class="hljs-params">(&quot;extention&quot;)</span> }</span>
+</code></pre>
+<p><code>C().foo(1)</code> &#x7684;&#x8C03;&#x7528;&#x4F1A;&#x6253;&#x5370; &#x201C;extentions&#x201D;&#x3002;</p>
+<h3 id="&#x53EF;&#x7A7A;&#x7684;&#x63A5;&#x6536;&#x8005;">&#x53EF;&#x7A7A;&#x7684;&#x63A5;&#x6536;&#x8005;</h3>
+<p>&#x6CE8;&#x610F;&#x6269;&#x5C55;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x7A7A;&#x63A5;&#x6536;&#x8005;&#x7C7B;&#x578B;&#x8FDB;&#x884C;&#x5B9A;&#x4E49;&#x3002;&#x8FD9;&#x6837;&#x7684;&#x6269;&#x5C55;&#x4F7F;&#x5F97;&#xFF0C;&#x5373;&#x4F7F;&#x662F;&#x4E00;&#x4E2A;&#x7A7A;&#x5BF9;&#x8C61;&#x4ECD;&#x7136;&#x53EF;&#x4EE5;&#x8C03;&#x7528;&#x8BE5;&#x6269;&#x5C55;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x6269;&#x5C55;&#x7684;&#x5185;&#x90E8;&#x8FDB;&#x884C; <code>this == null</code> &#x7684;&#x5224;&#x65AD;&#x3002;&#x8FD9;&#x6837;&#x4F60;&#x5C31;&#x53EF;&#x4EE5;&#x5728; Kotlin &#x4E2D;&#x4EFB;&#x610F;&#x8C03;&#x7528; toString() &#x65B9;&#x6CD5;&#x800C;&#x4E0D;&#x8FDB;&#x884C;&#x7A7A;&#x6307;&#x9488;&#x68C0;&#x67E5;&#xFF1A;&#x7A7A;&#x6307;&#x9488;&#x68C0;&#x67E5;&#x5EF6;&#x540E;&#x5230;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x4E2D;&#x5B8C;&#x6210;&#x3002;</p>
+<pre><code class="lang-kotlin"><span class="hljs-function"><span class="hljs-keyword">fun</span> Any?.<span class="hljs-title">toString</span><span class="hljs-params">()</span>: String {</span>
+    <span class="hljs-keyword">if</span> (this == <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;null&quot;</span>
+    <span class="hljs-comment">// &#x5728;&#x7A7A;&#x68C0;&#x67E5;&#x4E4B;&#x540E;&#xFF0C;`this` &#x88AB;&#x81EA;&#x52A8;&#x8F6C;&#x4E3A;&#x975E;&#x7A7A;&#x7C7B;&#x578B;&#xFF0C;&#x56E0;&#x6B64; toString() &#x53EF;&#x4EE5;&#x88AB;&#x89E3;&#x6790;&#x5230;&#x4EFB;&#x4F55;&#x7C7B;&#x7684;&#x6210;&#x5458;&#x51FD;&#x6570;&#x4E2D;</span>
+    <span class="hljs-keyword">return</span> toString()
+}
+</code></pre>
+<h3 id="&#x5C5E;&#x6027;&#x6269;&#x5C55;">&#x5C5E;&#x6027;&#x6269;&#x5C55;</h3>
+<p>&#x548C;&#x51FD;&#x6570;&#x7C7B;&#x4F3C;&#xFF0C; Kotlin &#x4E5F;&#x652F;&#x6301;&#x5C5E;&#x6027;&#x6269;&#x5C55;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-variable"><span class="hljs-keyword">val</span> &lt;T&gt; List&lt;T&gt;.lastIndex</span>:  <span class="hljs-keyword">Int</span>
+    <span class="hljs-keyword">get</span>() = size<span class="hljs-number">-1</span>
+</code></pre>
+<p>&#x6CE8;&#x610F;&#xFF0C;&#x7531;&#x4E8E;&#x6269;&#x5C55;&#x5E76;&#x4E0D;&#x4F1A;&#x771F;&#x6B63;&#x7ED9;&#x7C7B;&#x6DFB;&#x52A0;&#x4E86;&#x6210;&#x5458;&#x5C5E;&#x6027;&#xFF0C;&#x56E0;&#x6B64;&#x4E5F;&#x6CA1;&#x6709;&#x529E;&#x6CD5;&#x8BA9;&#x6269;&#x5C55;&#x5C5E;&#x6027;&#x62E5;&#x6709;&#x4E00;&#x4E2A;&#x5907;&#x4EFD;&#x5B57;&#x6BB5;.&#x8FD9;&#x4E5F;&#x662F;&#x4E3A;&#x4EC0;&#x4E48;<strong>&#x521D;&#x59CB;&#x5316;&#x51FD;&#x6570;&#x4E0D;&#x5141;&#x8BB8;&#x6709;&#x6269;&#x5C55;&#x5C5E;&#x6027;</strong>&#x3002;&#x6269;&#x5C55;&#x5C5E;&#x6027;&#x53EA;&#x80FD;&#x591F;&#x901A;&#x8FC7;&#x660E;&#x786E;&#x63D0;&#x4F9B; getter &#x548C; setter&#x65B9;&#x6CD5;&#x6765;&#x8FDB;&#x884C;&#x5B9A;&#x4E49;.</p>
+<p>&#x4F8B;&#x5B50;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-variable"><span class="hljs-keyword">val</span> Foo.bar</span> = <span class="hljs-number">1</span> <span class="hljs-comment">//error: initializers are not allowed for extension properties</span>
+</code></pre>
+<h3 id="&#x4F34;&#x968F;&#x5BF9;&#x8C61;&#x6269;&#x5C55;">&#x4F34;&#x968F;&#x5BF9;&#x8C61;&#x6269;&#x5C55;</h3>
+<p>&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x5B9A;&#x4E49;&#x4E86;&#x4F34;&#x968F;&#x5BF9;&#x8C61;&#xFF0C;&#x4F60;&#x4E5F;&#x53EF;&#x4EE5;&#x7ED9;&#x4F34;&#x968F;&#x5BF9;&#x8C61;&#x6DFB;&#x52A0;&#x6269;&#x5C55;&#x51FD;&#x6570;&#x6216;&#x6269;&#x5C55;&#x5C5E;&#x6027;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyClass</span> </span>{
+    <span class="hljs-keyword">companion</span> <span class="hljs-keyword">object</span> {} 
+}
+<span class="hljs-function"><span class="hljs-keyword">fun</span> MyClass.Companion.<span class="hljs-title">foo</span><span class="hljs-params">()</span>{</span>
+
+}
+</code></pre>
+<p>&#x548C;&#x666E;&#x901A;&#x4F34;&#x968F;&#x5BF9;&#x8C61;&#x7684;&#x6210;&#x5458;&#x4E00;&#x6837;&#xFF0C;&#x5B83;&#x4EEC;&#x53EF;&#x4EE5;&#x53EA;&#x7528;&#x7C7B;&#x7684;&#x540D;&#x5B57;&#x5C31;&#x8C03;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-kotlin">MyClass.foo()
+</code></pre>
+<h3 id="&#x6269;&#x5C55;&#x7684;&#x57DF;">&#x6269;&#x5C55;&#x7684;&#x57DF;</h3>
+<p>&#x5927;&#x591A;&#x6570;&#x65F6;&#x5019;&#x6211;&#x4EEC;&#x5728; top level &#x5B9A;&#x4E49;&#x6269;&#x5C55;&#xFF0C;&#x5C31;&#x5728;&#x5305;&#x4E0B;&#x9762;&#x76F4;&#x63A5;&#x5B9A;&#x4E49;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">package</span> foo.bar
+<span class="hljs-function"><span class="hljs-keyword">fun</span> Baz.<span class="hljs-title">goo</span><span class="hljs-params">()</span> { ... }</span>
+</code></pre>
+<p>&#x4E3A;&#x4E86;&#x5728;&#x9664;&#x58F0;&#x660E;&#x7684;&#x5305;&#x5916;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x6269;&#x5C55;&#xFF0C;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5728; import &#x65F6;&#x5BFC;&#x5165;&#xFF1A;</p>
+<pre><code class="lang-kotlin"><span class="hljs-keyword">package</span> com.example.usage
+
+<span class="hljs-keyword">import</span> foo.bar.goo <span class="hljs-comment">// &#x5BFC;&#x5165;&#x6240;&#x6709;&#x540D;&#x5B57;&#x53EB; &quot;goo&quot; &#x7684;&#x6269;&#x5C55;</span>
+
+                    <span class="hljs-comment">// &#x6216;&#x8005;</span>
+
+<span class="hljs-keyword">import</span> foo.bar.* <span class="hljs-comment">// &#x5BFC;&#x5165;foo.bar&#x5305;&#x4E0B;&#x5F97;&#x6240;&#x6709;&#x6570;&#x636E;</span>
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">usage</span><span class="hljs-params">(baz: <span class="hljs-type">Baz</span>)</span> {</span>
+    baz.goo()
+}
+</code></pre>
+<h3 id="&#x52A8;&#x673A;">&#x52A8;&#x673A;</h3>
+<p>&#x5728; java &#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x901A;&#x5E38;&#x4F7F;&#x7528;&#x4E00;&#x7CFB;&#x5217;&#x540D;&#x5B57;&#x4E3A; &quot;*Utils&quot; &#x7684;&#x7C7B;: <code>FileUtils</code>,<code>StringUtils</code>&#x7B49;&#x7B49;&#x3002;&#x5F88;&#x6709;&#x540D;&#x7684; <code>java.util.Collections</code> &#x4E5F;&#x662F;&#x5176;&#x4E2D;&#x4E00;&#x5458;&#x7684;&#xFF0C;&#x4F46;&#x6211;&#x4EEC;&#x4E0D;&#x5F97;&#x4E0D;&#x50CF;&#x4E0B;&#x9762;&#x8FD9;&#x6837;&#x4F7F;&#x7528;&#x4ED6;&#x4EEC;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-comment">//java</span>
+Collections.swap(list, Collections.binarySearch(list, Collections.max(otherList)), Collections.max(list))
+</code></pre>
+<p>&#x7531;&#x4E8E;&#x8FD9;&#x4E9B;&#x7C7B;&#x540D;&#x603B;&#x662F;&#x4E0D;&#x53D8;&#x7684;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x9759;&#x6001;&#x5BFC;&#x5165;&#x5E76;&#x8FD9;&#x6837;&#x4F7F;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-java">swap(list, binarySearch(list, max(otherList)), max(list))
+</code></pre>
+<p>&#x8FD9;&#x6837;&#x5C31;&#x597D;&#x5F88;&#x591A;&#x4E86;&#xFF0C;&#x4F46;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x53EA;&#x80FD;&#x4ECE; IDE &#x81EA;&#x52A8;&#x5B8C;&#x6210;&#x4EE3;&#x7801;&#x90A3;&#x91CC;&#x83B7;&#x5F97;&#x5F88;&#x5C11;&#x6216;&#x5F97;&#x4E0D;&#x5230;&#x5E2E;&#x52A9;&#x4FE1;&#x606F;&#x3002;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x50CF;&#x4E0B;&#x9762;&#x8FD9;&#x6837;&#x90A3;&#x4E48;&#x5C31;&#x597D;&#x591A;&#x4E86;</p>
+<pre><code class="lang-kotlin">list.swap(list.binarySearch(otherList.max()), list.max())
+</code></pre>
+<p>&#x4F46;&#x6211;&#x4EEC;&#x53C8;&#x4E0D;&#x60F3;&#x5728; List &#x7C7B;&#x4E2D;&#x5B9E;&#x73B0;&#x6240;&#x6709;&#x53EF;&#x80FD;&#x7684;&#x65B9;&#x6CD5;&#x3002;&#x8FD9;&#x5C31;&#x662F;&#x6269;&#x5C55;&#x5E26;&#x6765;&#x7684;&#x597D;&#x5904;&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class="search-results-count"></span> results matching "<span class="search-query"></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class="search-query"></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="Visibility-Modifiers.html" class="navigation navigation-prev " aria-label="Previous page: 可见性修饰词">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="Data-Classes.html" class="navigation navigation-next " aria-label="Next page: 数据对象">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"扩展","level":"1.4.5","depth":2,"next":{"title":"数据对象","level":"1.4.6","depth":2,"path":"ClassesAndObjects/Data-Classes.md","ref":"ClassesAndObjects/Data-Classes.md","articles":[]},"previous":{"title":"可见性修饰词","level":"1.4.4","depth":2,"path":"ClassesAndObjects/Visibility-Modifiers.md","ref":"ClassesAndObjects/Visibility-Modifiers.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ClassesAndObjects/Extensions.md","mtime":"2020-02-12T08:45:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-12T02:57:25.064Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
+
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4"
+                alt="LeBron_Six" />
+            
+              <p class="site-author-name" itemprop="name">LeBron_Six</p>
+              <p class="site-description motion-element" itemprop="description">欢迎访问我的博客~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">
+        
+        扩展
+    </span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展"><span class="nav-number">1.1.</span> <span class="nav-text">扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数扩展"><span class="nav-number">1.1.1.</span> <span class="nav-text">函数扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展是被静态解析的"><span class="nav-number">1.1.2.</span> <span class="nav-text">扩展是被静态解析的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可空的接收者"><span class="nav-number">1.1.3.</span> <span class="nav-text">可空的接收者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性扩展"><span class="nav-number">1.1.4.</span> <span class="nav-text">属性扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#伴随对象扩展"><span class="nav-number">1.1.5.</span> <span class="nav-text">伴随对象扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展的域"><span class="nav-number">1.1.6.</span> <span class="nav-text">扩展的域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#动机"><span class="nav-number">1.1.7.</span> <span class="nav-text">动机</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text"> results matching ""</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">No results matching ""</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"><a href="https://github.com/smuyyh" target="_blank">LeBron_Six</a></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+        <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'smuyyh',
+            repo: 'smuyyh.github.io',
+            
+            oauth: {
+            
+            
+                client_secret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+            
+                client_id: '0a452de0f03398d1ea74'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

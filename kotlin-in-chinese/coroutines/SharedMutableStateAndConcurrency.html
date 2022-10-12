@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="共享的可变状态和并发 问题 Volatiles不起作用 线程安全的数据结构 细粒度线程限制 粗粒度线程限制 互斥 Actors    共享的可变状态和并发协程可以使用诸如Dispatchers.Default之类的多线程调度程序并发执行。 它代表了所有常见的并发问题。 主要问题是同步访问共享可变状态。 协程领域中针对此问题的某些解决方案与多线程世界中的解决方案相似，但其他解决方案却是独一无二的。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LeBron_Six 的博客">
+<meta property="og:url" content="http://smuyyh.top/kotlin-in-chinese/coroutines/SharedMutableStateAndConcurrency.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="共享的可变状态和并发 问题 Volatiles不起作用 线程安全的数据结构 细粒度线程限制 粗粒度线程限制 互斥 Actors    共享的可变状态和并发协程可以使用诸如Dispatchers.Default之类的多线程调度程序并发执行。 它代表了所有常见的并发问题。 主要问题是同步访问共享可变状态。 协程领域中针对此问题的某些解决方案与多线程世界中的解决方案相似，但其他解决方案却是独一无二的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-10-12T02:57:26.191Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeBron_Six 的博客">
+<meta name="twitter:description" content="共享的可变状态和并发 问题 Volatiles不起作用 线程安全的数据结构 细粒度线程限制 粗粒度线程限制 互斥 Actors    共享的可变状态和并发协程可以使用诸如Dispatchers.Default之类的多线程调度程序并发执行。 它代表了所有常见的并发问题。 主要问题是同步访问共享可变状态。 协程领域中针对此问题的某些解决方案与多线程世界中的解决方案相似，但其他解决方案却是独一无二的。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://smuyyh.top/kotlin-in-chinese/coroutines/SharedMutableStateAndConcurrency.html"/>
+
+
+
+
+
+  <title> | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <ul>
+<li><a href="#共享的可变状态和并发">共享的可变状态和并发</a><ul>
+<li><a href="#问题">问题</a></li>
+<li><a href="#Volatiles不起作用">Volatiles不起作用</a></li>
+<li><a href="#线程安全的数据结构">线程安全的数据结构</a></li>
+<li><a href="#细粒度线程限制">细粒度线程限制</a></li>
+<li><a href="#粗粒度线程限制">粗粒度线程限制</a></li>
+<li><a href="#互斥">互斥</a></li>
+<li><a href="#Actors">Actors</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="共享的可变状态和并发"><a href="#共享的可变状态和并发" class="headerlink" title="共享的可变状态和并发"></a>共享的可变状态和并发</h2><p>协程可以使用诸如Dispatchers.Default之类的多线程调度程序并发执行。 它代表了所有常见的并发问题。 主要问题是同步访问共享可变状态。 协程领域中针对此问题的某些解决方案与多线程世界中的解决方案相似，但其他解决方案却是独一无二的。</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>让我们启动一百个协程，它们都执行相同的动作数千次。 我们还将测量它们的完成时间以进行进一步的比较：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">suspend <span class="function"><span class="keyword">fun</span> <span class="title">massiveRun</span><span class="params">(action: <span class="type">suspend</span> ()</span></span> -&gt; <span class="built_in">Unit</span>) &#123;</div><div class="line">    <span class="keyword">val</span> n = <span class="number">100</span>  <span class="comment">// number of coroutines to launch</span></div><div class="line">    <span class="keyword">val</span> k = <span class="number">1000</span> <span class="comment">// times an action is repeated by each coroutine</span></div><div class="line">    <span class="keyword">val</span> time = measureTimeMillis &#123;</div><div class="line">        coroutineScope &#123; <span class="comment">// scope for coroutines </span></div><div class="line">            repeat(n) &#123;</div><div class="line">                launch &#123;</div><div class="line">                    repeat(k) &#123; action() &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    println(<span class="string">"Completed <span class="subst">$&#123;n * k&#125;</span> actions in <span class="variable">$time</span> ms"</span>)    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们从一个非常简单的操作开始，该操作使用多线程Dispatchers.Default增加共享的可变变量。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> counter = <span class="number">0</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> = runBlocking &#123;</div><div class="line">    withContext(Dispatchers.Default) &#123;</div><div class="line">        massiveRun &#123;</div><div class="line">            counter++</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    println(<span class="string">"Counter = <span class="variable">$counter</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后他会输出什么呢? 很大可能上不是 “Counter - 100000”, 因为上百个协程会在多线中非同步的对 <code>counter</code> 进行并发操作.</p>
+<h3 id="Volatiles不起作用"><a href="#Volatiles不起作用" class="headerlink" title="Volatiles不起作用"></a>Volatiles不起作用</h3><p>常见的误解是，标记变量为 <code>volatile</code> 可解决并发问题。 让我们尝试一下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Volatile</span> <span class="comment">// in Kotlin `volatile` is an annotation </span></div><div class="line"><span class="keyword">var</span> counter = <span class="number">0</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> = runBlocking &#123;</div><div class="line">    withContext(Dispatchers.Default) &#123;</div><div class="line">        massiveRun &#123;</div><div class="line">            counter++</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    println(<span class="string">"Counter = <span class="variable">$counter</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>该代码的运行速度较慢，但是最后我们仍然无法获得“ Counter = 100000”，因为 volatile 变量可确保线性化（ linearizable 这是“原子”的技术术语）可读写相应的变量，但不提供原子性较大的动作（在我们的情况下为增加）。</p>
+<h3 id="线程安全的数据结构"><a href="#线程安全的数据结构" class="headerlink" title="线程安全的数据结构"></a>线程安全的数据结构</h3><p>适用于线程和协程的通用解决方案是使用线程安全（aka同步，线性化或原子）数据结构，该结构为需要在共享状态下执行的相应操作提供所有必需的同步。 对于简单的计数器，我们可以使用 <code>AtomicInteger</code> 类，该类具有原子级 <code>incrementAndGet</code> 操作：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> counter = AtomicInteger()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> = runBlocking &#123;</div><div class="line">    withContext(Dispatchers.Default) &#123;</div><div class="line">        massiveRun &#123;</div><div class="line">            counter.incrementAndGet()</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    println(<span class="string">"Counter = <span class="variable">$counter</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这是针对此特定问题的最快解决方案。 它适用于简单计数器，集合，队列和其他标准数据结构以及对其的基本操作。 但是，它不容易扩展到复杂状态或者复杂操作,它们并没有一个可以立即使用的线程安全的实现.</p>
+<h3 id="细粒度线程限制"><a href="#细粒度线程限制" class="headerlink" title="细粒度线程限制"></a>细粒度线程限制</h3><p>线程限制是一种解决共享可变状态的方法，其中对特定共享状态的所有访问都限于一个线程。它通常用于UI应用程序中，其中所有UI状态都限制在单个事件调度/应用程序线程中。通过使用<br>单线程上下文。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> counterContext = newSingleThreadContext(<span class="string">"CounterContext"</span>)</div><div class="line"><span class="keyword">var</span> counter = <span class="number">0</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> = runBlocking &#123;</div><div class="line">    withContext(Dispatchers.Default) &#123;</div><div class="line">        massiveRun &#123;</div><div class="line">            <span class="comment">// confine each increment to a single-threaded context</span></div><div class="line">            withContext(counterContext) &#123;</div><div class="line">                counter++</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    println(<span class="string">"Counter = <span class="variable">$counter</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这段代码非常慢，因为它可以进行细粒度的线程约束。每个单独的增量都使用withContext（counterContext）块从多线程 Dispatchers.Default 上下文切换到单线程上下文。</p>
+<h3 id="粗粒度线程限制"><a href="#粗粒度线程限制" class="headerlink" title="粗粒度线程限制"></a>粗粒度线程限制</h3><p>实际上，线程限制是大块执行的，例如状态更新业务逻辑的大部分都局限于单个线程中。下面的示例就是这样做的，首先在单线程上下文中运行每个协程。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> counterContext = newSingleThreadContext(<span class="string">"CounterContext"</span>)</div><div class="line"><span class="keyword">var</span> counter = <span class="number">0</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> = runBlocking &#123;</div><div class="line">    <span class="comment">// confine everything to a single-threaded context</span></div><div class="line">    withContext(counterContext) &#123;</div><div class="line">        massiveRun &#123;</div><div class="line">            counter++</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    println(<span class="string">"Counter = <span class="variable">$counter</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>现在这可以更快地工作并产生正确的结果。</p>
+<h3 id="互斥"><a href="#互斥" class="headerlink" title="互斥"></a>互斥</h3><p>解决该问题的互斥解决方案是使用永远不会并行的临界区来保护共享状态的所有修改。在阻塞的世界中，通常会为此使用 <code>synchronized</code> 或 <code>ReentrantLock</code> 。协程的替代品称为 <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.sync/-mutex/index.html" target="_blank" rel="external">Mutex</a> 。它具有 <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.sync/-mutex/lock.html" target="_blank" rel="external">lock</a> 和 <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.sync/-mutex/unlock.html" target="_blank" rel="external">unlock</a> 函数来界定临界区。关键区别在于Mutex.lock（）是一个可挂起函数。它不会阻塞线程。</p>
+<p>还有一个 <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.sync/with-lock.html" target="_blank" rel="external">withLock</a> 扩展函数，可以方便地表示 <code>mutex.lock(); try { ... } finally { mutex.unlock() }</code> 模式：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> mutex = Mutex()</div><div class="line"><span class="keyword">var</span> counter = <span class="number">0</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> = runBlocking &#123;</div><div class="line">    withContext(Dispatchers.Default) &#123;</div><div class="line">        massiveRun &#123;</div><div class="line">            <span class="comment">// protect each increment with lock</span></div><div class="line">            mutex.withLock &#123;</div><div class="line">                counter++</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    println(<span class="string">"Counter = <span class="variable">$counter</span>"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>此示例中的锁定是细粒度的，因此要付出代价。 但是，在某些情况下，须定期修改某些共享状态，但是没有限制该状态的自然线程，这是一个不错的选择。</p>
+<h3 id="Actors"><a href="#Actors" class="headerlink" title="Actors"></a>Actors</h3><p><a href="https://en.wikipedia.org/wiki/Actor_model" target="_blank" rel="external">actor</a> 是一个结合协程创建的实体，该协程限制并封装的状态以及与其他协程通信的通道组成的实体。可以将简单的actor编写为函数，但是状态复杂的actor更适合用类表示。</p>
+<p><a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html" target="_blank" rel="external">actor</a> 协程生成器，可以方便地将actor的邮箱通道合并到其作用域中，以从中接收消息，并将send通道合并到结果 job 对象中，actor的单个引用作为其句柄。</p>
+<p>使用actor的第一步是定义actor将要处理的消息类。 Kotlin的 <a href="https://kotlinlang.org/docs/reference/sealed-classes.html" target="_blank" rel="external">sealed 类</a> 非常适合该目的。我们定义 CounterMsg 密封类,IncCounter 消息以增加计数器，GetCounter 消息获取其值。后者需要发送响应。为此，此处使用了 <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-completable-deferred/index.html" target="_blank" rel="external">CompletableDeferred</a> 通信原语，该原语表示将来将要知道（传递）的单个值。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Message types for counterActor</span></div><div class="line"><span class="keyword">sealed</span> <span class="class"><span class="keyword">class</span> <span class="title">CounterMsg</span></span></div><div class="line"><span class="keyword">object</span> IncCounter : CounterMsg() <span class="comment">// one-way message to increment counter</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GetCounter</span></span>(<span class="keyword">val</span> response: CompletableDeferred&lt;<span class="built_in">Int</span>&gt;) : CounterMsg() <span class="comment">// a request with reply</span></div></pre></td></tr></table></figure>
+<p>然后，我们定义一个使用actor协程生成器启动actor的函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// This function launches a new counter actor</div><div class="line">fun CoroutineScope.counterActor() = actor&lt;CounterMsg&gt; &#123;</div><div class="line">    var counter = 0 // actor state</div><div class="line">    for (msg in channel) &#123; // iterate over incoming messages</div><div class="line">        when (msg) &#123;</div><div class="line">            is IncCounter -&gt; counter++</div><div class="line">            is GetCounter -&gt; msg.response.complete(counter)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>主要代码很简单：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> = runBlocking&lt;<span class="built_in">Unit</span>&gt; &#123;</div><div class="line">    <span class="keyword">val</span> counter = counterActor() <span class="comment">// create the actor</span></div><div class="line">    withContext(Dispatchers.Default) &#123;</div><div class="line">        massiveRun &#123;</div><div class="line">            counter.send(IncCounter)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// send a message to get a counter value from an actor</span></div><div class="line">    <span class="keyword">val</span> response = CompletableDeferred&lt;<span class="built_in">Int</span>&gt;()</div><div class="line">    counter.send(GetCounter(response))</div><div class="line">    println(<span class="string">"Counter = <span class="subst">$&#123;response.await()&#125;</span>"</span>)</div><div class="line">    counter.close() <span class="comment">// shutdown the actor</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>正确执行 actor 本身在什么上下文中都没有关系（正确性）。actor 是一个协程,而协程是顺序执行的，因此将状态限制为特定协程可以解决共享可变状态的问题。实际上，参与者可以修改自己的私有状态，但只能通过消息相互影响（避免使用任何锁）。</p>
+<p>Actor比在负载锁定更有效，因为在这种情况下，Actor总是有工作要做，并且根本不必切换到其他上下文。</p>
+<p>请注意， <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html" target="_blank" rel="external">actor</a> 协程构建器是 <a href="https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/produce.html" target="_blank" rel="external">produce</a> 协程构建器的对偶。actor 有一个接收消息的通道相关联，而生产者与其发送元素的通道相关联。</p>
+
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4"
+                alt="LeBron_Six" />
+            
+              <p class="site-author-name" itemprop="name">LeBron_Six</p>
+              <p class="site-description motion-element" itemprop="description">欢迎访问我的博客~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#共享的可变状态和并发"><span class="nav-number">1.</span> <span class="nav-text">共享的可变状态和并发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">1.1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Volatiles不起作用"><span class="nav-number">1.2.</span> <span class="nav-text">Volatiles不起作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程安全的数据结构"><span class="nav-number">1.3.</span> <span class="nav-text">线程安全的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#细粒度线程限制"><span class="nav-number">1.4.</span> <span class="nav-text">细粒度线程限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#粗粒度线程限制"><span class="nav-number">1.5.</span> <span class="nav-text">粗粒度线程限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#互斥"><span class="nav-number">1.6.</span> <span class="nav-text">互斥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Actors"><span class="nav-number">1.7.</span> <span class="nav-text">Actors</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"><a href="https://github.com/smuyyh" target="_blank">LeBron_Six</a></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+        <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'smuyyh',
+            repo: 'smuyyh.github.io',
+            
+            oauth: {
+            
+            
+                client_secret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+            
+                client_id: '0a452de0f03398d1ea74'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

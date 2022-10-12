@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="内联类 内联类在 kotlin1.3 开始支持，并且目前还是实验性的。参看下文  有时候会为了某些业务逻辑而对某些类型进行包装。然而由于额外的堆分配操作，这会给运行时带来性能损耗。除此之外，如果包装类型是原始类型，性能损耗尤为可怕，因为原始类型通常会经由运行时进行大幅度优化，然而这些包装器并不会享受任何特殊待遇。 为了解决这些问题，Kotlin引入了一种称为内联类的特殊类，它通过在类的名称前面放置">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LeBron_Six 的博客">
+<meta property="og:url" content="http://smuyyh.top/kotlin-in-chinese/ClassesAndObjects/InlineClasses.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="内联类 内联类在 kotlin1.3 开始支持，并且目前还是实验性的。参看下文  有时候会为了某些业务逻辑而对某些类型进行包装。然而由于额外的堆分配操作，这会给运行时带来性能损耗。除此之外，如果包装类型是原始类型，性能损耗尤为可怕，因为原始类型通常会经由运行时进行大幅度优化，然而这些包装器并不会享受任何特殊待遇。 为了解决这些问题，Kotlin引入了一种称为内联类的特殊类，它通过在类的名称前面放置">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-10-12T02:57:26.149Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeBron_Six 的博客">
+<meta name="twitter:description" content="内联类 内联类在 kotlin1.3 开始支持，并且目前还是实验性的。参看下文  有时候会为了某些业务逻辑而对某些类型进行包装。然而由于额外的堆分配操作，这会给运行时带来性能损耗。除此之外，如果包装类型是原始类型，性能损耗尤为可怕，因为原始类型通常会经由运行时进行大幅度优化，然而这些包装器并不会享受任何特殊待遇。 为了解决这些问题，Kotlin引入了一种称为内联类的特殊类，它通过在类的名称前面放置">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://smuyyh.top/kotlin-in-chinese/ClassesAndObjects/InlineClasses.html"/>
+
+
+
+
+
+  <title> | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <h2 id="内联类"><a href="#内联类" class="headerlink" title="内联类"></a>内联类</h2><blockquote>
+<p>内联类在 kotlin1.3 开始支持，并且目前还是<em>实验性</em>的。参看下文</p>
+</blockquote>
+<p>有时候会为了某些业务逻辑而对某些类型进行包装。然而由于额外的堆分配操作，这会给运行时带来性能损耗。除此之外，如果包装类型是原始类型，性能损耗尤为可怕，因为原始类型通常会经由运行时进行大幅度优化，然而这些包装器并不会享受任何特殊待遇。</p>
+<p>为了解决这些问题，Kotlin引入了一种称为内联类的特殊类，它通过在类的名称前面放置一个 inline 关键字来声明：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="class"><span class="keyword">class</span> <span class="title">Password</span></span>(<span class="keyword">val</span> value: String)</div></pre></td></tr></table></figure>
+<p>内联类必须在主构造函数中初始化唯一属性。在运行时，将使用此单个属性表示内联类的实例（请参阅下面有关运行时表示的详细信息）：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 并没有 Password 实例</span></div><div class="line"><span class="comment">// 在运行时，'securePassword' 只包含'String'</span></div><div class="line"><span class="keyword">val</span> securePassword = Password(<span class="string">"Don't try this in production"</span>)</div></pre></td></tr></table></figure>
+<p>这是内联类的主要特性。之所以有命名为内联，是因为类的数据内联在它使用处（与内联函数概念类似）</p>
+<p>###成员</p>
+<p>内联类也支持一些普通类的功能。尤其是可以声明属性和函数：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="class"><span class="keyword">class</span> <span class="title">Name</span></span>(<span class="keyword">val</span> s: String) &#123;</div><div class="line">    <span class="keyword">val</span> length: <span class="built_in">Int</span></div><div class="line">        <span class="keyword">get</span>() = s.length</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">greet</span><span class="params">()</span></span> &#123;</div><div class="line">        println(<span class="string">"Hello, <span class="variable">$s</span>"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;    </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">val</span> name = Name(<span class="string">"Kotlin"</span>)</div><div class="line">    name.greet() <span class="comment">// method `greet` is called as a static method</span></div><div class="line">    println(name.length) <span class="comment">// property getter is called as a static method</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当然内联类成员也有些其它限制：</p>
+<ul>
+<li>内联类不能有 init 块</li>
+<li>内联类不能有 inner 类</li>
+<li>内联类属性不能有备用字段(backing fields)<ul>
+<li>内联类只允许有简单的可计算属性（不能含有延迟初始化/代理属性）</li>
+</ul>
+</li>
+</ul>
+<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p>内联类允许继承接口：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Printable</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">prettyPrint</span><span class="params">()</span></span>: String</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">inline</span> <span class="class"><span class="keyword">class</span> <span class="title">Name</span></span>(<span class="keyword">val</span> s: String) : Printable &#123;</div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">prettyPrint</span><span class="params">()</span></span>: String = <span class="string">"Let's <span class="variable">$s</span>!"</span></div><div class="line">&#125;    </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">val</span> name = Name(<span class="string">"Kotlin"</span>)</div><div class="line">    println(name.prettyPrint()) <span class="comment">// Still called as a static method</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>禁止内联类进行类关系继承。这意味着内联函数不能继承其它类而且必须是 final</p>
+<h3 id="表示"><a href="#表示" class="headerlink" title="表示"></a>表示</h3><p>在生成的代码中，kotlin 编译器会为每个内联类保留一个包装器。内联类实例在运行时既可以表示为包装器也可以表示为基础类型。这和 <code>Int</code> 既可以表示为基础类型<code>int</code>也可以表示为包装器 <code>Integer</code>。</p>
+<p>kotlin 编译器会更加倾向于使用基础类型而不是包装器，这样可以提高性能并优化代码。然而有时保留包装器也是很有必要的。一般来说，只要将内联类用作另一种类型，它们就会被装箱。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">I</span></span></div><div class="line"></div><div class="line"><span class="keyword">inline</span> <span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span>(<span class="keyword">val</span> i: <span class="built_in">Int</span>) : I</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">asInline</span><span class="params">(f: <span class="type">Foo</span>)</span></span> &#123;&#125;</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">asGeneric</span><span class="params">(x: <span class="type">T</span>)</span></span> &#123;&#125;</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">asInterface</span><span class="params">(i: <span class="type">I</span>)</span></span> &#123;&#125;</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">asNullable</span><span class="params">(i: <span class="type">Foo</span>?)</span></span> &#123;&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">id</span><span class="params">(x: <span class="type">T</span>)</span></span>: T = x</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">val</span> f = Foo(<span class="number">42</span>) </div><div class="line">    </div><div class="line">    asInline(f)    <span class="comment">// unboxed: used as Foo itself</span></div><div class="line">    asGeneric(f)   <span class="comment">// boxed: used as generic type T</span></div><div class="line">    asInterface(f) <span class="comment">// boxed: used as type I</span></div><div class="line">    asNullable(f)  <span class="comment">// boxed: used as Foo?, which is different from Foo</span></div><div class="line">    </div><div class="line">    <span class="comment">// below, 'f' first is boxed (while being passed to 'id') and then unboxed (when returned from 'id') </span></div><div class="line">    <span class="comment">// In the end, 'c' contains unboxed representation (just '42'), as 'f' </span></div><div class="line">    <span class="keyword">val</span> c = id(f)  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>因为内联类既可以表示为基础类型有可以表示为包装器，引用相等对于内联类而言毫无意义，因而也禁止此项操作。</p>
+<h3 id="类名重排"><a href="#类名重排" class="headerlink" title="类名重排"></a>类名重排</h3><p>由于内联类被编译为其基础类型，因此可能会带来各种模糊的错误，例如意想不到的平台签名冲突：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="class"><span class="keyword">class</span> <span class="title">UInt</span></span>(<span class="keyword">val</span> x: <span class="built_in">Int</span>)</div><div class="line"></div><div class="line"><span class="comment">// Represented as 'public final void compute(int x)' on the JVM</span></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">compute</span><span class="params">(x: <span class="type">Int</span>)</span></span> &#123; &#125;</div><div class="line"></div><div class="line"><span class="comment">// Also represented as 'public final void compute(int x)' on the JVM!</span></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">compute</span><span class="params">(x: <span class="type">UInt</span>)</span></span> &#123; &#125;</div></pre></td></tr></table></figure>
+<p>为了缓解这种问题，一般会通过在函数名拼接一段哈希值重命名函数。 <code>fun compute(x: UInt)</code> 将会被表示为 <code>public final void compute-&lt;hashcode&gt;(int x)</code>，以此来解决冲突的问题。</p>
+<blockquote>
+<p>请注意在 Java 中 <code>-</code> 是一个 <em>无效的</em> 符号，也就是说在 Java 中不能调用使用内联类作为形参的函数。</p>
+</blockquote>
+<h3 id="内联类-vs-类型别名"><a href="#内联类-vs-类型别名" class="headerlink" title="内联类 vs 类型别名"></a>内联类 vs 类型别名</h3><p>乍一看，内联类似乎与类型别名非常相似，两者似乎都引入了一种新的类型，并且都在运行时表示为基础类型。</p>
+<p>然而，关键的区别在于类型别名与其基础类型(以及具有相同基础类型的其他类型别名)是 <em>赋值兼容</em> 的，而内联类却不是这样。</p>
+<p>换句话说，内联类真正引入了新类型，而类型别名仅仅是为现有的类型取了个新的替代名称(别名)：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">typealias NameTypeAlias = String</div><div class="line"><span class="keyword">inline</span> <span class="class"><span class="keyword">class</span> <span class="title">NameInlineClass</span></span>(<span class="keyword">val</span> s: String)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">acceptString</span><span class="params">(s: <span class="type">String</span>)</span></span> &#123;&#125;</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">acceptNameTypeAlias</span><span class="params">(n: <span class="type">NameTypeAlias</span>)</span></span> &#123;&#125;</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">acceptNameInlineClass</span><span class="params">(p: <span class="type">NameInlineClass</span>)</span></span> &#123;&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">val</span> nameAlias: NameTypeAlias = <span class="string">""</span></div><div class="line">    <span class="keyword">val</span> nameInlineClass: NameInlineClass = NameInlineClass(<span class="string">""</span>)</div><div class="line">    <span class="keyword">val</span> string: String = <span class="string">""</span></div><div class="line"></div><div class="line">    acceptString(nameAlias) <span class="comment">// 正确: 传递别名类型的实参替代函数中基础类型的形参</span></div><div class="line">    acceptString(nameInlineClass) <span class="comment">// 错误: 不能传递内联类的实参替代函数中基础类型的形参</span></div><div class="line"></div><div class="line">    <span class="comment">// And vice versa:</span></div><div class="line">    acceptNameTypeAlias(<span class="string">""</span>) <span class="comment">// 正确: 传递基础类型的实参替代函数中别名类型的形参</span></div><div class="line">    acceptNameInlineClass(<span class="string">""</span>) <span class="comment">// 错误: 不能传递基础类型的实参替代函数中内联类类型的形参</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p></p>
+<h3 id="内联类的实验性状态"><a href="#内联类的实验性状态" class="headerlink" title="内联类的实验性状态"></a>内联类的实验性状态</h3><p>内联类的设计目前是实验性的，这就是说此特性是正在 <em>快速变化</em>的，并且不保证其兼容性。在 Kotlin 1.3+ 中使用内联类时，将会得到一个警告，来表明此特性还是实验性的。</p>
+<p>要想移除警告，可以对 <code>kotlinc</code> 指定 <code>-XXLanguage:+InlineClasses</code>参数来选择使用该实验性的特性。</p>
+<h3 id="在-Gradle-中启用内联类："><a href="#在-Gradle-中启用内联类：" class="headerlink" title="在 Gradle 中启用内联类："></a>在 Gradle 中启用内联类：</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">compileKotlin &#123;</div><div class="line">    kotlinOptions.freeCompilerArgs += [<span class="string">"-XXLanguage:+InlineClasses"</span>]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="在-Maven-中启用内联类"><a href="#在-Maven-中启用内联类" class="headerlink" title="在 Maven 中启用内联类"></a>在 Maven 中启用内联类</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">args</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">arg</span>&gt;</span>-XXLanguage:+InlineClasses<span class="tag">&lt;/<span class="name">arg</span>&gt;</span> </div><div class="line">    <span class="tag">&lt;/<span class="name">args</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="进一步讨论"><a href="#进一步讨论" class="headerlink" title="进一步讨论"></a>进一步讨论</h2><p>关于其他技术详细信息和讨论，请参见<a href="https://github.com/Kotlin/KEEP/blob/master/proposals/inline-classes.md" target="_blank" rel="external">内联类的语言提议</a></p>
+
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4"
+                alt="LeBron_Six" />
+            
+              <p class="site-author-name" itemprop="name">LeBron_Six</p>
+              <p class="site-description motion-element" itemprop="description">欢迎访问我的博客~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内联类"><span class="nav-number">1.</span> <span class="nav-text">内联类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#继承"><span class="nav-number">1.1.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表示"><span class="nav-number">1.2.</span> <span class="nav-text">表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类名重排"><span class="nav-number">1.3.</span> <span class="nav-text">类名重排</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内联类-vs-类型别名"><span class="nav-number">1.4.</span> <span class="nav-text">内联类 vs 类型别名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内联类的实验性状态"><span class="nav-number">1.5.</span> <span class="nav-text">内联类的实验性状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Gradle-中启用内联类："><span class="nav-number">1.6.</span> <span class="nav-text">在 Gradle 中启用内联类：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Maven-中启用内联类"><span class="nav-number">1.7.</span> <span class="nav-text">在 Maven 中启用内联类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进一步讨论"><span class="nav-number">2.</span> <span class="nav-text">进一步讨论</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"><a href="https://github.com/smuyyh" target="_blank">LeBron_Six</a></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+        <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'smuyyh',
+            repo: 'smuyyh.github.io',
+            
+            oauth: {
+            
+            
+                client_secret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+            
+                client_id: '0a452de0f03398d1ea74'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

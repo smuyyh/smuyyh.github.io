@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="解构声明有时将对象解构为多个变量会很方便，例如：1val (name, age) = person 此语法称为解构声明。解构声明一次创建多个变量。我们已经声明了两个新变量：name和age，并且可以独立使用它们： 12println(name)println(age) 解构声明被编译为以下代码： 12val name = person.component1()val age = person.co">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LeBron_Six 的博客">
+<meta property="og:url" content="http://smuyyh.top/kotlin-in-chinese/MoreLanguageConstructs/DestructuringDeclarations.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="解构声明有时将对象解构为多个变量会很方便，例如：1val (name, age) = person 此语法称为解构声明。解构声明一次创建多个变量。我们已经声明了两个新变量：name和age，并且可以独立使用它们： 12println(name)println(age) 解构声明被编译为以下代码： 12val name = person.component1()val age = person.co">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-10-12T02:57:26.163Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeBron_Six 的博客">
+<meta name="twitter:description" content="解构声明有时将对象解构为多个变量会很方便，例如：1val (name, age) = person 此语法称为解构声明。解构声明一次创建多个变量。我们已经声明了两个新变量：name和age，并且可以独立使用它们： 12println(name)println(age) 解构声明被编译为以下代码： 12val name = person.component1()val age = person.co">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://smuyyh.top/kotlin-in-chinese/MoreLanguageConstructs/DestructuringDeclarations.html"/>
+
+
+
+
+
+  <title> | LeBron_Six 的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">LeBron_Six 的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline"></h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <h2 id="解构声明"><a href="#解构声明" class="headerlink" title="解构声明"></a>解构声明</h2><p>有时将对象解构为多个变量会很方便，例如：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> (name, age) = person</div></pre></td></tr></table></figure></p>
+<p>此语法称为解构声明。解构声明一次创建多个变量。我们已经声明了两个新变量：name和age，并且可以独立使用它们：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">println(name)</div><div class="line">println(age)</div></pre></td></tr></table></figure>
+<p>解构声明被编译为以下代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> name = person.component1()</div><div class="line"><span class="keyword">val</span> age = person.component2()</div></pre></td></tr></table></figure>
+<p>component1（）和component2（）函数是Kotlin中广泛使用的约定原理的另一个示例（请参阅+和*等运算符，for循环等）。只要可以在其上调用所需数量的 component 函数，任何内容都可以在解构声明的右侧。当然了可以有component3（）和component4（）等等。</p>
+<p>请注意，componentN（）函数需要使用<code>operator</code>关键字进行标记，以允许在解构声明中使用它们。</p>
+<p>解构声明也可以在for循环中使用,比如：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span>（（（a，b）<span class="keyword">in</span> collection）&#123;...&#125;</div></pre></td></tr></table></figure>
+<p>变量a和b获得在集合的元素上调用的component1（）和component2（）返回的值。</p>
+<h2 id="示例：函数返回两个值"><a href="#示例：函数返回两个值" class="headerlink" title="示例：函数返回两个值"></a>示例：函数返回两个值</h2><p>假设我们需要从一个函数返回两个值。例如，结果对象和某种状态。在Kotlin中执行此操作的一种简便方法是声明一个<a href="https://kotlinlang.org/docs/reference/data-classes.html" target="_blank" rel="external">数据类</a>并返回其实例：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Result</span></span>(<span class="keyword">val</span> result: <span class="built_in">Int</span>, <span class="keyword">val</span> status: Status)</div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">function</span><span class="params">(...)</span></span>: Result &#123;</div><div class="line">    <span class="comment">// computations</span></div><div class="line">    </div><div class="line">    <span class="keyword">return</span> Result(result, status)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Now, to use this function:</span></div><div class="line"><span class="keyword">val</span> (result, status) = function(...)</div></pre></td></tr></table></figure>
+<p>由于数据类会自动声明componentN（）函数，因此在这里可以执行解构声明。</p>
+<p>注意：我们也可以使用标准类<code>Pair</code>并让 function() 返回Pair <int，status>，但是通常最好对数据进行正确命名。</int，status></p>
+<h2 id="示例：解构声明和-map"><a href="#示例：解构声明和-map" class="headerlink" title="示例：解构声明和 map"></a>示例：解构声明和 map</h2><p>遍历 map 最优的方法可能是这样:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> ((key, value) <span class="keyword">in</span> map) &#123;</div><div class="line">   <span class="comment">// do something with the key and the value</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>为了使其工作，我们应该</p>
+<ul>
+<li>提供 iterator（）函数，将 map 呈现为值序列；</li>
+<li>提供函数 component1（）和component2（）将每个元素成对呈现。</li>
+</ul>
+<p>实际上，标准库提供了以下扩展：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;K, V&gt;</span> Map<span class="type">&lt;K, V&gt;</span>.<span class="title">iterator</span><span class="params">()</span></span>: Iterator&lt;Map.Entry&lt;K, V&gt;&gt; = entrySet().iterator()</div><div class="line"><span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;K, V&gt;</span> Map.Entry<span class="type">&lt;K, V&gt;</span>.<span class="title">component1</span><span class="params">()</span></span> = getKey()</div><div class="line"><span class="keyword">operator</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;K, V&gt;</span> Map.Entry<span class="type">&lt;K, V&gt;</span>.<span class="title">component2</span><span class="params">()</span></span> = getValue()</div></pre></td></tr></table></figure>
+<p>因此，你可以在for循环中对 map 使用解构声明（当然也包括其它集合数据类）。</p>
+<h2 id="下划线表示未使用的变量（从1-1开始）"><a href="#下划线表示未使用的变量（从1-1开始）" class="headerlink" title="下划线表示未使用的变量（从1.1开始）"></a>下划线表示未使用的变量（从1.1开始）</h2><p>如果在解构声明中不需要某个变量，则可以使用下划线代替其名称：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> (_, status) = getResult()</div></pre></td></tr></table></figure>
+<p>这种方式跳过的组件将不会调用 <code>componentN()</code> 运算符。</p>
+<h2 id="Lambda-中的解构（自1-1开始）"><a href="#Lambda-中的解构（自1-1开始）" class="headerlink" title="Lambda 中的解构（自1.1开始）"></a>Lambda 中的解构（自1.1开始）</h2><p>可以对lambda参数使用解构声明语法。如果lambda具有 <code>Pair</code> 类型的参数（或Map.Entry或具有componentN函数的任何其他类型），则可以通过在括号中引入几个新参数来代替它：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">map.mapValues &#123; entry -&gt; <span class="string">"<span class="subst">$&#123;entry.value&#125;</span>!"</span> &#125;</div><div class="line">map.mapValues &#123; (key, value) -&gt; <span class="string">"<span class="variable">$value</span>!"</span> &#125;</div></pre></td></tr></table></figure>
+<p>注意声明两个参数和声明一个解构对而不是一个参数之间的区别：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123; a -&gt; ... &#125; <span class="comment">// one parameter</span></div><div class="line">&#123; a, b -&gt; ... &#125; <span class="comment">// two parameters</span></div><div class="line">&#123; (a, b) -&gt; ... &#125; <span class="comment">// a destructured pair</span></div><div class="line">&#123; (a, b), c -&gt; ... &#125; <span class="comment">// a destructured pair and another parameter</span></div></pre></td></tr></table></figure>
+<p>如果未使用已分解结构参数的组件，则可以将其替换为下划线，以避免重新为其取名：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">map.mapValues &#123; (_, value) -&gt; <span class="string">"<span class="variable">$value</span>!"</span> &#125;</div></pre></td></tr></table></figure>
+<p>可以为整个已解构参数指定类型或为特定组件指定类型：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">map.mapValues &#123; (_, value): Map.Entry&lt;<span class="built_in">Int</span>, String&gt; -&gt; <span class="string">"<span class="variable">$value</span>!"</span> &#125;</div><div class="line"></div><div class="line">map.mapValues &#123; (_, value: String) -&gt; <span class="string">"<span class="variable">$value</span>!"</span> &#125;</div></pre></td></tr></table></figure>
+
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars0.githubusercontent.com/u/15133565?s=460&v=4"
+                alt="LeBron_Six" />
+            
+              <p class="site-author-name" itemprop="name">LeBron_Six</p>
+              <p class="site-description motion-element" itemprop="description">欢迎访问我的博客~</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/smuyyh" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:smuyyh@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#解构声明"><span class="nav-number">1.</span> <span class="nav-text">解构声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例：函数返回两个值"><span class="nav-number">2.</span> <span class="nav-text">示例：函数返回两个值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例：解构声明和-map"><span class="nav-number">3.</span> <span class="nav-text">示例：解构声明和 map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下划线表示未使用的变量（从1-1开始）"><span class="nav-number">4.</span> <span class="nav-text">下划线表示未使用的变量（从1.1开始）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lambda-中的解构（自1-1开始）"><span class="nav-number">5.</span> <span class="nav-text">Lambda 中的解构（自1.1开始）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"><a href="https://github.com/smuyyh" target="_blank">LeBron_Six</a></span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://www.wenjunjiang.win/css/gitment.css">
+        <script src="https://www.wenjunjiang.win/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'smuyyh',
+            repo: 'smuyyh.github.io',
+            
+            oauth: {
+            
+            
+                client_secret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+            
+                client_id: '0a452de0f03398d1ea74'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -455,22 +455,22 @@ h6 .small,
 
 h1,
 .h1 {
-  font-size: 30px;
+  font-size: 26px;
 }
 
 h2,
 .h2 {
-  font-size: 26px;
+  font-size: 22px;
 }
 
 h3,
 .h3 {
-  font-size: 22px;
+  font-size: 19px;
 }
 
 h4,
 .h4 {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 h5,
@@ -3595,7 +3595,7 @@ svg {
 }
 
 .mt-2x {
-  margin-top: 20px !important;
+  margin-top: 50px !important;
 }
 
 .mt-3x {
@@ -7150,6 +7150,13 @@ body.okayNav-loaded {
 .theme-blue .header #location,
 .theme-green .header #location,
 .theme-purple .header #location {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.theme-black .header #company,
+.theme-blue .header #company,
+.theme-green .header #company,
+.theme-purple .header #company {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 

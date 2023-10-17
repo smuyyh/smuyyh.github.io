@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>一个 2 年 Android 开发者的 18 条忠告 | Hexo</title>
+  <meta name="description" content="原文：What 2 Years of Android Development Have Taught Me the Hard Way 前言 我仍记得2014年我决定做Android开发的那天，这是我一生中做出的最好决定之一。到现在已经有2年半了。 最初的时候，并没有人告诉我如何做才是正确的。我犯了很多错误，也浪费了很多得时间。 一年半之后，我有机会和一个真正有才而且经验丰富的Android开发者一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个 2 年 Android 开发者的 18 条忠告">
+<meta property="og:url" content="http://smuyyh.top/2016/11/08/android-18-advice/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="原文：What 2 Years of Android Development Have Taught Me the Hard Way 前言 我仍记得2014年我决定做Android开发的那天，这是我一生中做出的最好决定之一。到现在已经有2年半了。 最初的时候，并没有人告诉我如何做才是正确的。我犯了很多错误，也浪费了很多得时间。 一年半之后，我有机会和一个真正有才而且经验丰富的Android开发者一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20161108092032571">
+<meta property="og:image" content="http://img.blog.csdn.net/20161108092450968">
+<meta property="og:image" content="http://img.blog.csdn.net/20161108093211230">
+<meta property="og:image" content="http://img.blog.csdn.net/20161108093413356">
+<meta property="article:published_time" content="2016-11-08T13:13:04.000Z">
+<meta property="article:modified_time" content="2017-09-06T05:44:09.000Z">
+<meta property="article:author" content="LeBron_Six">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20161108092032571">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://smuyyh.top/2016/11/08/android-18-advice/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="LeBron_Six 的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/avatar.jpg" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.css">
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body class="main-center theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/smuyyh" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">所长</h2>
+        <h4 id="title" class="hidden-xs hidden-sm hidden-md">Android Development Engineer</h4>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+        <small id="company" class="text-muted hidden-xs hidden-sm" style="margin-left: 10px"><i class="icon icon-users"></i> Alibaba Group</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Terminal/">Terminal</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/3D-Touch/" rel="tag">3D Touch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/" rel="tag">Android Studio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/" rel="tag">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bubble/" rel="tag">Bubble</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camera/" rel="tag">Camera</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Crash/" rel="tag">Crash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/" rel="tag">Handler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashMap/" rel="tag">HashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JCenter/" rel="tag">JCenter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Looper/" rel="tag">Looper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/" rel="tag">Mac</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Message/" rel="tag">Message</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OkHttp/" rel="tag">OkHttp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RecyclerView/" rel="tag">RecyclerView</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/" rel="tag">Retrofit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/" rel="tag">RxJava</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Terminal/" rel="tag">Terminal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/" rel="tag">View</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VirtualAPK/" rel="tag">VirtualAPK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Volatile/" rel="tag">Volatile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Widget/" rel="tag">Widget</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea-plugin/" rel="tag">idea plugin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/recyclerview/" rel="tag">recyclerview</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" rel="tag">内存泄露</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E7%94%BB/" rel="tag">动画</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E6%AD%A5/" rel="tag">异步</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B0%94%E6%B3%A1/" rel="tag">气泡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" rel="tag">页面性能</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/3D-Touch/" style="font-size: 13px;">3D Touch</a> <a href="/tags/Android/" style="font-size: 14px;">Android</a> <a href="/tags/Android-Studio/" style="font-size: 13px;">Android Studio</a> <a href="/tags/AsyncTask/" style="font-size: 13px;">AsyncTask</a> <a href="/tags/Bubble/" style="font-size: 13px;">Bubble</a> <a href="/tags/Camera/" style="font-size: 13px;">Camera</a> <a href="/tags/Crash/" style="font-size: 13px;">Crash</a> <a href="/tags/Github/" style="font-size: 13px;">Github</a> <a href="/tags/Handler/" style="font-size: 13.33px;">Handler</a> <a href="/tags/HashMap/" style="font-size: 13px;">HashMap</a> <a href="/tags/JCenter/" style="font-size: 13px;">JCenter</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/Java/" style="font-size: 13.67px;">Java</a> <a href="/tags/JavaScript/" style="font-size: 13px;">JavaScript</a> <a href="/tags/Looper/" style="font-size: 13px;">Looper</a> <a href="/tags/Mac/" style="font-size: 13px;">Mac</a> <a href="/tags/Message/" style="font-size: 13px;">Message</a> <a href="/tags/OkHttp/" style="font-size: 13px;">OkHttp</a> <a href="/tags/RecyclerView/" style="font-size: 13.33px;">RecyclerView</a> <a href="/tags/Retrofit/" style="font-size: 13px;">Retrofit</a> <a href="/tags/RxJava/" style="font-size: 13px;">RxJava</a> <a href="/tags/Terminal/" style="font-size: 13px;">Terminal</a> <a href="/tags/View/" style="font-size: 13px;">View</a> <a href="/tags/VirtualAPK/" style="font-size: 13px;">VirtualAPK</a> <a href="/tags/Volatile/" style="font-size: 13px;">Volatile</a> <a href="/tags/Widget/" style="font-size: 13px;">Widget</a> <a href="/tags/idea-plugin/" style="font-size: 13px;">idea plugin</a> <a href="/tags/java/" style="font-size: 13px;">java</a> <a href="/tags/recyclerview/" style="font-size: 13px;">recyclerview</a> <a href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" style="font-size: 13px;">内存泄露</a> <a href="/tags/%E5%8A%A8%E7%94%BB/" style="font-size: 13px;">动画</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 13px;">多线程</a> <a href="/tags/%E5%BC%82%E6%AD%A5/" style="font-size: 13.33px;">异步</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">性能优化</a> <a href="/tags/%E6%B0%94%E6%B3%A1/" style="font-size: 13px;">气泡</a> <a href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" style="font-size: 13px;">页面性能</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">八月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Terminal/">Terminal</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/08/02/terminal-info/" class="title">终端 Terminal 的一些实现细节分享</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-08-02T12:45:01.000Z" itemprop="datePublished">2023-08-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/09/14/kotlin-in-chinese/" class="title">Kotlin官方文档翻译</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-09-14T07:00:04.000Z" itemprop="datePublished">2021-09-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/19/android-transition/" class="title">深入理解 Android Transition 场景动画</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-19T06:10:04.000Z" itemprop="datePublished">2020-10-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/07/02/android-page-performance/" class="title">Android 页面秒开优化总结</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-07-01T21:59:04.000Z" itemprop="datePublished">2020-07-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/06/19/aar-params-proguard/" class="title">关于 aar 接口参数被混淆问题</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-19T08:43:04.000Z" itemprop="datePublished">2020-06-19</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-android-18-advice" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      一个 2 年 Android 开发者的 18 条忠告
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2016/11/08/android-18-advice/" class="article-date">
+	  <time datetime="2016-11-08T13:13:04.000Z" itemprop="datePublished">2016-11-08</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </span>
+
+        
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2016/11/08/android-18-advice/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>原文：<a target="_blank" rel="noopener" href="https://blog.aritraroy.in/what-my-2-years-of-android-development-have-taught-me-the-hard-way-52b495ba5c51#.e0n3991kh">What 2 Years of Android Development Have Taught Me the Hard Way</a></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><hr>
+<p>我仍记得2014年我决定做Android开发的那天，这是我一生中做出的最好决定之一。到现在已经有2年半了。</p>
+<p>最初的时候，并没有人告诉我如何做才是正确的。我犯了很多错误，也浪费了很多得时间。</p>
+<p>一年半之后，我有机会和一个真正有才而且经验丰富的Android开发者一起工作，他指导我，并教我正确的做事方式。这期间我学到了很多东西，学会了该做什么不该做什么。</p>
+<p>我直接或者间接帮助其它开发者也有很长一段时间了。这里是我的<a target="_blank" rel="noopener" href="http://stackoverflow.com/users/2858654/aritra-roy">StackOverflow</a>和<a target="_blank" rel="noopener" href="https://github.com/aritraroy">Github</a>的简介。</p>
+<p>本文我将分享这几年所收集的精华。也许可以帮助大家更快上手Android，避免重复我犯的错误。</p>
+<span id="more"></span>
+
+<h2 id="1-不要重复造轮子"><a href="#1-不要重复造轮子" class="headerlink" title="1.不要重复造轮子"></a>1.不要重复造轮子</h2><hr>
+<p>最初，我有一种不愿使用开源库的思想。不管需要什么，我总想自己去实现，这是一种非常可怕的思想。</p>
+<p>如果在开发app的时候遇到一个问题，而这个问题已经被别人很好的解决了，为什么不去使用它呢？这样你可以节省大量时间啊！</p>
+<p>把更多的精力花在app的业务逻辑上吧。如果你想在app中发起一个网络调用，是不需要自己去造一个<a target="_blank" rel="noopener" href="https://github.com/square/retrofit">Retrofit</a>的。</p>
+<h2 id="2-不要盲目的选择library"><a href="#2-不要盲目的选择library" class="headerlink" title="2. 不要盲目的选择library"></a>2. 不要盲目的选择library</h2><hr>
+<p>在Github上有许多免费使用的开源库，但是别因太激动而盲目的使用。</p>
+<p>检查library的star数目，越多越好。看看作者是否还创建了其它的一些受欢迎的库。查看issues（打开和关闭的都看），这可以让你对这个library的健壮性和稳定性有更好的了解。</p>
+<p>如果你时间充足，你应该深入这个库的代码看看它到底是都真的值得使用。</p>
+<p>你只需要确保它的代码是可靠的，bug不多的，高质量的。</p>
+<p>小贴士：使用<a target="_blank" rel="noopener" href="https://github.com/cesarferreira/dryrun">Dryrun</a>的命令行尝试任何library。</p>
+<p><img src="http://img.blog.csdn.net/20161108092032571" alt="这里写图片描述"></p>
+<h2 id="3-坐下来，喝杯咖啡，阅读更多的代码"><a href="#3-坐下来，喝杯咖啡，阅读更多的代码" class="headerlink" title="3. 坐下来，喝杯咖啡，阅读更多的代码"></a>3. 坐下来，喝杯咖啡，阅读更多的代码</h2><hr>
+<p>我们在阅读别人代码上花的时间比自己写代码的时间多得多，如果你不是的话，从今天就开始做吧。</p>
+<p>不管你现在能写出什么样的代码，总是因为在某年某月你阅读和学习到了什么东西。它只是你已有知识的反映。</p>
+<p>安卓的伟大之处就在于它是一个完全开源的平台。可以去深入研究这些代码看看他们是如何实现framework的。Github中有成千上万的开源库，只需选择一个看看人家是如何实现的。</p>
+<p>福利：<a target="_blank" rel="noopener" href="https://snowdream.github.io/awesome-android/">这里</a>是一些最佳library的列表，<a target="_blank" rel="noopener" href="https://github.com/pcqpcq/open-source-android-apps">这里</a>是几乎所有开源安卓app的列表。</p>
+<h2 id="4-看在上帝的份上，维护一个恰当的编程规范吧"><a href="#4-看在上帝的份上，维护一个恰当的编程规范吧" class="headerlink" title="4. 看在上帝的份上，维护一个恰当的编程规范吧"></a>4. 看在上帝的份上，维护一个恰当的编程规范吧</h2><hr>
+<p>如果把编码比作写作，那么编程规范就是你的书法水平。</p>
+<p>就跟你阅读别人的代码一样，别人也会阅读你的代码，我想你也不想把别人吓到是吧？如果你在一个公司，需要和同事协同工作，那么务必重视这个问题。</p>
+<p>编写简短，干净，可读性强的代码可以让你和别人读代码的时候很享受。代码应该读起来像是读故事一样。</p>
+<p>代码是诗。</p>
+<p>如果你写了一段代码结果你的同事几天都不跟你说话，怨不得别人。</p>
+<p>福利：你应该从通读<a target="_blank" rel="noopener" href="https://source.android.com/source/code-style.html">这个</a>和<a target="_blank" rel="noopener" href="https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md">这个</a>开始。</p>
+<h2 id="5-你需要混淆，是的，真的需要！"><a href="#5-你需要混淆，是的，真的需要！" class="headerlink" title="5. 你需要混淆，是的，真的需要！"></a>5. 你需要混淆，是的，真的需要！</h2><hr>
+<p>绝对不要犯还没有使用ProGuard的情况下就在Play Store上发布app的错误。ProGuard不仅仅减小了你的代码，还混淆了代码，让逆向工程师更难理解和复制。</p>
+<p>它是Android SDK附带的，完全免费，因此没有理由不用。</p>
+<p>我曾见过几个开发者没有使用ProGuard就把app发布了。对于一个技术很普通的黑客来说破解你的app也就是几个小时的事情。</p>
+<p>小贴士：但是如果你需要顶尖的安全性，ProGuard就力不从心了，你需要<a target="_blank" rel="noopener" href="https://www.guardsquare.com/dexguard">DexGuard</a>。</p>
+<h2 id="6-使用一个恰当的架构"><a href="#6-使用一个恰当的架构" class="headerlink" title="6. 使用一个恰当的架构"></a>6. 使用一个恰当的架构</h2><hr>
+<p>你永远都会庆幸自己从一开始就选择了一个恰当的架构。</p>
+<p>你可以使用MVP (Model-View-Presenter)架构，它可以把你的代码解耦成不同的层便于管理，从而提高代码的灵活性并极大的减小维护的时间成本。</p>
+<p>可以参考一个<a target="_blank" rel="noopener" href="https://github.com/android10/Android-CleanArchitecture">demo项目</a>。如果觉得很难掌握，可以看看这篇针对初学者的<a target="_blank" rel="noopener" href="https://medium.com/@dmilicic/a-detailed-guide-on-developing-android-apps-using-the-clean-architecture-pattern-d38d71e94029#.plhx8vhi3">指南</a>。</p>
+<p>福利：务必看看<a target="_blank" rel="noopener" href="https://github.com/antoniolg/androidmvp">这里</a>,<a target="_blank" rel="noopener" href="https://github.com/sockeqwe/mosby">这里</a>尤其是<a target="_blank" rel="noopener" href="https://github.com/googlesamples/android-architecture">这里</a>。它们将为你实现MVP提供极大的帮助。</p>
+<p><img src="http://img.blog.csdn.net/20161108092450968" alt="这里写图片描述"></p>
+<h2 id="7-用户界面就像笑话，如果还需要解释那就糟糕了"><a href="#7-用户界面就像笑话，如果还需要解释那就糟糕了" class="headerlink" title="7.用户界面就像笑话，如果还需要解释那就糟糕了"></a>7.用户界面就像笑话，如果还需要解释那就糟糕了</h2><hr>
+<p>如果你是在公司，做的是纯安卓开发，你很可能不需要关心这个问题，因为有UI&#x2F;UX设计师管这个问题。</p>
+<p>但是如果你是一个独立开发者，你就需要考虑它了。我曾经见过一些把app功能做的很好，但是用户体验很恐怖的开发者。</p>
+<p>要设计一个干净，简单直观的界面，你不要站在开发者的角度思考问题，而要挖掘自己内心中埋藏的设计师的潜力。</p>
+<p>尽量尝试设计一个漂亮的界面，让你的用户持续保持印象，这样用户回到你的app的次数就比别人多，从而产生更多的收获（也许是购买高级版本）。</p>
+<p>你应该乐于去减少元素，而不是增加。保持简洁和小巧。</p>
+<p>福利：你可以从Dribble或者<a target="_blank" rel="noopener" href="http://materialup.com/">MaterialUp</a>的热门设计师那里获得灵感。如果你对设计感兴趣，你很可能会喜欢<a target="_blank" rel="noopener" href="https://www.amazon.com/Design-Everyday-Things-Revised-Expanded/dp/0465050654">这本书</a>。</p>
+<h2 id="8-分析是你最好的朋友"><a href="#8-分析是你最好的朋友" class="headerlink" title="8. 分析是你最好的朋友"></a>8. 分析是你最好的朋友</h2><hr>
+<p>如果你想创建一个真正令人惊叹的app，你需要重度依赖分析工具去分析app不同部分的性能和用例。</p>
+<p>对于分析，我借助于crash reporting和app usage tracking。</p>
+<p>不管你怎么做，永远无法做到完美。当真实的用户开始在各种各样的设备以及版本上使用你的app的时候，你会发现即时写的最好的代码也难以保证不出岔子。</p>
+<p>一旦发生崩溃，Crash reporting工具可以帮助你跟踪与修复它们。</p>
+<p>你必须学会像销售那样思考问题并分析app不同模块的使用。这样可以帮助你减小产品和用户实际需求之间的落差。</p>
+<p>小贴士：使用FirebaseCrash Reporting以及Analytics tools。</p>
+<h2 id="9-做一个营销专家"><a href="#9-做一个营销专家" class="headerlink" title="9. 做一个营销专家"></a>9. 做一个营销专家</h2><hr>
+<p>如果你是一个个人开发者，你必须超出作为开发者的思维，去理解市场。</p>
+<p>我见过一些很好的产品因为缺乏正确的市场营销而失败，同时也见过并不怎么样的产品因为牛逼的市场营销而取得极大成功。</p>
+<p>如果你对你的工作是认真的希望它能获得可观的用户，你必须把在市场营销上花费必要的时间和金钱。但是在营销活动开始之前，确保app已经完全稳定，功能已经完善。</p>
+<p>花时间研究谁是你的竞争对手以及如何打败他们。确定一个可以立即打败的以及一个将来会打败的。</p>
+<p>小贴士：<a target="_blank" rel="noopener" href="https://sensortower.com/">这里</a>是一个价钱合理的市场分析工具，我比较喜欢用。</p>
+<h2 id="10-是时候优化你的app了"><a href="#10-是时候优化你的app了" class="headerlink" title="10. 是时候优化你的app了"></a>10. 是时候优化你的app了</h2><hr>
+<p>这是一个大多数人都不会去做的事情，但是你应该做。</p>
+<p>写代码与写高性能的代码之间有很大的区别。高性能的代码是指运行速度快，内存和存储消耗更少的代码。</p>
+<p>一个未经优化的的app也许在普通情况下运行良好，但是当放在各种压力情景中，它就原形毕露了。检查你app的内存使用情况看看有没有内存泄漏存在。记住小漏不补沉大船。花时间弄懂Java的内存回收机制是怎么回事，创建并分析你的活对象。</p>
+<p>小贴士：可以使用<a target="_blank" rel="noopener" href="https://github.com/square/leakcanary">Leak Canary</a>检测你的内存泄漏。它可以节省你不少时间。</p>
+<h2 id="11-每周在Gradle编译上最少节省5小时"><a href="#11-每周在Gradle编译上最少节省5小时" class="headerlink" title="11. 每周在Gradle编译上最少节省5小时"></a>11. 每周在Gradle编译上最少节省5小时</h2><hr>
+<p>你极有可能正在使用Android Studio开发app，编译系统使用的是Gradle。Gradle很棒但是也很慢，当项目显著增大的时候慢得根蜗牛样。</p>
+<p>有时候工作忙的时候我还需要在Gradle编译上浪费差不多一个小时。</p>
+<p>但是，总有加速的办法。</p>
+<p>你可以照着<a target="_blank" rel="noopener" href="https://medium.com/@cesarmcferreira/speeding-up-gradle-builds-619c442113cb#.thj9h2pqd">这篇</a>以及<a target="_blank" rel="noopener" href="http://zeroturnaround.com/rebellabs/making-gradle-builds-faster/">这篇</a>文章的做法显著提高编译速度。经过优化之后我的编译时间从4分钟降到了30秒钟。</p>
+<h2 id="12-测试，测试，再测试！"><a href="#12-测试，测试，再测试！" class="headerlink" title="12.测试，测试，再测试！"></a>12.测试，测试，再测试！</h2><hr>
+<p>没有什么比测试更重要的了。它应该是你的首要任务。</p>
+<p>尽可能全面的测试你的app。花时间写自动化测试用例，创造各种极端的条件，看看你的app是否能经受住考验。</p>
+<p>我曾经犯过未经充分测试就发布app的错误。等用户报告bug然后修复。</p>
+<p>绝对不要那样做。你可能通过砍掉测试时间而节省了一两天或者一周，但是以后你很可能会花双倍的时间。</p>
+<p>做任何事都要不慌不忙，从容应对并长远打算。做一个有远见的人。此时播种，以后总会有收获。</p>
+<h2 id="13-安卓的碎片化是魔鬼"><a href="#13-安卓的碎片化是魔鬼" class="headerlink" title="13. 安卓的碎片化是魔鬼"></a>13. 安卓的碎片化是魔鬼</h2><hr>
+<p>碎片化可能是安卓最大的问题了。而谷歌似乎并不愿意修复它，你必须适应。</p>
+<p>安卓设备种类繁多，不同屏幕尺寸，不同硬件配置以及各个厂商的自定义系统。</p>
+<p>除此之外，谷歌在不同版本上还莫名其妙的添加或者删除API，进一步加重了你的工作量（<a target="_blank" rel="noopener" href="https://plus.google.com/+TodLiebeck/posts/gjnmuaDM8sn">这里</a>是一个例子）。</p>
+<p>比如，几乎每个开发者都需要使用SharedPreferences API来完成一个app，它是如此常见，但是在Android 2.2版本的Samsung Galaxy S 上还是出问题了（bug报告<a target="_blank" rel="noopener" href="https://code.google.com/p/android/issues/detail?id=14359">这里</a>）。</p>
+<p>花更多的时间为不同屏幕尺寸的设备创建不同的布局。在不同版本，不同定制，不同OEM厂商的设备上测试。</p>
+<p>永远别觉得某个东西看似可行就不去测试了。</p>
+<h2 id="14-从今天开始使用git！"><a href="#14-从今天开始使用git！" class="headerlink" title="14. 从今天开始使用git！"></a>14. 从今天开始使用git！</h2><hr>
+<p>如果你还没有使用Git，从现在开始吧。</p>
+<p>当我开始安卓开发的时候，悲剧的我并不知道git是什么东西。我每天都拷贝整个项目，一个备份在硬盘上，一个备份在云盘上。看起来很傻是吗？是的，的确很傻。</p>
+<p>Git可以极大的提高你的工作效率。如果叫我说出一个我每天都要使用并且离不开的工具的名字，那就是Git了。</p>
+<p>在你使用几天之后，你很可能会爱上它，并好奇Git的内部工作原理。建议你看看<a target="_blank" rel="noopener" href="http://www.gitguys.com/">这个</a>。</p>
+<p>过了一段时间之后，你可能开始了一个大项目，对于如何维护一个分支模型感到困惑，那么可以看看<a target="_blank" rel="noopener" href="http://nvie.com/posts/a-successful-git-branching-model/">这个</a>。</p>
+<p>福利：如果你刚刚开始，还付不起GitHub的私人仓库的月费，你可以试试<a target="_blank" rel="noopener" href="https://bitbucket.org/">BitBucket</a>。国内用户的选择更多，oschina的git服务也不错－译者注。</p>
+<h2 id="15-为黑客制造麻烦"><a href="#15-为黑客制造麻烦" class="headerlink" title="15.为黑客制造麻烦"></a>15.为黑客制造麻烦</h2><hr>
+<p>安卓的开源特性让其易受攻击。每个安卓app都可以轻易的被反编译，逆向分析。</p>
+<p>你不希望你的app发生这种事对吧？</p>
+<p>你需要知道如何安全的存储app中的API keys。如果你要处理用户的敏感数据，你必须知道如何加密，选择何种加密算法（安全且快速）。</p>
+<p>你还应该安全的把密钥存储在本地或者服务器上。应该防止app数据被人用ADB备份。如果你在数据库中存储敏感数据，要考虑做适当的伪装。</p>
+<p>如果你的app有高级版本，被别人破解免费发布就损失大了。</p>
+<p>有几种方法可以避免你的app被人篡改。但并不是100&amp;安全。任何一个技术扎实，决心坚决的黑客只要有正确的资源，工具和耐心都可以破解你的app。</p>
+<p>你能做的就是尽量让黑客的破解变得困难，及其困难。</p>
+<p>福利：可以从阅读<a target="_blank" rel="noopener" href="https://www.airpair.com/android/posts/adding-tampering-detection-to-your-android-app">这个</a>和<a target="_blank" rel="noopener" href="https://rammic.github.io/2015/07/28/hiding-secrets-in-android-apps/">这个</a>开始。</p>
+<h2 id="16-在低端手机上开发"><a href="#16-在低端手机上开发" class="headerlink" title="16. 在低端手机上开发"></a>16. 在低端手机上开发</h2><hr>
+<p>每个人都喜欢使用一个高端安卓手机，我也是。但是记得只作为个人使用，而不是开发的目的。</p>
+<p>高端机会隐藏app的许多缺陷。假设你在UI线程上做了导致卡顿的事情，但是因为手机过于强大，可能导致你无法察觉。</p>
+<p><img src="http://img.blog.csdn.net/20161108093211230" alt="这里写图片描述"></p>
+<h2 id="17-学习设计模式"><a href="#17-学习设计模式" class="headerlink" title="17. 学习设计模式"></a>17. 学习<a target="_blank" rel="noopener" href="http://www.codeceo.com/article/category/develop/design-patterns">设计模式</a></h2><hr>
+<p>这是一项终生受益的投资。</p>
+<p>在开发大型app的时候，你会遇到一些已经被比你牛逼的人所解决了的问题。</p>
+<p>从今天开始就花点时间去学习设计模式。<a target="_blank" rel="noopener" href="https://github.com/iluwatar/java-design-patterns">这里</a>是一个演示了所有已知设计模式的的Github项目。</p>
+<p>可以从最常见的开始，比如单例，适配器模式，工厂方法模式，迭代模式，依赖注入模式，事件驱动架构，建造者模式，回调，策略模式，外观模式以及生产消费者模式。</p>
+<p>看起来很多是吧？实际上并不多。一旦深入你就会爱上它们的。</p>
+<p>小贴士：阅读一些书籍，比如GoF的 Design Patterns，Martin Fowler的<a target="_blank" rel="noopener" href="http://www.goodreads.com/book/show/44936.Refactoring">重构</a>以及Joshua Bloch的<a target="_blank" rel="noopener" href="https://github.com/HackathonHackers/programming-ebooks/blob/master/Java/Effective%20Java%20%282nd%20Edition%29.pdf">Effective Java</a>。</p>
+<h2 id="18-回馈"><a href="#18-回馈" class="headerlink" title="18. 回馈"></a>18. 回馈</h2><hr>
+<p>你得承认，我们都曾从别人和互联网那得到许多帮助。</p>
+<p>每当你遇到问题的时候，你会做的第一件事就是谷歌，发现第一条来自StackOverflow的链接。有时候你很忙，结果直接拷贝粘贴得分最高的答案。</p>
+<p>你有没有想过Github上那些开源库其实也是别人花时间创建然后贡献给社区的。</p>
+<p>当你被一个难以理解的概念卡住或者遇到一个新的东西时，你发现一篇让你豁然开朗的博客，这个时候记住是某人牺牲了约炮时间而写了这篇文章。</p>
+<p>所以也该你回馈了。给予的越多，得到的也就越多。</p>
+<p>我们都忙于自己的工作，很难找到时间为别人做什么事情。但是尽量每周找点时间做点贡献让安卓社区更丰富。</p>
+<p>我已经分享了自己短暂的安卓生涯中所学到的一些东西。我将继续下去，学更多，分享更多。希望能为别人的生活带来微小的帮助。</p>
+<p><img src="http://img.blog.csdn.net/20161108093413356" alt="这里写图片描述"></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://smuyyh.top/2016/11/08/android-18-advice/" title="一个 2 年 Android 开发者的 18 条忠告" target="_blank" rel="external">http://smuyyh.top/2016/11/08/android-18-advice/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/smuyyh" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/smuyyh" target="_blank"><span class="text-dark">所长</span><small class="ml-1x">Android Development Engineer</small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+           
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2016/11/08/retrofit-okhttp-param-redirection/" title="关于Retrofit2+Okhttp3实现统一添加请求参数和重定向"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2016/10/11/android-10-technique/" title="10 个你有可能不知道的Android Studio技巧"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/alipay.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/wechat.jpg" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 LeBron_Six
+        
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+  <script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '0a452de0f03398d1ea74',
+    clientSecret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+    repo: 'smuyyh.github.io',
+    owner: 'smuyyh',
+    admin: ['smuyyh'],
+    id: md5(location.pathname),
+    distractionFreeMode: true,
+    language: 'zh-CN',
+    enableHotKey: 'true'
+  })
+  gitalk.render('comments')
+  </script>
+      
+
+
+
+
+
+
+
+</body>
+</html>

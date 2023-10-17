@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>利用Gradle发布项目到JCenter | Hexo</title>
+  <meta name="description" content="Android Studio将远程仓库默认指定为Jcenter仓库，位于Bintray网站。Bintray网站下面还有其他好几个仓库。本文主要介绍如何将Android项目发布到Jcenter。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用Gradle发布项目到JCenter">
+<meta property="og:url" content="http://smuyyh.top/2016/07/13/mac-library-to-jcenter/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="Android Studio将远程仓库默认指定为Jcenter仓库，位于Bintray网站。Bintray网站下面还有其他好几个仓库。本文主要介绍如何将Android项目发布到Jcenter。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713202236653?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713202940528?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713205525775?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713205544104?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713205907464?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160713210606947?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://img.blog.csdn.net/20160714085637027">
+<meta property="og:image" content="http://img.blog.csdn.net/20160714092328928">
+<meta property="article:published_time" content="2016-07-13T13:13:04.000Z">
+<meta property="article:modified_time" content="2017-09-06T05:42:17.000Z">
+<meta property="article:author" content="LeBron_Six">
+<meta property="article:tag" content="Mac">
+<meta property="article:tag" content="JCenter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160713202236653?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://smuyyh.top/2016/07/13/mac-library-to-jcenter/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="LeBron_Six 的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/avatar.jpg" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.css">
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body class="main-center theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/smuyyh" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">所长</h2>
+        <h4 id="title" class="hidden-xs hidden-sm hidden-md">Android Development Engineer</h4>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+        <small id="company" class="text-muted hidden-xs hidden-sm" style="margin-left: 10px"><i class="icon icon-users"></i> Alibaba Group</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Terminal/">Terminal</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/3D-Touch/" rel="tag">3D Touch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/" rel="tag">Android Studio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/" rel="tag">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bubble/" rel="tag">Bubble</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camera/" rel="tag">Camera</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Crash/" rel="tag">Crash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/" rel="tag">Handler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashMap/" rel="tag">HashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JCenter/" rel="tag">JCenter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Looper/" rel="tag">Looper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/" rel="tag">Mac</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Message/" rel="tag">Message</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OkHttp/" rel="tag">OkHttp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RecyclerView/" rel="tag">RecyclerView</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/" rel="tag">Retrofit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/" rel="tag">RxJava</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Terminal/" rel="tag">Terminal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/" rel="tag">View</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VirtualAPK/" rel="tag">VirtualAPK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Volatile/" rel="tag">Volatile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Widget/" rel="tag">Widget</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea-plugin/" rel="tag">idea plugin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/recyclerview/" rel="tag">recyclerview</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" rel="tag">内存泄露</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E7%94%BB/" rel="tag">动画</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E6%AD%A5/" rel="tag">异步</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B0%94%E6%B3%A1/" rel="tag">气泡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" rel="tag">页面性能</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/3D-Touch/" style="font-size: 13px;">3D Touch</a> <a href="/tags/Android/" style="font-size: 14px;">Android</a> <a href="/tags/Android-Studio/" style="font-size: 13px;">Android Studio</a> <a href="/tags/AsyncTask/" style="font-size: 13px;">AsyncTask</a> <a href="/tags/Bubble/" style="font-size: 13px;">Bubble</a> <a href="/tags/Camera/" style="font-size: 13px;">Camera</a> <a href="/tags/Crash/" style="font-size: 13px;">Crash</a> <a href="/tags/Github/" style="font-size: 13px;">Github</a> <a href="/tags/Handler/" style="font-size: 13.33px;">Handler</a> <a href="/tags/HashMap/" style="font-size: 13px;">HashMap</a> <a href="/tags/JCenter/" style="font-size: 13px;">JCenter</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/Java/" style="font-size: 13.67px;">Java</a> <a href="/tags/JavaScript/" style="font-size: 13px;">JavaScript</a> <a href="/tags/Looper/" style="font-size: 13px;">Looper</a> <a href="/tags/Mac/" style="font-size: 13px;">Mac</a> <a href="/tags/Message/" style="font-size: 13px;">Message</a> <a href="/tags/OkHttp/" style="font-size: 13px;">OkHttp</a> <a href="/tags/RecyclerView/" style="font-size: 13.33px;">RecyclerView</a> <a href="/tags/Retrofit/" style="font-size: 13px;">Retrofit</a> <a href="/tags/RxJava/" style="font-size: 13px;">RxJava</a> <a href="/tags/Terminal/" style="font-size: 13px;">Terminal</a> <a href="/tags/View/" style="font-size: 13px;">View</a> <a href="/tags/VirtualAPK/" style="font-size: 13px;">VirtualAPK</a> <a href="/tags/Volatile/" style="font-size: 13px;">Volatile</a> <a href="/tags/Widget/" style="font-size: 13px;">Widget</a> <a href="/tags/idea-plugin/" style="font-size: 13px;">idea plugin</a> <a href="/tags/java/" style="font-size: 13px;">java</a> <a href="/tags/recyclerview/" style="font-size: 13px;">recyclerview</a> <a href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" style="font-size: 13px;">内存泄露</a> <a href="/tags/%E5%8A%A8%E7%94%BB/" style="font-size: 13px;">动画</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 13px;">多线程</a> <a href="/tags/%E5%BC%82%E6%AD%A5/" style="font-size: 13.33px;">异步</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">性能优化</a> <a href="/tags/%E6%B0%94%E6%B3%A1/" style="font-size: 13px;">气泡</a> <a href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" style="font-size: 13px;">页面性能</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">八月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Terminal/">Terminal</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/08/02/terminal-info/" class="title">终端 Terminal 的一些实现细节分享</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-08-02T12:45:01.000Z" itemprop="datePublished">2023-08-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/09/14/kotlin-in-chinese/" class="title">Kotlin官方文档翻译</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-09-14T07:00:04.000Z" itemprop="datePublished">2021-09-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/19/android-transition/" class="title">深入理解 Android Transition 场景动画</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-19T06:10:04.000Z" itemprop="datePublished">2020-10-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/07/02/android-page-performance/" class="title">Android 页面秒开优化总结</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-07-01T21:59:04.000Z" itemprop="datePublished">2020-07-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/06/19/aar-params-proguard/" class="title">关于 aar 接口参数被混淆问题</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-19T08:43:04.000Z" itemprop="datePublished">2020-06-19</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-mac-library-to-jcenter" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      利用Gradle发布项目到JCenter
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2016/07/13/mac-library-to-jcenter/" class="article-date">
+	  <time datetime="2016-07-13T13:13:04.000Z" itemprop="datePublished">2016-07-13</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/JCenter/" rel="tag">JCenter</a>, <a class="article-tag-link-link" href="/tags/Mac/" rel="tag">Mac</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2016/07/13/mac-library-to-jcenter/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>Android Studio将远程仓库默认指定为Jcenter仓库，位于Bintray网站。Bintray网站下面还有其他好几个仓库。本文主要介绍如何将Android项目发布到Jcenter。</p>
+<span id="more"></span>
+
+<h2 id="注册Bintray账号"><a href="#注册Bintray账号" class="headerlink" title="注册Bintray账号"></a>注册Bintray账号</h2><p>Bintray官网：<a target="_blank" rel="noopener" href="https://bintray.com/">https://bintray.com</a></p>
+<div  align="center">  
+<img src="http://img.blog.csdn.net/20160713202236653?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width = "780" alt="注册账号" align=center />
+
+
+<p>也可使用GitHub账号登录。</p>
+<hr>
+<h2 id="获取APIKey"><a href="#获取APIKey" class="headerlink" title="获取APIKey"></a>获取APIKey</h2><p>上传项目之前我们需要两样东西，一个就是用户名，另一个是APIKey。APIKey可在<a target="_blank" rel="noopener" href="https://bintray.com/profile/edit">这里</a>查看。</p>
+<div  align="center">  
+<img src="http://img.blog.csdn.net/20160713202940528?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width = "780" alt="注册账号" align=center />
+
+
+<p>点击show便可显示。</p>
+<hr>
+<h2 id="插件依赖"><a href="#插件依赖" class="headerlink" title="插件依赖"></a>插件依赖</h2><p>在项目最外层的build.gradle添加“gradle-bintray-plugin”以及“android-maven-plugin”插件的依赖。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath &#x27;com.android.tools.build:gradle:2.1.0&#x27;</span><br><span class="line">        classpath &#x27;com.github.dcendents:android-maven-gradle-plugin:1.3&#x27;</span><br><span class="line">        classpath &#x27;com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0&#x27;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<h2 id="Module配置"><a href="#Module配置" class="headerlink" title="Module配置"></a>Module配置</h2><p>在需要发布到Jcenter的module（比如library）的build.gradle里配置以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &#x27;com.android.library&#x27;</span><br><span class="line">apply plugin: &#x27;com.github.dcendents.android-maven&#x27;</span><br><span class="line">apply plugin: &#x27;com.jfrog.bintray&#x27;</span><br><span class="line">version = &quot;1.0.0&quot; // 版本号</span><br><span class="line"></span><br><span class="line">android &#123;</span><br><span class="line">    compileSdkVersion 23</span><br><span class="line">    buildToolsVersion &quot;23.0.3&quot;</span><br><span class="line">    resourcePrefix &quot;bankcardformat&quot; // 随意命名</span><br><span class="line"></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        minSdkVersion 15</span><br><span class="line">        targetSdkVersion 23</span><br><span class="line">        versionCode 1</span><br><span class="line">        versionName &quot;1.0&quot;</span><br><span class="line">    &#125;</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">        release &#123;</span><br><span class="line">            minifyEnabled false</span><br><span class="line">            proguardFiles getDefaultProguardFile(&#x27;proguard-android.txt&#x27;), &#x27;proguard-rules.pro&#x27;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile &#x27;com.android.support:appcompat-v7:23.+&#x27;</span><br><span class="line">    compile fileTree(dir: &#x27;libs&#x27;, include: [&#x27;*.jar&#x27;])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">def siteUrl = &#x27;https://github.com/smuyyh/BankCardFormat&#x27;    // Git项目主页</span><br><span class="line">def gitUrl = &#x27;https://github.com/smuyyh/BankCardFormat.git&#x27; // Git仓库url</span><br><span class="line">group = &quot;com.yuyh.bankcardformat&quot; // 一般为包名</span><br><span class="line"></span><br><span class="line">install &#123;</span><br><span class="line">    repositories.mavenInstaller &#123;</span><br><span class="line">        // 生成POM.xml</span><br><span class="line">        pom &#123;</span><br><span class="line">            project &#123;</span><br><span class="line">                packaging &#x27;aar&#x27;</span><br><span class="line">                name &#x27;Android BankCardFormat&#x27; // 项目描述</span><br><span class="line">                url siteUrl</span><br><span class="line">                licenses &#123;</span><br><span class="line">                    license &#123;</span><br><span class="line">                        name &#x27;The Apache Software License, Version 2.0&#x27;</span><br><span class="line">                        url &#x27;http://www.apache.org/licenses/LICENSE-2.0.txt&#x27;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                developers &#123;</span><br><span class="line">                    developer &#123; // 开发者个人信息</span><br><span class="line">                        id &#x27;smuyyh&#x27;</span><br><span class="line">                        name &#x27;smuyyh&#x27;</span><br><span class="line">                        email &#x27;smuyyh@gmail.com&#x27;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                scm &#123;</span><br><span class="line">                    connection gitUrl</span><br><span class="line">                    developerConnection gitUrl</span><br><span class="line">                    url siteUrl</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">task sourcesJar(type: Jar) &#123;</span><br><span class="line">    from android.sourceSets.main.java.srcDirs</span><br><span class="line">    classifier = &#x27;sources&#x27;</span><br><span class="line">&#125;</span><br><span class="line">task javadoc(type: Javadoc) &#123;</span><br><span class="line">    options.encoding = &quot;UTF-8&quot; // 设置编码，否则中文可能会提示出错</span><br><span class="line">    source = android.sourceSets.main.java.srcDirs</span><br><span class="line">    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))</span><br><span class="line">&#125;</span><br><span class="line">task javadocJar(type: Jar, dependsOn: javadoc) &#123;</span><br><span class="line">    classifier = &#x27;javadoc&#x27;</span><br><span class="line">    from javadoc.destinationDir</span><br><span class="line">&#125;</span><br><span class="line">artifacts &#123;</span><br><span class="line">    archives javadocJar</span><br><span class="line">    archives sourcesJar</span><br><span class="line">&#125;</span><br><span class="line">Properties properties = new Properties()</span><br><span class="line">properties.load(project.rootProject.file(&#x27;local.properties&#x27;).newDataInputStream())</span><br><span class="line">bintray &#123;</span><br><span class="line">    user = properties.getProperty(&quot;bintray.user&quot;)</span><br><span class="line">    key = properties.getProperty(&quot;bintray.apikey&quot;)</span><br><span class="line">    configurations = [&#x27;archives&#x27;]</span><br><span class="line">    pkg &#123;</span><br><span class="line">        repo = &quot;maven&quot; // 发布到Maven库</span><br><span class="line">        name = &quot;BankCardFormat&quot; // 发布到JCenter上的项目名字</span><br><span class="line">        websiteUrl = siteUrl</span><br><span class="line">        vcsUrl = gitUrl</span><br><span class="line">        licenses = [&quot;Apache-2.0&quot;]</span><br><span class="line">        publish = true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<h2 id="配置Username和APIKey"><a href="#配置Username和APIKey" class="headerlink" title="配置Username和APIKey"></a>配置Username和APIKey</h2><p>在local.properties文件配置Username和APIKey。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bintray.user = xxxx</span><br><span class="line">bintray.apikey = xxxx</span><br></pre></td></tr></table></figure>
+<p>正常情况下local.properties应该加入到.gitignore文件里，因为这两项属于隐私信息，无需上传到GitHub。当然了，也可把bintray.user及bintray.apiKey配置在Gradle用户目录下的gradle.properties(不存在则新建)，例如Windows是在C:&#x2F;user&#x2F;username&#x2F;.gradle，OSX和Linux在~&#x2F;.gradle</p>
+<hr>
+<h2 id="ReBuild"><a href="#ReBuild" class="headerlink" title="ReBuild"></a>ReBuild</h2><p>Rebuild一下项目，会发现在&#x2F;build&#x2F;outputs&#x2F;aar下生成两个文件，这就是library打包出来的二进制文件。</p>
+<hr>
+<h2 id="上传项目到Jcenter"><a href="#上传项目到Jcenter" class="headerlink" title="上传项目到Jcenter"></a><span id = "anchor">上传项目到Jcenter</span></h2><p>在Android Studio的Terminal执行以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gradlew javadocJar</span><br><span class="line">gradlew sourcesJar</span><br><span class="line">gradlew install</span><br><span class="line">gradlew bintrayUpload</span><br></pre></td></tr></table></figure>
+<p>执行成功之后，在Bintray个人主页下面可以看到Maven多了一个Package。</p>
+<div  align="center">  
+<img src="http://img.blog.csdn.net/20160713205525775?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width = "780" alt="注册账号" align=center />
+
+
+<p>点击进去可看到刚刚上传的项目</p>
+<div  align="center">  
+<img src="http://img.blog.csdn.net/20160713205544104?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width = "780" alt="注册账号" align=center />
+
+
+<hr>
+<h2 id="申请项目加入Jcenter"><a href="#申请项目加入Jcenter" class="headerlink" title="申请项目加入Jcenter"></a>申请项目加入Jcenter</h2><p>申请地址：<a target="_blank" rel="noopener" href="https://bintray.com/bintray/jcenter">https://bintray.com/bintray/jcenter</a><br>搜索刚刚上传的项目，并选中。或者进入项目主页，点击右下角“Add to Jcenter”</p>
+<div  align="center">  
+<img src="http://img.blog.csdn.net/20160713205907464?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width = "780" alt="注册账号" align=center />
+
+
+<p>输入项目描述，完成。</p>
+<div  align="center">  
+<img src="http://img.blog.csdn.net/20160713210606947?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" width = "780" alt="注册账号" align=center />
+
+
+<hr>
+<h2 id="等待审核"><a href="#等待审核" class="headerlink" title="等待审核"></a>等待审核</h2><p>审核速度挺快，一般几个小时左右会通过。Bintray会向您发送一条成功的信息。那么就完成上传了。</p>
+<div  align="center">  
+<img src="http://img.blog.csdn.net/20160714085637027" width = "780" alt="注册账号" align=center />
+
+
+<hr>
+<h2 id="项目依赖"><a href="#项目依赖" class="headerlink" title="项目依赖"></a>项目依赖</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    compile &#x27;com.yuyh.bankcardformat:library:1.0.0&#x27;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<hr>
+<h2 id="项目更新"><a href="#项目更新" class="headerlink" title="项目更新"></a>项目更新</h2><p>上传的库进行升级的时候，须更改build.gradle下的version、versionCode、versionName，否则无法进行打包上传。更改完之后重新执行<a href="#anchor">上传项目到Jcenter</a>步骤。上传完成可在项目主页下看到更新的版本号。</p>
+<div  align="center">  
+<img src="http://img.blog.csdn.net/20160714092328928" width = "780" alt="注册账号" align=center />
+
+
+
+<hr>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>若在上传的时候，出现GBK编码错误，尝试在task javadoc(type: Javadoc) 下设置UTF-8编码：<br>options.encoding &#x3D; “UTF-8”<br>无法解决请参考以下这个Gradle文件的配置：<br><a target="_blank" rel="noopener" href="https://github.com/msdx/gradle-publish/blob/master/bintray.gradle">https://github.com/msdx/gradle-publish/blob/master/bintray.gradle</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://smuyyh.top/2016/07/13/mac-library-to-jcenter/" title="利用Gradle发布项目到JCenter" target="_blank" rel="external">http://smuyyh.top/2016/07/13/mac-library-to-jcenter/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/smuyyh" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/smuyyh" target="_blank"><span class="text-dark">所长</span><small class="ml-1x">Android Development Engineer</small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+           
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2016/08/16/java-coding-standard/" title="Java 代码规范初步"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2016/01/28/android-crash-handler/" title="Android 全局异常捕获之CrashHandler"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/alipay.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/wechat.jpg" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 LeBron_Six
+        
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+  <script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '0a452de0f03398d1ea74',
+    clientSecret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+    repo: 'smuyyh.github.io',
+    owner: 'smuyyh',
+    admin: ['smuyyh'],
+    id: md5(location.pathname),
+    distractionFreeMode: true,
+    language: 'zh-CN',
+    enableHotKey: 'true'
+  })
+  gitalk.render('comments')
+  </script>
+      
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Android 7.1.1 之实现 3D Touch | Hexo</title>
+  <meta name="description" content="Shortcut概念Shortcut 是Android-25（Android 7.1）新增的一项类似iOS的 3D Touch 功能的快捷方式组件，但是有着不同的表现形式，因为Android在硬件上不支持触摸压力感应，所以表现形式为长按，而iOS须用力长按。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 7.1.1 之实现 3D Touch">
+<meta property="og:url" content="http://smuyyh.top/2017/04/03/android-26-3d-touch/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="Shortcut概念Shortcut 是Android-25（Android 7.1）新增的一项类似iOS的 3D Touch 功能的快捷方式组件，但是有着不同的表现形式，因为Android在硬件上不支持触摸压力感应，所以表现形式为长按，而iOS须用力长按。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20170403164246140?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170403174415648?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170403164945450?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170403171848651?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170403175438195?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="article:published_time" content="2017-04-03T14:13:04.000Z">
+<meta property="article:modified_time" content="2017-09-06T05:45:10.000Z">
+<meta property="article:author" content="LeBron_Six">
+<meta property="article:tag" content="3D Touch">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20170403164246140?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://smuyyh.top/2017/04/03/android-26-3d-touch/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="LeBron_Six 的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/avatar.jpg" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.css">
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body class="main-center theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/smuyyh" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">所长</h2>
+        <h4 id="title" class="hidden-xs hidden-sm hidden-md">Android Development Engineer</h4>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+        <small id="company" class="text-muted hidden-xs hidden-sm" style="margin-left: 10px"><i class="icon icon-users"></i> Alibaba Group</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Terminal/">Terminal</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/3D-Touch/" rel="tag">3D Touch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/" rel="tag">Android Studio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/" rel="tag">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bubble/" rel="tag">Bubble</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camera/" rel="tag">Camera</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Crash/" rel="tag">Crash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/" rel="tag">Handler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashMap/" rel="tag">HashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JCenter/" rel="tag">JCenter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Looper/" rel="tag">Looper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/" rel="tag">Mac</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Message/" rel="tag">Message</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OkHttp/" rel="tag">OkHttp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RecyclerView/" rel="tag">RecyclerView</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/" rel="tag">Retrofit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/" rel="tag">RxJava</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Terminal/" rel="tag">Terminal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/" rel="tag">View</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VirtualAPK/" rel="tag">VirtualAPK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Volatile/" rel="tag">Volatile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Widget/" rel="tag">Widget</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea-plugin/" rel="tag">idea plugin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/recyclerview/" rel="tag">recyclerview</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" rel="tag">内存泄露</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E7%94%BB/" rel="tag">动画</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E6%AD%A5/" rel="tag">异步</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B0%94%E6%B3%A1/" rel="tag">气泡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" rel="tag">页面性能</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/3D-Touch/" style="font-size: 13px;">3D Touch</a> <a href="/tags/Android/" style="font-size: 14px;">Android</a> <a href="/tags/Android-Studio/" style="font-size: 13px;">Android Studio</a> <a href="/tags/AsyncTask/" style="font-size: 13px;">AsyncTask</a> <a href="/tags/Bubble/" style="font-size: 13px;">Bubble</a> <a href="/tags/Camera/" style="font-size: 13px;">Camera</a> <a href="/tags/Crash/" style="font-size: 13px;">Crash</a> <a href="/tags/Github/" style="font-size: 13px;">Github</a> <a href="/tags/Handler/" style="font-size: 13.33px;">Handler</a> <a href="/tags/HashMap/" style="font-size: 13px;">HashMap</a> <a href="/tags/JCenter/" style="font-size: 13px;">JCenter</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/Java/" style="font-size: 13.67px;">Java</a> <a href="/tags/JavaScript/" style="font-size: 13px;">JavaScript</a> <a href="/tags/Looper/" style="font-size: 13px;">Looper</a> <a href="/tags/Mac/" style="font-size: 13px;">Mac</a> <a href="/tags/Message/" style="font-size: 13px;">Message</a> <a href="/tags/OkHttp/" style="font-size: 13px;">OkHttp</a> <a href="/tags/RecyclerView/" style="font-size: 13.33px;">RecyclerView</a> <a href="/tags/Retrofit/" style="font-size: 13px;">Retrofit</a> <a href="/tags/RxJava/" style="font-size: 13px;">RxJava</a> <a href="/tags/Terminal/" style="font-size: 13px;">Terminal</a> <a href="/tags/View/" style="font-size: 13px;">View</a> <a href="/tags/VirtualAPK/" style="font-size: 13px;">VirtualAPK</a> <a href="/tags/Volatile/" style="font-size: 13px;">Volatile</a> <a href="/tags/Widget/" style="font-size: 13px;">Widget</a> <a href="/tags/idea-plugin/" style="font-size: 13px;">idea plugin</a> <a href="/tags/java/" style="font-size: 13px;">java</a> <a href="/tags/recyclerview/" style="font-size: 13px;">recyclerview</a> <a href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" style="font-size: 13px;">内存泄露</a> <a href="/tags/%E5%8A%A8%E7%94%BB/" style="font-size: 13px;">动画</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 13px;">多线程</a> <a href="/tags/%E5%BC%82%E6%AD%A5/" style="font-size: 13.33px;">异步</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">性能优化</a> <a href="/tags/%E6%B0%94%E6%B3%A1/" style="font-size: 13px;">气泡</a> <a href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" style="font-size: 13px;">页面性能</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">八月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Terminal/">Terminal</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/08/02/terminal-info/" class="title">终端 Terminal 的一些实现细节分享</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-08-02T12:45:01.000Z" itemprop="datePublished">2023-08-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/09/14/kotlin-in-chinese/" class="title">Kotlin官方文档翻译</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-09-14T07:00:04.000Z" itemprop="datePublished">2021-09-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/19/android-transition/" class="title">深入理解 Android Transition 场景动画</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-19T06:10:04.000Z" itemprop="datePublished">2020-10-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/07/02/android-page-performance/" class="title">Android 页面秒开优化总结</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-07-01T21:59:04.000Z" itemprop="datePublished">2020-07-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/06/19/aar-params-proguard/" class="title">关于 aar 接口参数被混淆问题</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-19T08:43:04.000Z" itemprop="datePublished">2020-06-19</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-android-26-3d-touch" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 7.1.1 之实现 3D Touch
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/04/03/android-26-3d-touch/" class="article-date">
+	  <time datetime="2017-04-03T14:13:04.000Z" itemprop="datePublished">2017-04-03</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/3D-Touch/" rel="tag">3D Touch</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/04/03/android-26-3d-touch/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="Shortcut概念"><a href="#Shortcut概念" class="headerlink" title="Shortcut概念"></a>Shortcut概念</h2><p>Shortcut 是Android-25（Android 7.1）新增的一项类似iOS的 3D Touch 功能的快捷方式组件，但是有着不同的表现形式，因为Android在硬件上不支持触摸压力感应，所以表现形式为长按，而iOS须用力长按。</p>
+<span id="more"></span>
+
+<p>首先，来个效果图</p>
+<p><img src="http://img.blog.csdn.net/20170403164246140?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="280" height="500"/>  &nbsp;&nbsp;&nbsp; <img src="http://img.blog.csdn.net/20170403174415648?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="280" height="500"/></p>
+<p>在 Launcher 或 应用程序列表 里面，长按应用图标，弹出一个快捷方式列表， 并且，可以把单个快捷方式拖动出来作为一个桌面图标，拖出来的图标会随着清除应用数据或卸载应用而消失，须重新创建。</p>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><h3 id="BuildConfig-配置"><a href="#BuildConfig-配置" class="headerlink" title="BuildConfig 配置"></a>BuildConfig 配置</h3><p>在主module下，修改 build.grade，使其使用 android-25 的 API 编译，当然，未下载的，就需要打开Android SDK Manager下载一下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    compileSdkVersion 25 </span><br><span class="line">    buildToolsVersion &quot;25.0.0&quot; // 或以上</span><br><span class="line"></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        targetSdkVersion 25</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="http://img.blog.csdn.net/20170403164945450?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="600"/>
+
+<h3 id="静态配置"><a href="#静态配置" class="headerlink" title="静态配置"></a>静态配置</h3><p>类似BroadCastReceiver，Shortcut注册也分为静态注册和动态注册，首先介绍静态注册，动态注册后面继续~~</p>
+<ol>
+<li><p>在 res&#x2F;xml 文件夹底下创建一个xml，举个栗子：shortcut.xml</p>
+ <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">shortcuts</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">shortcut</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:enabled</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">&quot;@mipmap/ic_bar_detail_write&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutDisabledMessage</span>=<span class="string">&quot;@string/shortcut_publish&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutId</span>=<span class="string">&quot;publish&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutLongLabel</span>=<span class="string">&quot;@string/shortcut_publish&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutShortLabel</span>=<span class="string">&quot;@string/shortcut_publish&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">intent</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:action</span>=<span class="string">&quot;android.intent.action.VIEW&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:targetClass</span>=<span class="string">&quot;com.yanshi.writing.ui.bar.PublishPostActivity&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:targetPackage</span>=<span class="string">&quot;com.yanshi.writing&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">categories</span> <span class="attr">android:name</span>=<span class="string">&quot;android.shortcut.conversation&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">shortcut</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">shortcut</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:enabled</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">&quot;@mipmap/logo&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutDisabledMessage</span>=<span class="string">&quot;@string/shortcut_write&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutId</span>=<span class="string">&quot;write&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutLongLabel</span>=<span class="string">&quot;@string/shortcut_write&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutShortLabel</span>=<span class="string">&quot;@string/shortcut_write&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">intent</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:action</span>=<span class="string">&quot;android.intent.action.VIEW&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:targetClass</span>=<span class="string">&quot;com.yanshi.writing.ui.write.WriteActivity&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:targetPackage</span>=<span class="string">&quot;com.yanshi.writing&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">categories</span> <span class="attr">android:name</span>=<span class="string">&quot;android.shortcut.conversation&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">shortcut</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">shortcuts</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>1、enabled：表示当前快捷方式是否可使用<br>   2、 icon： 快捷方式图标<br>   3、 shortcutDisabledMessage： 快捷方式不可使用时显示的名字<br>   4、 shortcutId：快捷方式标识<br>   5、 shortcutLongLabel：长按下图标弹出来列表框中每个快捷名<br>   6、 shortcutShortLabel：快捷是可以单独显示在桌面上的，显示名为shortcutShortLabel<br>   7、 targetClass：点击快捷方式进入的Activity<br>   8、categories 默认写死即可</p>
+</blockquote>
+</li>
+<li><p>清单文件注册<br> 在 AndroidMainfest.xml 的默认启动页里添加 meta-data 标签配置</p>
+ <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">activity</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">&quot;.ui.MainActivity&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:configChanges</span>=<span class="string">&quot;orientation|screenSize|keyboardHidden&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:screenOrientation</span>=<span class="string">&quot;portrait&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">&quot;@style/AppTheme.NoneTranslucent&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.action.MAIN&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.category.LAUNCHER&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta-data</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">&quot;android.app.shortcuts&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:resource</span>=<span class="string">&quot;@xml/shortcut&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>完毕！ 可以到桌面查看效果了~~</p>
+</li>
+</ol>
+<h3 id="动态配置"><a href="#动态配置" class="headerlink" title="动态配置"></a>动态配置</h3><p>动态创建增加了菜单配置的灵活性，比如可以从服务端拉取快捷方式列表，再进行展示。具体配置方法如下：</p>
+<h4 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h4><p>在需要注册的地方添加如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 动态创建</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">register</span><span class="params">()</span> &#123;</span><br><span class="line">     <span class="type">ShortcutManager</span> <span class="variable">mShortcutManager</span> <span class="operator">=</span> getSystemService(ShortcutManager.class);</span><br><span class="line">     List&lt;ShortcutInfo&gt; infos = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 按下返回按钮跳转的activity</span></span><br><span class="line">     <span class="type">Intent</span> <span class="variable">intent1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(<span class="built_in">this</span>, MainActivity.class);</span><br><span class="line">     intent1.setAction(Intent.ACTION_VIEW);</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 目标activity</span></span><br><span class="line">     <span class="type">Intent</span> <span class="variable">intent2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(<span class="built_in">this</span>, PublishPostActivity.class);</span><br><span class="line">     intent2.setAction(<span class="string">&quot;com.yuyh.xxx.BACK&quot;</span>);</span><br><span class="line"></span><br><span class="line">     Intent[] intents = <span class="keyword">new</span> <span class="title class_">Intent</span>[<span class="number">2</span>];</span><br><span class="line">     intents[<span class="number">0</span>] = intent1;</span><br><span class="line">     intents[<span class="number">1</span>] = intent2;</span><br><span class="line"></span><br><span class="line">     <span class="type">ShortcutInfo</span> <span class="variable">info</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ShortcutInfo</span>.Builder(<span class="built_in">this</span>, <span class="string">&quot;publish-2&quot;</span>)</span><br><span class="line">             .setShortLabel(<span class="string">&quot;动态创建-发布帖子&quot;</span>)</span><br><span class="line">             .setLongLabel(<span class="string">&quot;动态创建-发布帖子&quot;</span>)</span><br><span class="line">             .setIcon(Icon.createWithResource(<span class="built_in">this</span>, R.mipmap.ic_bar_detail_write))</span><br><span class="line">             .setIntents(intents)</span><br><span class="line">             .build();</span><br><span class="line">     infos.add(info);</span><br><span class="line"></span><br><span class="line">     mShortcutManager.setDynamicShortcuts(infos);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p> 重新运行app，再次长按，效果如下：</p>
+<img src="http://img.blog.csdn.net/20170403171848651?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width="280"/>
+
+<h4 id="删除或禁用"><a href="#删除或禁用" class="headerlink" title="删除或禁用"></a>删除或禁用</h4><p>动态删除可以删除动态配置的快捷方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 动态删除</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">ShortcutManager</span> <span class="variable">mShortcutManager</span> <span class="operator">=</span> getSystemService(ShortcutManager.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/********* 移除弹出列表图标 **********/</span></span><br><span class="line">    <span class="comment">// 所有动态创建图标</span></span><br><span class="line">    List&lt;ShortcutInfo&gt; infos1 = mShortcutManager.getDynamicShortcuts();</span><br><span class="line"></span><br><span class="line">    List&lt;String&gt; ids1 = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (ShortcutInfo info : infos1 ) &#123;</span><br><span class="line">        ids1.add(info.getId());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 禁用所有的快捷方式</span></span><br><span class="line">    mShortcutManager.disableShortcuts(ids1, <span class="string">&quot;已禁用&quot;</span>);</span><br><span class="line">    mShortcutManager.removeDynamicShortcuts(ids1);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/********* 移除拖出来的桌面快捷图标 **********/</span></span><br><span class="line">    <span class="comment">// 放在桌面的图标</span></span><br><span class="line">    List&lt;ShortcutInfo&gt; infos2 = mShortcutManager.getPinnedShortcuts();</span><br><span class="line"></span><br><span class="line">    List&lt;String&gt; ids2 = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (ShortcutInfo info : infos2 ) &#123;</span><br><span class="line">        ids2.add(info.getId());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mShortcutManager.disableShortcuts(ids2, <span class="string">&quot;已禁用&quot;</span>);</span><br><span class="line">    mShortcutManager.removeAllDynamicShortcuts();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码比较简单，就不多做叙述了。 须注意一下 getPinnedShortcuts 方法与 getDynamicShortcuts 方法的区别！ 禁用后的效果如图所示，图标变成灰色：</p>
+<img src="http://img.blog.csdn.net/20170403175438195?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveXloMzUyMDkxNjI2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"  width="280" />
+
+
+<h4 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h4><p>快捷方式的唯一性，由前面提到的 shortcutId 这个标识符决定，所以更新快捷方式与创建快捷方式一样， shortcutId 如果相同， 则会覆盖之前创建的快捷方式！ </p>
+<h2 id="返回栈问题"><a href="#返回栈问题" class="headerlink" title="返回栈问题"></a>返回栈问题</h2><p>当通过快捷方式打开时，现有的Activity都会被销毁，然后重新创建一个Activity栈。因为清单方式设置的快捷键的Intent不能自定义Intent的Flag,其默认的Flag是 FLAG_ACTIVITY_NEW_TASK 和 FLAG_ACTIVITY_CLEAR_TASK。 </p>
+<p>通过动态注册的方式，可发现，我们可以配置返回目标activity。当然，静态配置也可以实现，修改shortcut标签：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">shortcut</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:enabled</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:icon</span>=<span class="string">&quot;@mipmap/ic_bar_detail_write&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:shortcutDisabledMessage</span>=<span class="string">&quot;@string/shortcut_publish&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:shortcutId</span>=<span class="string">&quot;publish&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:shortcutLongLabel</span>=<span class="string">&quot;@string/shortcut_publish&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:shortcutShortLabel</span>=<span class="string">&quot;@string/shortcut_publish&quot;</span>&gt;</span></span><br><span class="line">     </span><br><span class="line">     <span class="comment">&lt;!-- 返回目标activity --&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">intent</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:action</span>=<span class="string">&quot;com.yuyh.xxx.BACK&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:targetClass</span>=<span class="string">&quot;com.yanshi.writing.ui.MainActivity&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:targetPackage</span>=<span class="string">&quot;com.yanshi.writing&quot;</span> /&gt;</span></span><br><span class="line">     </span><br><span class="line">     <span class="comment">&lt;!-- 目标activity --&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">intent</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:action</span>=<span class="string">&quot;android.intent.action.VIEW&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:targetClass</span>=<span class="string">&quot;com.yanshi.writing.ui.bar.PublishPostActivity&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:targetPackage</span>=<span class="string">&quot;com.yanshi.writing&quot;</span> /&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">categories</span> <span class="attr">android:name</span>=<span class="string">&quot;android.shortcut.conversation&quot;</span> /&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">shortcut</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>感谢阅读！</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://smuyyh.top/2017/04/03/android-26-3d-touch/" title="Android 7.1.1 之实现 3D Touch" target="_blank" rel="external">http://smuyyh.top/2017/04/03/android-26-3d-touch/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/smuyyh" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/smuyyh" target="_blank"><span class="text-dark">所长</span><small class="ml-1x">Android Development Engineer</small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+           
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2017/04/06/java-hashmap-source/" title="HashMap 内部原理"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2017/03/06/java-jvm-basic-knowledge/" title="JVM 基础知识"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/alipay.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/wechat.jpg" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 LeBron_Six
+        
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+  <script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '0a452de0f03398d1ea74',
+    clientSecret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+    repo: 'smuyyh.github.io',
+    owner: 'smuyyh',
+    admin: ['smuyyh'],
+    id: md5(location.pathname),
+    distractionFreeMode: true,
+    language: 'zh-CN',
+    enableHotKey: 'true'
+  })
+  gitalk.render('comments')
+  </script>
+      
+
+
+
+
+
+
+
+</body>
+</html>

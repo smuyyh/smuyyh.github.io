@@ -1,0 +1,976 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>与Scala对比 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="Comparison2java.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../GettingStarted/">
+            
+                <a href="../GettingStarted/">
+            
+                    
+                    准备开始
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../GettingStarted/Basic-Syntax.html">
+            
+                <a href="../GettingStarted/Basic-Syntax.html">
+            
+                    
+                    基本语法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../GettingStarted/Idioms.html">
+            
+                <a href="../GettingStarted/Idioms.html">
+            
+                    
+                    习惯用语
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../GettingStarted/Coding-Conventions.html">
+            
+                <a href="../GettingStarted/Coding-Conventions.html">
+            
+                    
+                    编码风格
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../Basics/">
+            
+                <a href="../Basics/">
+            
+                    
+                    基础
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../Basics/Basic-Types.html">
+            
+                <a href="../Basics/Basic-Types.html">
+            
+                    
+                    基本类型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../Basics/Packages.html">
+            
+                <a href="../Basics/Packages.html">
+            
+                    
+                    包
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../Basics/Control-Flow.html">
+            
+                <a href="../Basics/Control-Flow.html">
+            
+                    
+                    控制流
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../Basics/Returns-and-Jumps.html">
+            
+                <a href="../Basics/Returns-and-Jumps.html">
+            
+                    
+                    返回与跳转
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../ClassesAndObjects/">
+            
+                <a href="../ClassesAndObjects/">
+            
+                    
+                    类和对象
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../ClassesAndObjects/Classes-and-Inheritance.html">
+            
+                <a href="../ClassesAndObjects/Classes-and-Inheritance.html">
+            
+                    
+                    类和继承
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../ClassesAndObjects/Properties-and-Fields.html">
+            
+                <a href="../ClassesAndObjects/Properties-and-Fields.html">
+            
+                    
+                    属性和字段
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../ClassesAndObjects/Interfaces.html">
+            
+                <a href="../ClassesAndObjects/Interfaces.html">
+            
+                    
+                    接口
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../ClassesAndObjects/Visibility-Modifiers.html">
+            
+                <a href="../ClassesAndObjects/Visibility-Modifiers.html">
+            
+                    
+                    可见性修饰词
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../ClassesAndObjects/Extensions.html">
+            
+                <a href="../ClassesAndObjects/Extensions.html">
+            
+                    
+                    扩展
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../ClassesAndObjects/Data-Classes.html">
+            
+                <a href="../ClassesAndObjects/Data-Classes.html">
+            
+                    
+                    数据对象
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="../ClassesAndObjects/Generics.html">
+            
+                <a href="../ClassesAndObjects/Generics.html">
+            
+                    
+                    泛型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="../ClassesAndObjects/NestedClasses.html">
+            
+                <a href="../ClassesAndObjects/NestedClasses.html">
+            
+                    
+                    嵌套类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="../ClassesAndObjects/EnumClasses.html">
+            
+                <a href="../ClassesAndObjects/EnumClasses.html">
+            
+                    
+                    枚举类
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="../ClassesAndObjects/ObjectExpressicAndDeclarations.html">
+            
+                <a href="../ClassesAndObjects/ObjectExpressicAndDeclarations.html">
+            
+                    
+                    对象表达式和声明
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="../ClassesAndObjects/Delegation.html">
+            
+                <a href="../ClassesAndObjects/Delegation.html">
+            
+                    
+                    代理模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="../ClassesAndObjects/DelegationProperties.html">
+            
+                <a href="../ClassesAndObjects/DelegationProperties.html">
+            
+                    
+                    代理属性
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../FunctionsAndLambdas/">
+            
+                <a href="../FunctionsAndLambdas/">
+            
+                    
+                    函数和lambda表达式
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../FunctionsAndLambdas/Functions.html">
+            
+                <a href="../FunctionsAndLambdas/Functions.html">
+            
+                    
+                    函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../FunctionsAndLambdas/Higher-OrderFunctionsAndLambdas.html">
+            
+                <a href="../FunctionsAndLambdas/Higher-OrderFunctionsAndLambdas.html">
+            
+                    
+                    高阶函数和lambda表达式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../FunctionsAndLambdas/InlineFunctions.html">
+            
+                <a href="../FunctionsAndLambdas/InlineFunctions.html">
+            
+                    
+                    内联函数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../FunctionsAndLambdas/Cocroutines.html">
+            
+                <a href="../FunctionsAndLambdas/Cocroutines.html">
+            
+                    
+                    协程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../Other/README.md">
+            
+                <span>
+            
+                    
+                    其它
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../Other/Multi-Declarations.md">
+            
+                <span>
+            
+                    
+                    多重申明
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../Other/Ranges.md">
+            
+                <span>
+            
+                    
+                    Ranges
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../Other/Type-Checks-and-Casts.md">
+            
+                <span>
+            
+                    
+                    类型检查和自动转换
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="../Other/This-Expression.md">
+            
+                <span>
+            
+                    
+                    This表达式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../Other/Equality.md">
+            
+                <span>
+            
+                    
+                    等式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.6" data-path="../Other/Opetator-overloading.md">
+            
+                <span>
+            
+                    
+                    运算符重载
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.7" data-path="../Other/Null-Safety.md">
+            
+                <span>
+            
+                    
+                    空安全
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.8" data-path="../Other/Exceptions.md">
+            
+                <span>
+            
+                    
+                    异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.9" data-path="../Other/Annotations.md">
+            
+                <span>
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.10" data-path="../Other/Reflection.md">
+            
+                <span>
+            
+                    
+                    反射
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.11" data-path="../Other/Dynamic-Type.md">
+            
+                <span>
+            
+                    
+                    动态类型
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../Reference/">
+            
+                <a href="../Reference/">
+            
+                    
+                    参考
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../Interop/">
+            
+                <a href="../Interop/">
+            
+                    
+                    互用性
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../Interop/Java-Interop.html">
+            
+                <a href="../Interop/Java-Interop.html">
+            
+                    
+                    动态类型
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../Tools/">
+            
+                <a href="../Tools/">
+            
+                    
+                    工具
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../Tools/Documenting-Kotlin-Code.html">
+            
+                <a href="../Tools/Documenting-Kotlin-Code.html">
+            
+                    
+                    Kotlin代码文档
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../Tools/Using-Maven.html">
+            
+                <a href="../Tools/Using-Maven.html">
+            
+                    
+                    使用Maven
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.3" data-path="../Tools/Using-Ant.html">
+            
+                <a href="../Tools/Using-Ant.html">
+            
+                    
+                    使用Ant
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.4" data-path="../Tools/Using-Griffon.html">
+            
+                <a href="../Tools/Using-Griffon.html">
+            
+                    
+                    使用Griffon
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.5" data-path="../Tools/Using-Gradle.html">
+            
+                <a href="../Tools/Using-Gradle.html">
+            
+                    
+                    使用Gradle
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    FAQ
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.10.1" data-path="Comparison2java.html">
+            
+                <a href="Comparison2java.html">
+            
+                    
+                    与java对比
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.10.2" data-path="Comparison2Scala.html">
+            
+                <a href="Comparison2Scala.html">
+            
+                    
+                    与Scala对比
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >与Scala对比</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h2 id="&#x4E0E;-scala-&#x5BF9;&#x6BD4;">&#x4E0E; Scala &#x5BF9;&#x6BD4;</h2>
+<p>Kotlin &#x8BBE;&#x8BA1;&#x65F6;&#x7684;&#x4FE9;&#x4E2A;&#x4E3B;&#x8981;&#x76EE;&#x6807;&#x662F;&#xFF1A;</p>
+<blockquote>
+<p>&#x81F3;&#x5C11;&#x548C; java &#x8FD0;&#x884C;&#x901F;&#x5EA6;&#x4E00;&#x6837;&#x5FEB;</p>
+<p>&#x5728;&#x4FDD;&#x8BC1;&#x8BED;&#x8A00;&#x5C3D;&#x91CF;&#x7B80;&#x5355;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x5728;&#x6613;&#x7528;&#x6027;&#x4E0A;&#x63D0;&#x9AD8;</p>
+</blockquote>
+<p>&#x8003;&#x8651;&#x5230;&#x8FD9;&#x4FE9;&#x70B9;&#xFF0C;&#x5982;&#x679C;&#x4F60;&#x559C;&#x6B22; Scala &#xFF0C;&#x4F60;&#x53EF;&#x80FD;&#x4E0D;&#x9700;&#x8981; Kotlin</p>
+<h3 id="scala-&#x6709;&#x800C;-kotlin-&#x6CA1;&#x6709;&#x7684;">Scala &#x6709;&#x800C; Kotlin &#x6CA1;&#x6709;&#x7684;</h3>
+<blockquote>
+<p>&#x9690;&#x5F0F;&#x8F6C;&#x6362;&#xFF0C;&#x9690;&#x5F0F;&#x53C2;&#x6570;
+    --&#x5728; Scala &#x4E2D;&#xFF0C;&#x5728;&#x4E0D;&#x9002;&#x7528; debugger &#x7684;&#x65F6;&#x5019;&#x5F88;&#x96BE;&#x77E5;&#x9053;&#x4EE3;&#x7801;&#x53D1;&#x751F;&#x4E86;&#x4EC0;&#x4E48;&#xFF0C;&#x56E0;&#x4E3A;&#x592A;&#x591A;&#x7684;&#x4E1C;&#x897F;&#x662F;&#x9690;&#x5F0F;&#x7684;
+    --&#x901A;&#x8FC7;&#x51FD;&#x6570;&#x589E;&#x52A0;&#x7C7B;&#x578B;&#x5728; kotlin &#x4E2D;&#x9700;&#x8981;&#x4F7F;&#x7528;<a href="http://kotlinlang.org/docs/reference/extensions.html" target="_blank">&#x6269;&#x5C55;&#x51FD;&#x6570;</a></p>
+<p>&#x53EF;&#x91CD;&#x8F7D;&#x548C;&#x7C7B;&#x578B;&#x6210;&#x5458;</p>
+<p>&#x8DEF;&#x5F84;&#x4F9D;&#x8D56;&#x7684;&#x7C7B;&#x578B;</p>
+<p>&#x5B8F;</p>
+<p>Existential types
+    --&#x7C7B;&#x578B;&#x63A8;&#x65AD;&#x662F;&#x5F88;&#x7279;&#x6B8A;&#x7684;&#x60C5;&#x5F62;</p>
+<p>&#x7279;&#x5F81;&#x7684;&#x521D;&#x59CB;&#x5316;&#x903B;&#x8F91;&#x5F88;&#x590D;&#x6742;
+    --&#x53C2;&#x770B;<a href="http://kotlinlang.org/docs/reference/classes.html" target="_blank">&#x7C7B;&#x548C;&#x7EE7;&#x627F;</a></p>
+<p>&#x81EA;&#x5B9A;&#x4E49;&#x8C61;&#x5F81;&#x64CD;&#x4F5C;
+    --&#x53C2;&#x770B;<a href="http://kotlinlang.org/docs/reference/operator-overloading.html" target="_blank">&#x64CD;&#x4F5C;&#x7B26;&#x91CD;&#x8F7D;</a></p>
+<p>&#x5185;&#x5EFA; xml
+    --&#x53C2;&#x770B;<a href="http://kotlinlang.org/docs/reference/type-safe-builders.html" target="_blank">Type-safe Groovy-style builders</a></p>
+</blockquote>
+<p>&#x4EE5;&#x540E; kotlin&#x53EF;&#x80FD;&#x4F1A;&#x6DFB;&#x52A0;&#x7684;&#x7279;&#x6027;&#xFF1A;</p>
+<blockquote>
+<p>&#x7ED3;&#x6784;&#x7C7B;&#x578B;</p>
+<p>&#x503C;&#x7C7B;&#x578B;</p>
+<p>Yield &#x64CD;&#x4F5C;&#x7B26;</p>
+<p>Actors</p>
+<p>&#x5E76;&#x884C;&#x96C6;&#x5408;(Parallel collections)</p>
+</blockquote>
+<h3 id="kotlin-&#x6709;&#x800C;-scala-&#x6CA1;&#x6709;&#x7684;">Kotlin &#x6709;&#x800C; Scala &#x6CA1;&#x6709;&#x7684;</h3>
+<blockquote>
+<p>&#x96F6;&#x5F00;&#x9500;&#x7684;null&#x5B89;&#x5168;</p>
+<ul>
+<li>Scala&#x7684;&#x662F;Option&#xFF0C;&#x662F;&#x5728;&#x53E5;&#x6CD5;&#x548C;&#x8FD0;&#x884C;&#x65F6;&#x7684;&#x5305;&#x88C5;</li>
+</ul>
+<p><a href="http://kotlinlang.org/docs/reference/typecasts.html" target="_blank"> Smart casts</a></p>
+<p><a href="http://kotlinlang.org/docs/reference/inline-functions.html#inline-functions" target="_blank">Kotlin &#x7684;&#x5185;&#x8054;&#x51FD;&#x6570;&#x975E;&#x5C40;&#x90E8;&#x7684;&#x8DF3;&#x8F6C;</a></p>
+<p><a href="http://kotlinlang.org/docs/reference/delegation.html" target="_blank">First-class delegation</a>&#x3002;&#x4E5F;&#x901A;&#x8FC7;&#x7B2C;&#x4E09;&#x65B9;&#x63D2;&#x4EF6;&#xFF1A;Autoproxy&#x5B9E;&#x73B0;</p>
+</blockquote>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="Comparison2java.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 与java对比">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"与Scala对比","level":"1.10.2","depth":2,"previous":{"title":"与java对比","level":"1.10.1","depth":2,"path":"FAQ/Comparison2java.md","ref":"FAQ/Comparison2java.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"FAQ/Comparison2Scala.md","mtime":"2020-02-12T08:45:27.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-12T02:57:25.064Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

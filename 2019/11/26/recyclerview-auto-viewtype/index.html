@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>RecyclerView Adapter 实现自动多 ViewType | Hexo</title>
+  <meta name="description" content="前言多Type的列表在App中很常见，例如各种电商类App的首页，甚至是购物车、订单详情页面等。我们暂且将页面上每个ViewType对应的模块称之为楼层。那么，以电商订单详情举例，可能有以下楼层：  订单状态（交易成功、交易关闭等） 物流信息 收货地址 订单商品信息列表 价格相关信息 订单信息（订单号、交易流水号等） 其他一些展示信息  那么，我们可以通过不同的 ViewType 来区分这些模块，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RecyclerView Adapter 实现自动多 ViewType">
+<meta property="og:url" content="http://smuyyh.top/2019/11/26/recyclerview-auto-viewtype/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="前言多Type的列表在App中很常见，例如各种电商类App的首页，甚至是购物车、订单详情页面等。我们暂且将页面上每个ViewType对应的模块称之为楼层。那么，以电商订单详情举例，可能有以下楼层：  订单状态（交易成功、交易关闭等） 物流信息 收货地址 订单商品信息列表 价格相关信息 订单信息（订单号、交易流水号等） 其他一些展示信息  那么，我们可以通过不同的 ViewType 来区分这些模块，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-26T01:24:04.000Z">
+<meta property="article:modified_time" content="2019-11-27T05:42:28.219Z">
+<meta property="article:author" content="LeBron_Six">
+<meta property="article:tag" content="RecyclerView">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://smuyyh.top/2019/11/26/recyclerview-auto-viewtype/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="LeBron_Six 的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/avatar.jpg" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.css">
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body class="main-center theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/smuyyh" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">所长</h2>
+        <h4 id="title" class="hidden-xs hidden-sm hidden-md">Android Development Engineer</h4>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+        <small id="company" class="text-muted hidden-xs hidden-sm" style="margin-left: 10px"><i class="icon icon-users"></i> Alibaba Group</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Terminal/">Terminal</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/3D-Touch/" rel="tag">3D Touch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/" rel="tag">Android Studio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/" rel="tag">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bubble/" rel="tag">Bubble</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camera/" rel="tag">Camera</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Crash/" rel="tag">Crash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/" rel="tag">Handler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashMap/" rel="tag">HashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JCenter/" rel="tag">JCenter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Looper/" rel="tag">Looper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/" rel="tag">Mac</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Message/" rel="tag">Message</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OkHttp/" rel="tag">OkHttp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RecyclerView/" rel="tag">RecyclerView</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/" rel="tag">Retrofit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/" rel="tag">RxJava</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Terminal/" rel="tag">Terminal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/" rel="tag">View</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VirtualAPK/" rel="tag">VirtualAPK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Volatile/" rel="tag">Volatile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Widget/" rel="tag">Widget</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea-plugin/" rel="tag">idea plugin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/recyclerview/" rel="tag">recyclerview</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" rel="tag">内存泄露</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E7%94%BB/" rel="tag">动画</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E6%AD%A5/" rel="tag">异步</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B0%94%E6%B3%A1/" rel="tag">气泡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" rel="tag">页面性能</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/3D-Touch/" style="font-size: 13px;">3D Touch</a> <a href="/tags/Android/" style="font-size: 14px;">Android</a> <a href="/tags/Android-Studio/" style="font-size: 13px;">Android Studio</a> <a href="/tags/AsyncTask/" style="font-size: 13px;">AsyncTask</a> <a href="/tags/Bubble/" style="font-size: 13px;">Bubble</a> <a href="/tags/Camera/" style="font-size: 13px;">Camera</a> <a href="/tags/Crash/" style="font-size: 13px;">Crash</a> <a href="/tags/Github/" style="font-size: 13px;">Github</a> <a href="/tags/Handler/" style="font-size: 13.33px;">Handler</a> <a href="/tags/HashMap/" style="font-size: 13px;">HashMap</a> <a href="/tags/JCenter/" style="font-size: 13px;">JCenter</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/Java/" style="font-size: 13.67px;">Java</a> <a href="/tags/JavaScript/" style="font-size: 13px;">JavaScript</a> <a href="/tags/Looper/" style="font-size: 13px;">Looper</a> <a href="/tags/Mac/" style="font-size: 13px;">Mac</a> <a href="/tags/Message/" style="font-size: 13px;">Message</a> <a href="/tags/OkHttp/" style="font-size: 13px;">OkHttp</a> <a href="/tags/RecyclerView/" style="font-size: 13.33px;">RecyclerView</a> <a href="/tags/Retrofit/" style="font-size: 13px;">Retrofit</a> <a href="/tags/RxJava/" style="font-size: 13px;">RxJava</a> <a href="/tags/Terminal/" style="font-size: 13px;">Terminal</a> <a href="/tags/View/" style="font-size: 13px;">View</a> <a href="/tags/VirtualAPK/" style="font-size: 13px;">VirtualAPK</a> <a href="/tags/Volatile/" style="font-size: 13px;">Volatile</a> <a href="/tags/Widget/" style="font-size: 13px;">Widget</a> <a href="/tags/idea-plugin/" style="font-size: 13px;">idea plugin</a> <a href="/tags/java/" style="font-size: 13px;">java</a> <a href="/tags/recyclerview/" style="font-size: 13px;">recyclerview</a> <a href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" style="font-size: 13px;">内存泄露</a> <a href="/tags/%E5%8A%A8%E7%94%BB/" style="font-size: 13px;">动画</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 13px;">多线程</a> <a href="/tags/%E5%BC%82%E6%AD%A5/" style="font-size: 13.33px;">异步</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">性能优化</a> <a href="/tags/%E6%B0%94%E6%B3%A1/" style="font-size: 13px;">气泡</a> <a href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" style="font-size: 13px;">页面性能</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">八月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Terminal/">Terminal</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/08/02/terminal-info/" class="title">终端 Terminal 的一些实现细节分享</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-08-02T12:45:01.000Z" itemprop="datePublished">2023-08-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/09/14/kotlin-in-chinese/" class="title">Kotlin官方文档翻译</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-09-14T07:00:04.000Z" itemprop="datePublished">2021-09-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/19/android-transition/" class="title">深入理解 Android Transition 场景动画</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-19T06:10:04.000Z" itemprop="datePublished">2020-10-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/07/02/android-page-performance/" class="title">Android 页面秒开优化总结</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-07-01T21:59:04.000Z" itemprop="datePublished">2020-07-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/06/19/aar-params-proguard/" class="title">关于 aar 接口参数被混淆问题</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-19T08:43:04.000Z" itemprop="datePublished">2020-06-19</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-recyclerview-auto-viewtype" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      RecyclerView Adapter 实现自动多 ViewType
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/11/26/recyclerview-auto-viewtype/" class="article-date">
+	  <time datetime="2019-11-26T01:24:04.000Z" itemprop="datePublished">2019-11-26</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/RecyclerView/" rel="tag">RecyclerView</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/11/26/recyclerview-auto-viewtype/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>多Type的列表在App中很常见，例如各种电商类App的首页，甚至是购物车、订单详情页面等。我们暂且将页面上每个ViewType对应的模块称之为楼层。那么，以电商订单详情举例，可能有以下楼层：</p>
+<ul>
+<li>订单状态（交易成功、交易关闭等）</li>
+<li>物流信息</li>
+<li>收货地址</li>
+<li>订单商品信息列表</li>
+<li>价格相关信息</li>
+<li>订单信息（订单号、交易流水号等）</li>
+<li>其他一些展示信息</li>
+</ul>
+<p>那么，我们可以通过不同的 ViewType 来区分这些模块，通常的做法是：</p>
+<span id="more"></span>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DetailAdapter</span> <span class="keyword">extends</span> <span class="title class_">RecyclerView</span>.Adapter&lt;RecyclerView.ViewHolder&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">VIEW_TYPE_EMPTY</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">VIEW_TYPE_HEADER</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">VIEW_TYPE_ADDRESS</span> <span class="operator">=</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">VIEW_TYPE_GOODS</span> <span class="operator">=</span> <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> List&lt;Model&gt; mData = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> RecyclerView.ViewHolder <span class="title function_">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="type">int</span> viewType)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(viewType == VIEW_TYPE_HEADER) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">HeaderViewHolder</span>(LayoutInflater.from(parent.getContext()).inflate(R.layout.header, parent, <span class="literal">false</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(viewType == VIEW_TYPE_ADDRESS) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">AddressViewHolder</span>(LayoutInflater.from(parent.getContext()).inflate(R.layout.address, parent, <span class="literal">false</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">EmptyViewHolder</span>(LayoutInflater.from(parent.getContext()).inflate(R.layout.empty, parent, <span class="literal">false</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onBindViewHolder</span><span class="params">(RecyclerView.ViewHolder holder, <span class="type">int</span> position)</span> &#123;</span><br><span class="line">        <span class="comment">// </span></span><br><span class="line">        <span class="keyword">if</span>(getItemViewType(position) == VIEW_TYPE_HEADER) &#123;</span><br><span class="line">            <span class="comment">// 绑定数据....</span></span><br><span class="line">            <span class="type">HeaderViewHolder</span> <span class="variable">headerViewHodlder</span> <span class="operator">=</span> (HeaderViewHolder)holder;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(getItemViewType(position) == VIEW_TYPE_ADDRESS) &#123;</span><br><span class="line">            <span class="type">AddressViewHolder</span> <span class="variable">addressViewHolder</span> <span class="operator">=</span> (AddressViewHolder)holder;</span><br><span class="line">            <span class="comment">// 绑定数据...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 或者</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(holder <span class="keyword">instanceof</span> HeaderViewHolder) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(holder <span class="keyword">instanceof</span> AddressViewHolder) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getItemCount</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mData.size();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getItemViewType</span><span class="params">(<span class="type">int</span> position)</span> &#123;</span><br><span class="line">        <span class="type">Model</span> <span class="variable">model</span> <span class="operator">=</span> mData.get(position);</span><br><span class="line">        <span class="keyword">if</span>(条件<span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> VIEW_TYPE_HEADER;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(条件<span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> VIEW_TYPE_ADDRESS;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(条件<span class="number">3</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> VIEW_TYPE_GOODS;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> VIEW_TYPE_EMPTY;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">EmptyViewHolder</span> <span class="keyword">extends</span> <span class="title class_">RecyclerView</span>.ViewHolder &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">EmptyViewHolder</span><span class="params">(View itemView)</span> &#123;</span><br><span class="line">            <span class="built_in">super</span>(itemView);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">HeaderViewHolder</span> <span class="keyword">extends</span> <span class="title class_">RecyclerView</span>.ViewHolder &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">HeaderViewHolder</span><span class="params">(View itemView)</span> &#123;</span><br><span class="line">            <span class="built_in">super</span>(itemView);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">AddressViewHolder</span> <span class="keyword">extends</span> <span class="title class_">RecyclerView</span>.ViewHolder &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">AddressViewHolder</span><span class="params">(View itemView)</span> &#123;</span><br><span class="line">            <span class="built_in">super</span>(itemView);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">GoodsViewHolder</span> <span class="keyword">extends</span> <span class="title class_">RecyclerView</span>.ViewHolder &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">GoodsViewHolder</span><span class="params">(View itemView)</span> &#123;</span><br><span class="line">            <span class="built_in">super</span>(itemView);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面这种做法主要有以下几个弊端：</p>
+<p>1、当 ViewType 种类特别多的情况下，Adapter里面的代码会过于臃肿，难以维护<br>2、每当需要新增一个 ViewType 的时候，改动范围比较大，几乎涉及到了整个Adapter，多人协作容易代码冲突<br>3、Adapter 的代码，复用性比较差。每个页面都需要自己重新写一个庞大的 Adapter<br>4、局部刷新操作实现比较麻烦。比如不通过Model，要动态更改某一个楼层View的展示，就需要查找到对应楼层的 ViewHolder，代码实现要复杂得多<br>5、如果不同的 ViewType 对应的 Model 类型不一样，那么Adapter里面的复杂度又会相应的上升<br>6、<strong>RecyclerView.ViewHolder 的构造函数，需要把View带进来，这个对于ViewHolder实现来说是不合理的。</strong> 为什么这么说呢？因为每个 ViewHolder 对应的是什么样的View，其实应该 ViewHolder 自身最清楚，不应该在 onCreateViewHolder 的时候根据 viewType 来判断要 inflate 什么布局。所以为了实现解耦，这个问题必须优化掉。</p>
+<h2 id="逻辑实现"><a href="#逻辑实现" class="headerlink" title="逻辑实现"></a>逻辑实现</h2><p>为了解决上述问题，我们可以换个思路来实现。</p>
+<p>通常情况下，服务端返回的List里面的Model，可以区分出对应的ViewType，然后对应的创建不同的 ViewHolder。那么，我们为了避免在 Adapter 里面来识别每个 Model 对象所对应的 ViewType，我们可以在组装数据的时候做一层预处理。封装的思路核心就在于以下三点：</p>
+<p>1、<strong>BaseData</strong>, 用于对服务端数据预处理做一层包装，每个 BaseData 对应 Adapter 的一条数据，并且每个 BaseData 应该要知道自己对应 ViewHolder 类。<br>2、<strong>BaseViewHolder</strong>, 所有的 ViewHolder 继承的抽象基类，由子类来返回对应的布局、数据绑定等等<br>3、<strong>BaseAdapter</strong>, 数据类型是List&lt;BaseData&gt;，根据每个 BaseData对应的 <strong>ViewHolderClass</strong>，来自动生成对应的 <strong>ViewType</strong>。<strong>ViewHolderClass</strong> 与 <strong>ViewType</strong> 是一对一的关系。 onCreateViewHolder时，通过 ViewType 来找到对应的 ViewHolderClass，通过反射创建对应的 ViewHolder。在onBindViewHolder时，调用 BaseViewHolder 的 onBindViewHolder 方法。</p>
+<p><strong>BaseData</strong>的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseData</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> BaseViewHolder lastViewHolder;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setLastViewHolder</span><span class="params">(BaseViewHolder lastViewHolder)</span> &#123;</span><br><span class="line">        <span class="comment">// 当数据需要刷新时，可以通过这个找到对应的ViewHolder</span></span><br><span class="line">        <span class="built_in">this</span>.lastViewHolder = lastViewHolder;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 每一个包装数据，需要知道对应的 ViewHolder 类是什么</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> Class&lt;? <span class="keyword">extends</span> <span class="title class_">BaseViewHolder</span>&gt; getViewHolderClass();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>BaseViewHolder</strong> 的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseViewHolder</span>&lt;T <span class="keyword">extends</span> <span class="title class_">BaseData</span>&gt; <span class="keyword">extends</span> <span class="title class_">RecyclerView</span>.ViewHolder &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> FrameLayout <span class="title function_">createRootLayout</span><span class="params">(Context context)</span> &#123;</span><br><span class="line">        <span class="type">FrameLayout</span> <span class="variable">layout</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FrameLayout</span>(context);</span><br><span class="line">        layout.setLayoutParams(<span class="keyword">new</span> <span class="title class_">ViewGroup</span>.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));</span><br><span class="line">        <span class="keyword">return</span> layout;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> Context mContext;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> View mRootView;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BaseViewHolder</span><span class="params">(<span class="meta">@NonNull</span> Context context)</span> &#123;</span><br><span class="line">        <span class="comment">// 每个楼层最外围会包一个 FrameLayout，主要是为了避免 BaseViewHolder 创建之前就要先创建好View（懒加载思路）</span></span><br><span class="line">        <span class="built_in">super</span>(createRootLayout(context));</span><br><span class="line"></span><br><span class="line">        <span class="built_in">this</span>.mContext = context;</span><br><span class="line"></span><br><span class="line">        initView();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">initView</span><span class="params">()</span> &#123;</span><br><span class="line">        mRootView = LayoutInflater.from(mContext).inflate(getLayoutId(), (ViewGroup) itemView, <span class="literal">false</span>);</span><br><span class="line">        ((ViewGroup) itemView).addView(mRootView);</span><br><span class="line"></span><br><span class="line">        onViewCreated();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 每个 ViewHolder 对应的 Layout，子类实现</span></span><br><span class="line">    <span class="meta">@LayoutRes</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="type">int</span> <span class="title function_">getLayoutId</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">onViewCreated</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@CallSuper</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onBindViewHolder</span><span class="params">(T data)</span> &#123;</span><br><span class="line">        data.setLastViewHolder(<span class="built_in">this</span>);</span><br><span class="line">        bindData(data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绑定数据，子类实现</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">bindData</span><span class="params">(T data)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>BaseAdapter</strong> 的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseAdapter</span> <span class="keyword">extends</span> <span class="title class_">RecyclerView</span>.Adapter&lt;BaseViewHolder&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> Context mContext;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 记录 ViewHolderClass 与 ViewType 映射关系，两个Map主要是为了反向查找更方便</span></span><br><span class="line">    <span class="keyword">private</span> ArrayMap&lt;Class&lt;? <span class="keyword">extends</span> <span class="title class_">BaseViewHolder</span>&gt;, Integer&gt; mItemTypeMap = <span class="keyword">new</span> <span class="title class_">ArrayMap</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> ArrayMap&lt;Integer, Class&lt;? <span class="keyword">extends</span> <span class="title class_">BaseViewHolder</span>&gt;&gt; mViewHolderMap = <span class="keyword">new</span> <span class="title class_">ArrayMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> List&lt;BaseData&gt; mData = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">itemViewType</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BaseAdapter</span><span class="params">(Context context)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.mContext = context;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setData</span><span class="params">(List&lt;BaseData&gt; data)</span> &#123;</span><br><span class="line">        mData.clear();</span><br><span class="line">        <span class="keyword">if</span> (data != <span class="literal">null</span>) &#123;</span><br><span class="line">            genItemType(data);</span><br><span class="line">            mData.addAll(data);</span><br><span class="line">        &#125;</span><br><span class="line">        notifyDataSetChanged();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">appendData</span><span class="params">(List&lt;BaseData&gt; data)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (CollectionUtil.isEmpty(data)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        genItemType(data);</span><br><span class="line">        <span class="type">int</span> <span class="variable">start</span> <span class="operator">=</span> mData.size();</span><br><span class="line">        mData.addAll(data);</span><br><span class="line">        notifyItemRangeInserted(start, data.size());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 自动生成自增长的ViewType</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">genItemType</span><span class="params">(List&lt;BaseData&gt; data)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (data == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (BaseData item : data) &#123;</span><br><span class="line">            Class&lt;? <span class="keyword">extends</span> <span class="title class_">BaseViewHolder</span>&gt; clazz = item.getViewHolderClass();</span><br><span class="line">            <span class="keyword">if</span> (!mItemTypeMap.containsKey(item.getViewHolderClass())) &#123;</span><br><span class="line">                mItemTypeMap.put(clazz, itemViewType);</span><br><span class="line">                mViewHolderMap.put(itemViewType, clazz);</span><br><span class="line"></span><br><span class="line">                itemViewType++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> BaseViewHolder <span class="title function_">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="type">int</span> viewType)</span> &#123;</span><br><span class="line">        <span class="comment">// 通过 ViewType 找到对应的 ViewHolderClass</span></span><br><span class="line">        Class&lt;? <span class="keyword">extends</span> <span class="title class_">BaseViewHolder</span>&gt; clazz = mViewHolderMap.get(viewType);</span><br><span class="line"></span><br><span class="line">        <span class="type">BaseViewHolder</span> <span class="variable">viewHolder</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 反射创建ViewHolder，解耦</span></span><br><span class="line">            Constructor&lt;? <span class="keyword">extends</span> <span class="title class_">BaseViewHolder</span>&gt; ct = clazz.getDeclaredConstructor(Context.class);</span><br><span class="line">            ct.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            viewHolder = ct.newInstance(mContext);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> viewHolder;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onBindViewHolder</span><span class="params">(BaseViewHolder holder, <span class="type">int</span> position)</span> &#123;</span><br><span class="line">        <span class="comment">//noinspection unchecked</span></span><br><span class="line">        holder.onBindViewHolder(getItem(position));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getItemCount</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mData.size();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getItemViewType</span><span class="params">(<span class="type">int</span> position)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">type</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (position &gt;= <span class="number">0</span> &amp;&amp; position &lt; mData.size()) &#123;</span><br><span class="line">            <span class="comment">// 通过 ViewHolderClass 找到对应的 ViewType</span></span><br><span class="line">            type = mItemTypeMap.get(getItem(position).getViewHolderClass());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> type;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> BaseData <span class="title function_">getItem</span><span class="params">(<span class="type">int</span> position)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mData.get(position);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><p>每一种楼层，我们需要实现 <strong>BaseData</strong>和 <strong>BaseViewHolder</strong>, 以简单的文本展示做一个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NormalTextData</span> <span class="keyword">extends</span> <span class="title class_">BaseData</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String content;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">NormalTextData</span><span class="params">(String content)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.content = content;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Class&lt;? <span class="keyword">extends</span> <span class="title class_">BaseViewHolder</span>&gt; getViewHolderClass() &#123;</span><br><span class="line">        <span class="keyword">return</span> NormalTextViewHolder.class;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NormalTextViewHolder</span> <span class="keyword">extends</span> <span class="title class_">BaseViewHolder</span>&lt;NormalTextData&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> TextView contentView;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">NormalTextViewHolder</span><span class="params">(Context context)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">int</span> <span class="title function_">getLayoutId</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> R.layout.hm_order_cell_text;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onViewCreated</span><span class="params">()</span> &#123;</span><br><span class="line">        contentView = findViewById(R.id.text_content);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bindData</span><span class="params">(NormalTextData data)</span> &#123;</span><br><span class="line">        contentView.setText(data.content);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">List&lt;BaseData&gt; data = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">data.add(<span class="keyword">new</span> <span class="title class_">NormalTextData</span>(<span class="string">&quot;展示一行文本&quot;</span>));</span><br><span class="line"></span><br><span class="line"><span class="type">BaseAdapter</span> <span class="variable">adapter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BaseAdapter</span>(context);</span><br><span class="line">adapter.setData(data);</span><br><span class="line"></span><br><span class="line">recyclerview.setAdapter(adapter);</span><br></pre></td></tr></table></figure>
+
+<p>以后，每当新增一个楼层，只需要新增两个类，分别实现 <strong>BaseData</strong> 和 <strong>BaseViewHolder</strong>，然后adapter插入对应的 BaseData  数据即可。实现极大程度的解耦。</p>
+<p>感谢阅读。</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://smuyyh.top/2019/11/26/recyclerview-auto-viewtype/" title="RecyclerView Adapter 实现自动多 ViewType" target="_blank" rel="external">http://smuyyh.top/2019/11/26/recyclerview-auto-viewtype/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/smuyyh" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/smuyyh" target="_blank"><span class="text-dark">所长</span><small class="ml-1x">Android Development Engineer</small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+           
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/11/27/sticky-header-recyclerview/" title="RecyclerView 悬浮吸顶效果实现，支持数据绑定及Touch事件"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/08/21/idea-plugin-dev/" title="IDEA 插件开发"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/alipay.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/wechat.jpg" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 LeBron_Six
+        
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+  <script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '0a452de0f03398d1ea74',
+    clientSecret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+    repo: 'smuyyh.github.io',
+    owner: 'smuyyh',
+    admin: ['smuyyh'],
+    id: md5(location.pathname),
+    distractionFreeMode: true,
+    language: 'zh-CN',
+    enableHotKey: 'true'
+  })
+  gitalk.render('comments')
+  </script>
+      
+
+
+
+
+
+
+
+</body>
+</html>

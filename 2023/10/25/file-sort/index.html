@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>多个大文件数据排序去重的解题思路 | Hexo</title>
+  <meta name="description" content="问题 假设有四个文件，每个文件 1GB，文件里的每一行存储一个随机的 int正整数 (0 &lt;&#x3D; v &lt; 2^32)，单文件最多 1亿行。要求对这四个文件进行排序去重，输出一个有序的文件。 假设服务器规格 8核16GB内存，希望执行时间尽可能短。 在上述的前提条件下，如果排序完之后，还希望输出每个数字出现的次数呢？ 文件读写效率 在 Java 下，文件的 io 方式分为 字节流">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多个大文件数据排序去重的解题思路">
+<meta property="og:url" content="http://smuyyh.top/2023/10/25/file-sort/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="问题 假设有四个文件，每个文件 1GB，文件里的每一行存储一个随机的 int正整数 (0 &lt;&#x3D; v &lt; 2^32)，单文件最多 1亿行。要求对这四个文件进行排序去重，输出一个有序的文件。 假设服务器规格 8核16GB内存，希望执行时间尽可能短。 在上述的前提条件下，如果排序完之后，还希望输出每个数字出现的次数呢？ 文件读写效率 在 Java 下，文件的 io 方式分为 字节流">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-25T12:30:53.000Z">
+<meta property="article:modified_time" content="2023-10-25T12:30:57.160Z">
+<meta property="article:author" content="LeBron_Six">
+<meta property="article:tag" content="排序">
+<meta property="article:tag" content="io">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://smuyyh.top/2023/10/25/file-sort/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="LeBron_Six 的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/avatar.jpg" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.css">
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body class="main-center theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/smuyyh" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">所长</h2>
+        <h4 id="title" class="hidden-xs hidden-sm hidden-md">Android Development Engineer</h4>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+        <small id="company" class="text-muted hidden-xs hidden-sm" style="margin-left: 10px"><i class="icon icon-users"></i> Alibaba Group</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Terminal/">Terminal</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/3D-Touch/" rel="tag">3D Touch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/" rel="tag">Android Studio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/" rel="tag">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bubble/" rel="tag">Bubble</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camera/" rel="tag">Camera</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Crash/" rel="tag">Crash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/" rel="tag">Handler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashMap/" rel="tag">HashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JCenter/" rel="tag">JCenter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Looper/" rel="tag">Looper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/" rel="tag">Mac</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Message/" rel="tag">Message</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OkHttp/" rel="tag">OkHttp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RecyclerView/" rel="tag">RecyclerView</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/" rel="tag">Retrofit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/" rel="tag">RxJava</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Terminal/" rel="tag">Terminal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/" rel="tag">View</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VirtualAPK/" rel="tag">VirtualAPK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Volatile/" rel="tag">Volatile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Widget/" rel="tag">Widget</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea-plugin/" rel="tag">idea plugin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/io/" rel="tag">io</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/recyclerview/" rel="tag">recyclerview</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" rel="tag">内存泄露</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E7%94%BB/" rel="tag">动画</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E6%AD%A5/" rel="tag">异步</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag">排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B0%94%E6%B3%A1/" rel="tag">气泡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" rel="tag">页面性能</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/3D-Touch/" style="font-size: 13px;">3D Touch</a> <a href="/tags/Android/" style="font-size: 14px;">Android</a> <a href="/tags/Android-Studio/" style="font-size: 13px;">Android Studio</a> <a href="/tags/AsyncTask/" style="font-size: 13px;">AsyncTask</a> <a href="/tags/Bubble/" style="font-size: 13px;">Bubble</a> <a href="/tags/Camera/" style="font-size: 13px;">Camera</a> <a href="/tags/Crash/" style="font-size: 13px;">Crash</a> <a href="/tags/Github/" style="font-size: 13px;">Github</a> <a href="/tags/Handler/" style="font-size: 13.33px;">Handler</a> <a href="/tags/HashMap/" style="font-size: 13px;">HashMap</a> <a href="/tags/JCenter/" style="font-size: 13px;">JCenter</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/Java/" style="font-size: 13.67px;">Java</a> <a href="/tags/JavaScript/" style="font-size: 13px;">JavaScript</a> <a href="/tags/Looper/" style="font-size: 13px;">Looper</a> <a href="/tags/Mac/" style="font-size: 13px;">Mac</a> <a href="/tags/Message/" style="font-size: 13px;">Message</a> <a href="/tags/OkHttp/" style="font-size: 13px;">OkHttp</a> <a href="/tags/RecyclerView/" style="font-size: 13.33px;">RecyclerView</a> <a href="/tags/Retrofit/" style="font-size: 13px;">Retrofit</a> <a href="/tags/RxJava/" style="font-size: 13px;">RxJava</a> <a href="/tags/Terminal/" style="font-size: 13px;">Terminal</a> <a href="/tags/View/" style="font-size: 13px;">View</a> <a href="/tags/VirtualAPK/" style="font-size: 13px;">VirtualAPK</a> <a href="/tags/Volatile/" style="font-size: 13px;">Volatile</a> <a href="/tags/Widget/" style="font-size: 13px;">Widget</a> <a href="/tags/idea-plugin/" style="font-size: 13px;">idea plugin</a> <a href="/tags/io/" style="font-size: 13px;">io</a> <a href="/tags/java/" style="font-size: 13px;">java</a> <a href="/tags/recyclerview/" style="font-size: 13px;">recyclerview</a> <a href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" style="font-size: 13px;">内存泄露</a> <a href="/tags/%E5%8A%A8%E7%94%BB/" style="font-size: 13px;">动画</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 13px;">多线程</a> <a href="/tags/%E5%BC%82%E6%AD%A5/" style="font-size: 13.33px;">异步</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">性能优化</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 13px;">排序</a> <a href="/tags/%E6%B0%94%E6%B3%A1/" style="font-size: 13px;">气泡</a> <a href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" style="font-size: 13px;">页面性能</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">十月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">八月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/10/25/file-sort/" class="title">多个大文件数据排序去重的解题思路</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-10-25T12:30:53.000Z" itemprop="datePublished">2023-10-25</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Terminal/">Terminal</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/08/02/terminal-info/" class="title">终端 Terminal 的一些实现细节分享</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-08-02T12:45:01.000Z" itemprop="datePublished">2023-08-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/09/14/kotlin-in-chinese/" class="title">Kotlin官方文档翻译</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-09-14T07:00:04.000Z" itemprop="datePublished">2021-09-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/19/android-transition/" class="title">深入理解 Android Transition 场景动画</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-19T06:10:04.000Z" itemprop="datePublished">2020-10-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/07/02/android-page-performance/" class="title">Android 页面秒开优化总结</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-07-01T21:59:04.000Z" itemprop="datePublished">2020-07-02</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-file-sort" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      多个大文件数据排序去重的解题思路
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2023/10/25/file-sort/" class="article-date">
+	  <time datetime="2023-10-25T12:30:53.000Z" itemprop="datePublished">2023-10-25</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/io/" rel="tag">io</a>, <a class="article-tag-link-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag">排序</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2023/10/25/file-sort/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p><strong>问题</strong></p>
+<p>假设有四个文件，每个文件 1GB，文件里的每一行存储一个随机的 int正整数 (0 &lt;&#x3D; v &lt; 2^32)，单文件最多 1亿行。要求对这四个文件进行排序去重，输出一个有序的文件。</p>
+<p>假设服务器规格 8核16GB内存，希望执行时间尽可能短。</p>
+<p>在上述的前提条件下，如果排序完之后，还希望输出每个数字出现的次数呢？</p>
+<p><strong>文件读写效率</strong></p>
+<p>在 Java 下，文件的 io 方式分为 字节流 和 字符流，字符流又分为 字符输入流 和 字符输出流。<br>字节流和字符流的区别在于，字节流是以字节为单位读写文件，字符流是以字符为单位读写文件。</p>
+<p>字符流的好处是可以指定编码，比如 UTF-8，GBK 等，而字节流只能使用默认的编码。</p>
+<p>对于该题目，相比之下，字符流更适合，因为我们只需要读取每一行，然后转换成 int，不需要考虑编码的问题。所以后文会有很多<br>BufferReader 和 BufferWriter 相关的代码，这里就不再赘述。</p>
+<p><strong>常规思路</strong></p>
+<p>假设要对所有的数字读取出来进行排序，全部读取出来放在内存里再排序显然是不行的，因为内存放不下。那么我们可以考虑分治的思想，将一个大文件分成多个小文件，每个小文件放到内存里排序，然后再将这些小文件合并成一个大文件。这样就可以解决内存放不下的问题。</p>
+<span id="more"></span>
+
+<p>1、分割文件、子文件排序完后写入临时文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 每个小文件的行数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">CHUNK_SIZE</span> <span class="operator">=</span> <span class="number">2500000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 每个大文件拆成的小文件个数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">SPLIT_COUNT</span> <span class="operator">=</span> <span class="number">40</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 总的小文件个数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">TOTAL_CHUNK_COUNT</span> <span class="operator">=</span> FILE_PATHS.length * SPLIT_COUNT;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">ExecutorService</span> <span class="variable">POOL</span> <span class="operator">=</span> Executors.newFixedThreadPool(<span class="number">16</span>);</span><br><span class="line">    </span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">splitFiles</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(TOTAL_CHUNK_COUNT);</span><br><span class="line"></span><br><span class="line">    <span class="type">AtomicInteger</span> <span class="variable">count</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AtomicInteger</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (String filePath : FILE_PATHS) &#123;</span><br><span class="line">        <span class="comment">// 多线程读文件</span></span><br><span class="line">        POOL.submit(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                splitSingleFile(filePath, <span class="keyword">new</span> <span class="title class_">SplitCallback</span>() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onSplit</span><span class="params">(List&lt;Integer&gt; lines)</span> &#123;</span><br><span class="line">                        POOL.submit(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">                            <span class="meta">@Override</span></span><br><span class="line">                            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                                <span class="keyword">try</span> &#123;</span><br><span class="line">                                    <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> count.incrementAndGet();</span><br><span class="line">                                    sortChunk(lines, index);</span><br><span class="line">                                    writeChunk(lines, index);</span><br><span class="line">                                &#125; <span class="keyword">catch</span> (IOException ignored) &#123;</span><br><span class="line">                                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                                    latch.countDown();</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        latch.await();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    service.shutdown();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 大文件切割成若干个小文件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">splitSingleFile</span><span class="params">(String filePath, SplitCallback callback)</span> &#123;</span><br><span class="line">    List&lt;Integer&gt; lines = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(CHUNK_SIZE);</span><br><span class="line">    <span class="keyword">try</span> (<span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(<span class="keyword">new</span> <span class="title class_">FileReader</span>(filePath))) &#123;</span><br><span class="line">        String line;</span><br><span class="line">        <span class="keyword">while</span> ((line = reader.readLine()) != <span class="literal">null</span>) &#123;</span><br><span class="line">            lines.add(StringUtils.stringToInt(line));</span><br><span class="line">            <span class="keyword">if</span> (lines.size() &gt;= CHUNK_SIZE) &#123;</span><br><span class="line">                List&lt;Integer&gt; originLines = lines;</span><br><span class="line">                callback.onSplit(originLines);</span><br><span class="line">                lines = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(CHUNK_SIZE);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!lines.isEmpty()) &#123;</span><br><span class="line">        callback.onSplit(lines);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (DEBUG) &#123;</span><br><span class="line">        log(<span class="string">&quot;split file &quot;</span> + filePath + <span class="string">&quot; end&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对每个小文件进行排序</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">sortChunk</span><span class="params">(List&lt;Integer&gt; lines, <span class="type">int</span> index)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="comment">// Collections.sort(lines); // 归并</span></span><br><span class="line">    CollectionUtils.quickSort(lines); <span class="comment">// 快排</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (DEBUG) &#123;</span><br><span class="line">        log(<span class="string">&quot;sort chunk &quot;</span> + index + <span class="string">&quot; end&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 将排序后的内容写入临时文件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">writeChunk</span><span class="params">(List&lt;Integer&gt; lines, <span class="type">int</span> index)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">tempFileName</span> <span class="operator">=</span> <span class="string">&quot;temp_&quot;</span> + index + <span class="string">&quot;.txt&quot;</span>;</span><br><span class="line">    <span class="keyword">try</span> (<span class="type">BufferedWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedWriter</span>(<span class="keyword">new</span> <span class="title class_">FileWriter</span>(tempFileName))) &#123;</span><br><span class="line">        <span class="keyword">for</span> (Integer line : lines) &#123;</span><br><span class="line">            writer.write(Integer.toString(line));</span><br><span class="line">            writer.newLine();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (DEBUG) &#123;</span><br><span class="line">        log(<span class="string">&quot;write chunk &quot;</span> + index + <span class="string">&quot; end&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、合并临时文件，通过优先队列不断地从临时文件里的每一行取出最小的，然后写入最终的输出文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">mergeSortFiles</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    File[] tempFiles = <span class="keyword">new</span> <span class="title class_">File</span>[TOTAL_CHUNK_COUNT];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; TOTAL_CHUNK_COUNT; i++) &#123;</span><br><span class="line">        tempFiles[i] = <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;temp_&quot;</span> + (i + <span class="number">1</span>) + <span class="string">&quot;.txt&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用优先队列进行合并排序</span></span><br><span class="line">    PriorityQueue&lt;Pair&gt; pq = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;&gt;(tempFiles.length, Comparator.comparing(Function.identity(), Main::compareLines));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将每个临时文件的第一行添加到优先队列中</span></span><br><span class="line">    <span class="keyword">for</span> (File tempFile : tempFiles) &#123;</span><br><span class="line">        <span class="type">BufferedReader</span> <span class="variable">br</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(<span class="keyword">new</span> <span class="title class_">FileReader</span>(tempFile));</span><br><span class="line">        pq.offer(<span class="keyword">new</span> <span class="title class_">Pair</span>(br, StringUtils.stringToInt(br.readLine())));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 合并排序后的结果输出到文件</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">current</span> <span class="operator">=</span> pollAndOffer(pq);</span><br><span class="line">    <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">try</span> (<span class="type">BufferedWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedWriter</span>(<span class="keyword">new</span> <span class="title class_">FileWriter</span>(OUTPUT_PATH))) &#123;</span><br><span class="line">        <span class="keyword">while</span> (!pq.isEmpty()) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">line</span> <span class="operator">=</span> pollAndOffer(pq);</span><br><span class="line">            <span class="keyword">if</span> (current != line) &#123;</span><br><span class="line">                writer.write(current + <span class="string">&quot;:&quot;</span> + count + <span class="string">&quot;\n&quot;</span>);</span><br><span class="line">                current = line;</span><br><span class="line">                count = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                count++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        writer.write(current + <span class="string">&quot;:&quot;</span> + count + <span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        writer.flush();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (DEBUG) &#123;</span><br><span class="line">        log(<span class="string">&quot;merge temp file end&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除临时文件</span></span><br><span class="line">    <span class="keyword">for</span> (File tempFile : tempFiles) &#123;</span><br><span class="line">        tempFile.delete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">pollAndOffer</span><span class="params">(PriorityQueue&lt;Pair&gt; pq)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="type">Pair</span> <span class="variable">pair</span> <span class="operator">=</span> pq.poll();</span><br><span class="line">    <span class="type">int</span> <span class="variable">value</span> <span class="operator">=</span> pair.value;</span><br><span class="line">    <span class="type">String</span> <span class="variable">nextLine</span> <span class="operator">=</span> pair.br.readLine();</span><br><span class="line">    <span class="keyword">if</span> (nextLine != <span class="literal">null</span> &amp;&amp; nextLine.length() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        pair.value = StringUtils.stringToInt(nextLine);</span><br><span class="line">        pq.offer(pair);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        pair.br.close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">compareLines</span><span class="params">(Pair br1, Pair br2)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (br1.value &lt; br2.value) ? -<span class="number">1</span> : ((br1.value == br2.value) ? <span class="number">0</span> : <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>位图思路</strong></p>
+<p>仔细理解一下题目要求，我们只需要对这四个文件进行排序去重，输出一个有序的文件。我们并不需要知道每个数字出现的次数，只需要知道这个数字是否出现过。那么我们可以使用位图的思想，将每个数字映射到一个bit位上，如果这个数字出现过，那么这个bit位就是1，否则就是0。这样我们就可以用一个bit位来表示一个数字是否出现过，而不需要用一个int来表示一个数字出现的次数。</p>
+<p>最后按顺序遍历每一位，如果 bit位是1，就输出对应的数字。</p>
+<p>那么在读文件这步就可以优化为以下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>[] list = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">2000000000</span> / <span class="number">32</span> + <span class="number">1</span>];</span><br><span class="line"><span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(filePaths.length * multiple);</span><br><span class="line"><span class="keyword">for</span> (String filePath : filePaths) &#123;</span><br><span class="line">    <span class="keyword">try</span> (<span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(<span class="keyword">new</span> <span class="title class_">FileReader</span>(filePath))) &#123;</span><br><span class="line">        String line;</span><br><span class="line">        <span class="keyword">while</span> ((line = reader.readLine()) != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">value</span> <span class="operator">=</span> stringToInt(line);</span><br><span class="line">            <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> value &gt;&gt; <span class="number">5</span>;</span><br><span class="line">            <span class="type">int</span> <span class="variable">mod</span> <span class="operator">=</span> value &amp; <span class="number">31</span>; <span class="comment">// 取模，相当于 value % 32</span></span><br><span class="line"></span><br><span class="line">            list[index] |= <span class="number">1</span> &lt;&lt; mod;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (<span class="type">BufferedWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedWriter</span>(<span class="keyword">new</span> <span class="title class_">FileWriter</span>(outputPath))) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; list.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; <span class="number">32</span>; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((list[i] &amp; (<span class="number">1</span> &lt;&lt; j)) != <span class="number">0</span>) &#123;</span><br><span class="line">                writer.write(Integer.toString((i &lt;&lt; <span class="number">5</span>) + j));</span><br><span class="line">                writer.newLine();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>位图的效率，比常规排序的思想，速度快了非常多。</p>
+<p><strong>位图并发冲突问题</strong></p>
+<p>使用位图时，如果多个线程同时对同一个bit位进行写操作，就会出现并发冲突问题。比如线程A和线程B同时对不同bit位进行写1操作，这个是非原子操作，可能会出现线程A写完后，线程B写完后，线程A写的1被覆盖的情况。</p>
+<p>借鉴 CAS 的思想，我们可以使用 AtomicIntegerArray 来解决这个问题。</p>
+<p>或者借鉴 ConcurrentHashMap 的思想，使用分段锁来解决这个问题。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 计数分段锁，锁的个数越大，理论上在并发时锁被占用的几率越小</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] LOCKS = <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0x1000</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; LOCKS.length; i++) &#123;</span><br><span class="line">    LOCKS[i] = <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">splitFiles</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="type">int</span>[] list = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">2000000000</span> / <span class="number">32</span> + <span class="number">1</span>];</span><br><span class="line">    <span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(FILE_PATHS.length * SEGMENT_COUNT);</span><br><span class="line">    <span class="keyword">for</span> (String filePath : FILE_PATHS) &#123;</span><br><span class="line">        POOL.submit(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> (<span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(<span class="keyword">new</span> <span class="title class_">FileReader</span>(filePath))) &#123;</span><br><span class="line">                    String line;</span><br><span class="line">                    <span class="keyword">while</span> ((line = reader.readLine()) != <span class="literal">null</span>) &#123;</span><br><span class="line">                        <span class="type">int</span> <span class="variable">value</span> <span class="operator">=</span> StringUtils.stringToInt(line);</span><br><span class="line">                        <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> value &gt;&gt; <span class="number">5</span>;</span><br><span class="line">                        <span class="type">int</span> <span class="variable">mod</span> <span class="operator">=</span> value &amp; <span class="number">31</span>; <span class="comment">// 取模，相当于 value % 32</span></span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 分段锁</span></span><br><span class="line">                        <span class="keyword">synchronized</span> (LOCKS[value &amp; <span class="number">0xFFF</span>]) &#123;</span><br><span class="line">                            list[index] |= <span class="number">1</span> &lt;&lt; mod;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    latch.countDown();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        latch.await();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>并发读单个文件</strong></p>
+<p>首先要解决的问题是，如何并发读单个文件，首先想到的是可以使用 RandomAccessFile 来解决这个问题，但实际上 RandomAccessFile<br>的效率极其低下，如果我们还在 BufferReader 的基础上，可以通过 skip() 方法来跳到指定的位置。从而实现分段并发读单个文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">long</span> <span class="variable">startPos</span> <span class="operator">=</span> file.length() / <span class="number">2</span>; <span class="comment">// 假设分为两段，第二段从文件中间开始读</span></span><br><span class="line"><span class="type">long</span> <span class="variable">endPos</span> <span class="operator">=</span> file.length();</span><br><span class="line"><span class="type">long</span> <span class="variable">readLength</span> <span class="operator">=</span> <span class="number">0</span>; <span class="comment">// 已读取的长度</span></span><br><span class="line"><span class="type">long</span> <span class="variable">segmentLength</span> <span class="operator">=</span> endPos - startPos; <span class="comment">// 第二段的长度</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> (<span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(<span class="keyword">new</span> <span class="title class_">FileReader</span>(file))) &#123;</span><br><span class="line">    <span class="keyword">if</span> (startPos &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 跳到指定位置</span></span><br><span class="line">        reader.skip(startPos - <span class="number">1</span>);</span><br><span class="line">        <span class="type">char</span>[] chars = <span class="keyword">new</span> <span class="title class_">char</span>[<span class="number">1</span>];</span><br><span class="line">        reader.read(chars);</span><br><span class="line">        <span class="keyword">if</span> (chars[<span class="number">0</span>] != <span class="string">&#x27;\n&#x27;</span>) &#123;</span><br><span class="line">            <span class="comment">// 如果指针可能在行中间，跳过这个不完整的行。跳过的这行其实会被上一段读取</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">line</span> <span class="operator">=</span> reader.readLine();</span><br><span class="line">            <span class="keyword">if</span> (line != <span class="literal">null</span>) &#123;</span><br><span class="line">                segmentLength -= line.length() + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        String line;</span><br><span class="line">        <span class="keyword">while</span> ((line = reader.readLine()) != <span class="literal">null</span>) &#123;</span><br><span class="line">            readLength += line.length() + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (readLength &gt;= segmentLength) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上 reader.skip() 是有比较大的性能损耗的，因为它是通过不断地跳过字符来实现的。探索了源码发现可以从 BufferReader 构造方法传入的 FileReader 入手。BufferReader 本身并不感知当前读取到的具体位置，而是通过 FileReader 的 FileInputSteam 来实现的。所以我们可以通过反射来获取到 FileInputSteam 的实例，然后调用它的 skip() 方法来实现跳过指定的位置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">FileReader</span> <span class="variable">fileReader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileReader</span>(file);</span><br><span class="line"><span class="type">FileInputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Class&lt;?&gt; readerClass = Reader.class;</span><br><span class="line">    <span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> readerClass.getDeclaredField(<span class="string">&quot;lock&quot;</span>);</span><br><span class="line">    field.setAccessible(<span class="literal">true</span>);</span><br><span class="line">    is = (FileInputStream)field.get(fileReader);</span><br><span class="line">    </span><br><span class="line">    <span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(fileReader)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 跳到指定位置</span></span><br><span class="line">    is.skip(startPos - <span class="number">1</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>并发写文件</strong></p>
+<p>由于要求写入的是有序的，那么多线程写入要如何保证有序呢？我们可以多线程，每个线程负责把一段区间内的数字有序写到文件，然后按顺序合并临时文件。这样就可以保证有序了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 输出到文件，先并发写入多个临时文件，再合并</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">output</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">multiple</span> <span class="operator">=</span> <span class="number">4</span>; <span class="comment">// 分段数</span></span><br><span class="line"></span><br><span class="line">    List&lt;File&gt; tempFiles = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; multiple; i++) &#123;</span><br><span class="line">        <span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;temp&quot;</span> + i + <span class="string">&quot;.txt&quot;</span>);</span><br><span class="line">        tempFiles.add(file);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">CountDownLatch</span> <span class="variable">latch</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CountDownLatch</span>(multiple);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 批量写入字节长度</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">maxLength</span> <span class="operator">=</span> <span class="number">2520</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">maxIndex</span> <span class="operator">=</span> maxLength - <span class="number">20</span>;</span><br><span class="line">    <span class="type">char</span> <span class="variable">lineBreak</span> <span class="operator">=</span> <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    <span class="type">char</span> <span class="variable">colon</span> <span class="operator">=</span> <span class="string">&#x27;:&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 多线程分批写文件</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; multiple; i++) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">fileIndex</span> <span class="operator">=</span> i;</span><br><span class="line">        POOL.submit(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="type">WriteRunnable</span> <span class="variable">runnable</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">                <span class="comment">// 这里有个细节，第一个文件可以直接写到输出文件，后面的文件先写到临时文件，合并的时候就可以少合并一个文件</span></span><br><span class="line">                <span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> fileIndex == <span class="number">0</span> ? <span class="keyword">new</span> <span class="title class_">File</span>(OUTPUT_PATH) : tempFiles.get(fileIndex);</span><br><span class="line">                <span class="keyword">try</span> (<span class="type">BufferedWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedWriter</span>(<span class="keyword">new</span> <span class="title class_">FileWriter</span>(file), <span class="number">128</span> * <span class="number">1024</span>)) &#123;</span><br><span class="line">                    <span class="comment">// 生产者-消费者 模式</span></span><br><span class="line">                    runnable = <span class="keyword">new</span> <span class="title class_">WriteRunnable</span>(writer);</span><br><span class="line">                    POOL.submit(runnable);</span><br><span class="line"></span><br><span class="line">                    <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">                    <span class="type">char</span>[] charArray = <span class="keyword">new</span> <span class="title class_">char</span>[maxLength];</span><br><span class="line">                    <span class="type">int</span> <span class="variable">startPos</span> <span class="operator">=</span> (<span class="type">int</span>)((<span class="type">long</span>)fileIndex * BIT_ARRAY.length / multiple);</span><br><span class="line">                    <span class="type">int</span> <span class="variable">endPos</span> <span class="operator">=</span> (<span class="type">int</span>)(((<span class="type">long</span>)fileIndex + <span class="number">1</span>) * BIT_ARRAY.length / multiple);</span><br><span class="line">                    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> startPos; i &lt; endPos; i++) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (BIT_ARRAY[i] != <span class="number">0</span>) &#123;</span><br><span class="line">                            <span class="keyword">if</span> (index &gt; maxIndex) &#123;</span><br><span class="line">                                <span class="type">char</span>[] res = copyOfRange(charArray, <span class="number">0</span>, index);</span><br><span class="line">                                <span class="comment">// 添加到队列</span></span><br><span class="line">                                runnable.queue.offer(res);</span><br><span class="line">                                index = <span class="number">0</span>;</span><br><span class="line">                            &#125;</span><br><span class="line"></span><br><span class="line">                            <span class="comment">// 填充数字</span></span><br><span class="line">                            index += StringUtils.stringSize(i);</span><br><span class="line">                            StringUtils.getChars(i, index, charArray);</span><br><span class="line"></span><br><span class="line">                            <span class="comment">// 换行</span></span><br><span class="line">                            charArray[index++] = lineBreak;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (index &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                        <span class="type">char</span>[] res = copyOfRange(charArray, <span class="number">0</span>, index);</span><br><span class="line">                        runnable.queue.offer(res);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">while</span> (runnable.queue.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                        Thread.<span class="keyword">yield</span>();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    latch.countDown();</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (runnable != <span class="literal">null</span>) &#123;</span><br><span class="line">                        runnable.run = <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        latch.await();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    combineFiles(tempFiles, <span class="number">1</span>, multiple);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (File file : tempFiles) &#123;</span><br><span class="line">        file.delete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 合并多个文件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">combineFiles</span><span class="params">(List&lt;File&gt; tempFiles, <span class="type">int</span> start, <span class="type">int</span> end)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (start &gt;= end) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">StringBuilder</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> start; i &lt; end; i++) &#123;</span><br><span class="line">        sb.append(tempFiles.get(i).getAbsolutePath()).append(<span class="string">&quot; &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        List&lt;String&gt; command = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        command.add(<span class="string">&quot;/bin/sh&quot;</span>);</span><br><span class="line">        command.add(<span class="string">&quot;-c&quot;</span>);</span><br><span class="line">        command.add(<span class="string">&quot;cat &quot;</span> + sb + <span class="string">&quot; &gt;&gt; &quot;</span> + OUTPUT_PATH);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 合并文件</span></span><br><span class="line">        <span class="type">ProcessBuilder</span> <span class="variable">processBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ProcessBuilder</span>(command);</span><br><span class="line">        <span class="type">Process</span> <span class="variable">process</span> <span class="operator">=</span> processBuilder.start();</span><br><span class="line">        process.waitFor();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">MyRunnable</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line"></span><br><span class="line">    BufferedWriter writer;</span><br><span class="line"></span><br><span class="line">    Queue&lt;<span class="type">char</span>[]&gt; queue = <span class="keyword">new</span> <span class="title class_">ConcurrentLinkedQueue</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="type">boolean</span> <span class="variable">run</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MyRunnable</span><span class="params">(BufferedWriter writer)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.writer = writer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (run) &#123;</span><br><span class="line">                <span class="type">char</span>[] str = queue.poll();</span><br><span class="line">                <span class="keyword">if</span> (str != <span class="literal">null</span>) &#123;</span><br><span class="line">                    writer.write(str);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面取巧通过 cat 指令来合并文件，效率比 nio 高一些。也可以通过 nio 的方式来合并文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">mergeFiles</span><span class="params">(List&lt;String&gt; fileNames, String outputFileName)</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">FileOutputStream</span> <span class="variable">outputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(outputFileName);</span><br><span class="line">        <span class="type">FileChannel</span> <span class="variable">outputChannel</span> <span class="operator">=</span> outputStream.getChannel();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (String fileName : fileNames) &#123;</span><br><span class="line">            <span class="type">Path</span> <span class="variable">path</span> <span class="operator">=</span> Paths.get(fileName);</span><br><span class="line">            <span class="type">FileChannel</span> <span class="variable">inputChannel</span> <span class="operator">=</span> FileChannel.open(path);</span><br><span class="line">            </span><br><span class="line">            <span class="type">ByteBuffer</span> <span class="variable">buffer</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">while</span> (inputChannel.read(buffer) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                buffer.flip();</span><br><span class="line">                outputChannel.write(buffer);</span><br><span class="line">                buffer.clear();</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            inputChannel.close();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        outputChannel.close();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>细致优化思路</strong></p>
+<p>1、parseInt() 方法的优化</p>
+<p>String.parseInt() 方法里做了很多边界检查，在海量数据的循环里面，这一步的耗时也不容忽视。由于我们知道输入的数字都是正整数，所以可以做一些优化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">stringToInt</span><span class="params">(String str)</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> str.length();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i &lt; len) &#123;</span><br><span class="line">        num = num * <span class="number">10</span> + str.charAt(i) - <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> num;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、避免重复的字符串和数字之间的转换</p>
+<p>例如写入的时候，直接放在 char[] 数组里，而不是先转换成字符串，BufferWriter write 的时候又会再转换成 char[] 数组。虽然字符串里面也是 char[] 数组，但是会有一些额外的开销。</p>
+<p>3、多线程并发均匀分布</p>
+<p>由于文字是有序的，如果我们简单的按写入行数分割，会发现前面的线程因为写入的数字都比较小，写入明显要比后面的线程快，所以我们可以调整参数，让前面的线程写入的行数多一些，尽可能让每个线程的写入时间均匀分布，减少等待时间，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; SEGMENT_COUNT; i++) &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">startPos</span> <span class="operator">=</span> (<span class="type">int</span>)(getReadSegmentPosition(i - <span class="number">1</span>, SEGMENT_COUNT) * totalLength);</span><br><span class="line">    <span class="type">int</span> <span class="variable">endPos</span> <span class="operator">=</span> (<span class="type">int</span>)(getReadSegmentPosition(i, SEGMENT_COUNT) * totalLength);</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调整参数，让每个线程写入的数据量分布更均匀</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span>[] writeRatios = <span class="keyword">new</span> <span class="title class_">int</span>[] &#123;<span class="number">50</span>, <span class="number">99</span>, <span class="number">148</span>, <span class="number">195</span>, <span class="number">241</span>, <span class="number">286</span>, <span class="number">330</span>, <span class="number">373</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取第 index 个线程读取的结束位置</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">float</span> <span class="title function_">getWriteSegmentPosition</span><span class="params">(<span class="type">int</span> index, <span class="type">int</span> length)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (index &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="type">float</span>)writeRatios[index % length] / writeRatios[writeRatios.length - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽然多线程的调度并不可能每次都均匀，但是相比之前的效率提升还是非常明显的。</p>
+<p>4、并发量控制</p>
+<p>虽然8核理论上可以同时执行8个线程，但实际上每个线程的执行过程中，可能会有一些 io 等待时间，所以并发数要大于8才能达到充分利用，例如并发数16，但也不能过度提升并发数，过度反而会降低效率，因为线程的切换也是需要时间的。所以在并发量上需要根据服务器具体性能做一些调整。</p>
+<p>5、JVM 参数调优</p>
+<p>JVM 参数也会影响效率，例如 -Xms -Xmx -Xmn -XX:SurvivorRatio -XX:NewRatio 等参数，可以根据服务器的具体情况做一些调整。</p>
+<p>例如我们可以预估程序跑的时候大概需要多大的堆空间，把 -Xms 设为该数值，降低频繁GC的概率，或者 -Xms 和 -Xmx 设为相同的值，避免程序运行时扩容、缩容堆空间。</p>
+<p>在该题目的背景下，如果能降低 GC 带来的影响是比较理想的，因为内存空间足够，我们不需要太快回收垃圾，可以把垃圾回收器设置为串行回收器，降低一些影响。</p>
+<p><strong>进一步优化</strong></p>
+<p>在 io 读写方式不变的情况下，上述思路比较难有突破的空间了。Java 中 io 方式大概可以被分为三种：普通 IO(字节流、字符流)，FileChannel(文件通道)，mmap(内存映射)。</p>
+<p>FileWriter,FileReader 存在于 java.io 包中，FileChannel 存在于 java.nio 包中，FileChannel 是 NIO 里面的一种，它的底层是通过操作系统的文件通道来实现的，它的效率比普通 IO 高很多，但是它的效率还是比不上 mmap。</p>
+<p>由于系统内存足够，4个1G的文件可以直接全部映射到内存里，这样就可以直接操作内存，而不需要通过系统调用来操作文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MappedByteBuffer</span> <span class="variable">buffer</span> <span class="operator">=</span> fileChannel.map(FileChannel.MapMode.READ_ONLY, <span class="number">0</span>, fileChannel.size());</span><br><span class="line"><span class="type">int</span> <span class="variable">totalLength</span> <span class="operator">=</span> buffer.limit();</span><br><span class="line"><span class="type">int</span> <span class="variable">currentNumber</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> totalIndex=<span class="number">0</span>; totalIndex &lt; totalLength; totalIndex++) &#123;</span><br><span class="line">    <span class="type">byte</span> <span class="variable">b</span> <span class="operator">=</span> buffer.get(totalIndex);</span><br><span class="line">    <span class="keyword">if</span> (b == <span class="string">&#x27;\n&#x27;</span>) &#123;</span><br><span class="line">        <span class="comment">// 记录数字</span></span><br><span class="line">        currentNumber = <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        currentNumber = curNum * <span class="number">10</span> + (b - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>打印重复数量</strong></p>
+<p>开头提到，在排好序之后，如果还希望输出每个数字出现的次数，那么位图就不行了，因为它只能记录 0和1。系统内存足够的情况下，最多 20亿个数字，我们可以直接创建一个 20亿长度的 byte数组来存储，约暂用2个G的内存，byte 最大可以存储到 127，因为数字是完全随机的，理论上重复数超过 127 的可能性很小。</p>
+<p>假设真的重复数超过 127 怎么办？</p>
+<p>1、可以使用 short 数组，short 最大可以存储到 32767，但是这样会占用 4G 的内存。</p>
+<p>2、我们可以另起一个 HashMap，key 是数字，value 是出现的次数，当超过 127 时，剩下的数量记录在 HashMap 里面，这样就可以解决重复数超过 127 的问题。</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://smuyyh.top/2023/10/25/file-sort/" title="多个大文件数据排序去重的解题思路" target="_blank" rel="external">http://smuyyh.top/2023/10/25/file-sort/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/smuyyh" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/smuyyh" target="_blank"><span class="text-dark">所长</span><small class="ml-1x">Android Development Engineer</small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+           
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2023/08/02/terminal-info/" title="终端 Terminal 的一些实现细节分享"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/alipay.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/wechat.jpg" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 LeBron_Six
+        
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+  <script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '0a452de0f03398d1ea74',
+    clientSecret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+    repo: 'smuyyh.github.io',
+    owner: 'smuyyh',
+    admin: ['smuyyh'],
+    id: md5(location.pathname),
+    distractionFreeMode: true,
+    language: 'zh-CN',
+    enableHotKey: 'true'
+  })
+  gitalk.render('comments')
+  </script>
+      
+
+
+
+
+
+
+
+</body>
+</html>

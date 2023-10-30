@@ -539,7 +539,7 @@ mark,
 }
 
 .text-muted {
-  color: #777777 !important;
+  color: #333333 !important;
 }
 
 .text-primary {
@@ -3263,7 +3263,7 @@ body {
 }
 
 a {
-  color: #333333;
+  color: #494683;
   text-decoration: none;
 }
 
@@ -4737,7 +4737,7 @@ a.label:focus {
   text-overflow: ellipsis;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  font-size: 28px;
+  font-size: 24px;
   line-height: 32px;
   height: 64px;
   word-break: break-all !important;
@@ -4779,7 +4779,6 @@ a.label:focus {
 .panel-title > .small,
 .panel-title > small > a,
 .panel-title > .small > a {
-  color: inherit;
   text-decoration: none;
 }
 
@@ -6439,8 +6438,8 @@ body.no-sidebar .sidebar {
 }
 
 .article-list .article-title {
-  font-size: 32px;
-  color: #479B82;
+  font-size: 24px;
+  color: #494683;
 }
 
 .article-toc .toc-title {
@@ -6678,7 +6677,7 @@ body.okayNav-loaded {
 }
 
 .okayNav a {
-  color: #2e2e33;
+  color: #494683;
   font-weight: 400;
 }
 

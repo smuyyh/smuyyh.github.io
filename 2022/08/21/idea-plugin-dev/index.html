@@ -18,39 +18,39 @@
   
   
   <title>IDEA 插件开发 | smuyyh blog</title>
-  <meta name="description" content="[toc] 前言官方开发文档：http:&#x2F;&#x2F;www.jetbrains.org&#x2F;intellij&#x2F;sdk&#x2F;docs&#x2F;welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
+  <meta name="description" content="前言官方开发文档：http:&#x2F;&#x2F;www.jetbrains.org&#x2F;intellij&#x2F;sdk&#x2F;docs&#x2F;welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IDEA 插件开发">
-<meta property="og:url" content="http://smuyyh.top/2019/08/21/idea-plugin-dev/index.html">
+<meta property="og:url" content="http://smuyyh.top/2022/08/21/idea-plugin-dev/index.html">
 <meta property="og:site_name" content="LeBron_Six 的博客">
-<meta property="og:description" content="[toc] 前言官方开发文档：http:&#x2F;&#x2F;www.jetbrains.org&#x2F;intellij&#x2F;sdk&#x2F;docs&#x2F;welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
+<meta property="og:description" content="前言官方开发文档：http:&#x2F;&#x2F;www.jetbrains.org&#x2F;intellij&#x2F;sdk&#x2F;docs&#x2F;welcome.html 首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095010460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095033737.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095104101.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095157711.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095257352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095315272.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095334769.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095355169.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095417889.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095510265.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095539172.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="http://smuyyh.top/images/idea0460.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea3737.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea4101.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea7711.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea7352.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea5272.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea4769.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea5169.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea7889.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea0265.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea9172.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095639343.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095745756.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095850748.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095804234.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095901294.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/20190822095912753.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
-<meta property="article:published_time" content="2019-08-21T12:43:04.000Z">
-<meta property="article:modified_time" content="2019-08-22T02:01:55.062Z">
+<meta property="og:image" content="http://smuyyh.top/images/idea5756.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea0748.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea4234.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea1294.png">
+<meta property="og:image" content="http://smuyyh.top/images/idea2753.png">
+<meta property="article:published_time" content="2022-08-21T12:43:04.000Z">
+<meta property="article:modified_time" content="2023-10-30T12:08:19.804Z">
 <meta property="article:author" content="LeBron_Six">
 <meta property="article:tag" content="idea plugin">
 <meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190822095010460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70">
+<meta name="twitter:image" content="http://smuyyh.top/images/idea0460.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://smuyyh.top/2019/08/21/idea-plugin-dev/index.html">
+  <link rel="canonical" href="http://smuyyh.top/2022/08/21/idea-plugin-dev/index.html">
   
     <link rel="alternate" href="/atom.xml" title="LeBron_Six 的博客" type="application/atom+xml">
   
@@ -238,7 +238,7 @@
   <div class="widget">
     <h3 class="widget-title">归档</h3>
     <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">十月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">八月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">十月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">八月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -284,6 +284,21 @@
             
             <div class="item-inner">
               <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/08/21/idea-plugin-dev/" class="title">IDEA 插件开发</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-08-21T12:43:04.000Z" itemprop="datePublished">2022-08-21</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
                 <a class="category-link" href="/categories/Android/">Android</a>
               </p>
               <p class="item-title">
@@ -310,21 +325,6 @@
             </div>
           </li>
           
-          <li>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/Android/">Android</a>
-              </p>
-              <p class="item-title">
-                <a href="/2020/07/02/android-page-performance/" class="title">Android 页面秒开优化总结</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2020-07-01T21:59:04.000Z" itemprop="datePublished">2020-07-02</time>
-              </p>
-            </div>
-          </li>
-          
       </ul>
     </div>
   </div>
@@ -336,6 +336,15 @@
 
   
   
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%92%E4%BB%B6%E5%B7%A5%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">插件工程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA"><span class="toc-number">2.1.</span> <span class="toc-text">创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E4%BB%B6%E5%B7%A5%E7%A8%8B%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.</span> <span class="toc-text">插件工程结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#plugin-xml"><span class="toc-number">2.3.</span> <span class="toc-text">plugin.xml</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Plugin-Action"><span class="toc-number">3.</span> <span class="toc-text">Plugin Action</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Action-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">3.1.</span> <span class="toc-text">Action 是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAAction"><span class="toc-number">3.2.</span> <span class="toc-text">创建Action</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8CAction"><span class="toc-number">3.3.</span> <span class="toc-text">注册Action</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%88%9B%E5%BB%BAAction"><span class="toc-number">3.4.</span> <span class="toc-text">快速创建Action</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%8F%92%E4%BB%B6"><span class="toc-number">3.5.</span> <span class="toc-text">运行插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%93%E5%8C%85%E6%8F%92%E4%BB%B6"><span class="toc-number">3.6.</span> <span class="toc-text">打包插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="toc-number">3.7.</span> <span class="toc-text">安装插件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Plugin-Components"><span class="toc-number">4.</span> <span class="toc-text">Plugin Components</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Components-%E7%B1%BB%E5%9E%8B"><span class="toc-number">4.1.</span> <span class="toc-text">Components 类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA-Component"><span class="toc-number">4.2.</span> <span class="toc-text">创建 Component</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96-Component-%E5%AE%9E%E4%BE%8B"><span class="toc-number">4.3.</span> <span class="toc-text">获取 Component 实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">5.</span> <span class="toc-text">持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PropertiesComponent"><span class="toc-number">5.1.</span> <span class="toc-text">PropertiesComponent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PersistentStateComponent"><span class="toc-number">5.2.</span> <span class="toc-text">PersistentStateComponent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E6%8C%81%E4%B9%85%E5%8C%96%E7%BB%84%E4%BB%B6"><span class="toc-number">5.3.</span> <span class="toc-text">注册持久化组件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GUI-%E9%9D%A2%E6%9D%BF"><span class="toc-number">6.</span> <span class="toc-text">GUI 面板</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAGUI-Form"><span class="toc-number">6.1.</span> <span class="toc-text">创建GUI Form</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="toc-number">6.2.</span> <span class="toc-text">文件结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%83%E5%B1%80%E9%A2%84%E8%A7%88"><span class="toc-number">6.3.</span> <span class="toc-text">布局预览</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%92%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">7.</span> <span class="toc-text">插件上传</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E9%A1%B9%E7%9B%AE"><span class="toc-number">8.</span> <span class="toc-text">示例项目</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
 <main class="main" role="main">
   <div class="content">
   <article id="post-idea-plugin-dev" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
@@ -353,8 +362,8 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2019/08/21/idea-plugin-dev/" class="article-date">
-	  <time datetime="2019-08-21T12:43:04.000Z" itemprop="datePublished">2019-08-21</time>
+	<a href="/2022/08/21/idea-plugin-dev/" class="article-date">
+	  <time datetime="2022-08-21T12:43:04.000Z" itemprop="datePublished">2022年08月21日</time>
 	</a>
 </span>
         
@@ -372,20 +381,19 @@
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/08/21/idea-plugin-dev/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/08/21/idea-plugin-dev/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p>[toc]</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>官方开发文档：<a target="_blank" rel="noopener" href="http://www.jetbrains.org/intellij/sdk/docs/welcome.html">http://www.jetbrains.org/intellij/sdk/docs/welcome.html</a></p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>官方开发文档：<a target="_blank" rel="noopener" href="http://www.jetbrains.org/intellij/sdk/docs/welcome.html">http://www.jetbrains.org/intellij/sdk/docs/welcome.html</a></p>
 <p>首先需要开启 Plugin Devkit , IDEA 中默认带了 Plugin Devkit插件，但是没有开启。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095010460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <span id="more"></span>
 
-<h2 id="插件工程"><a href="#插件工程" class="headerlink" title="插件工程"></a>插件工程</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p><img src="https://img-blog.csdnimg.cn/20190822095033737.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095104101.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea0460.png"></p>
+<h2 id="插件工程"><a href="#插件工程" class="headerlink" title="插件工程"></a>插件工程</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p><img src="/images/idea3737.png"></p>
+<p><img src="/images/idea4101.png"></p>
 <h3 id="插件工程结构"><a href="#插件工程结构" class="headerlink" title="插件工程结构"></a>插件工程结构</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">BundleFileFinder/</span><br><span class="line">  resources/</span><br><span class="line">    META-INF/</span><br><span class="line">      plugin.xml</span><br><span class="line">        ...</span><br><span class="line">    src/</span><br><span class="line">    com.yuyang.finder</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
 <blockquote>
 <ul>
@@ -406,7 +414,7 @@
 <p>如果 anchor 设置为 before 或者 after，则必须设置 relative-to-action。</p>
 </blockquote>
 <h3 id="快速创建Action"><a href="#快速创建Action" class="headerlink" title="快速创建Action"></a>快速创建Action</h3><p>Plugin Devkit提供了快捷创建Action的方式。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095157711.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea7711.png"></p>
 <blockquote>
 <p>信息填写基本遵循注册Action时的字段内容。</p>
 <ul>
@@ -419,16 +427,16 @@
 </ul>
 </blockquote>
 <h3 id="运行插件"><a href="#运行插件" class="headerlink" title="运行插件"></a>运行插件</h3><p>点击 Run | Edit Configurations，若无配置项，则新建一个，配置一下 Use classpath of module,选择要调试的Module。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095257352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea7352.png"></p>
 <p>若需要查看调试日志，则需要勾选 Logs的选项。运行插件时将会输出log到console，也可以设置输出到具体文件。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095315272.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea5272.png"></p>
 <h3 id="打包插件"><a href="#打包插件" class="headerlink" title="打包插件"></a>打包插件</h3><p>Build -&gt; Prepare All Plugin Modules For Deployment，一般会将插件输出到工程根目录底下。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095334769.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea4769.png"></p>
 <p>如果该插件没有依赖其他的library，则插件会被打包成.jar，否则会被打包成.zip</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.jar 类型的文件内容结构</span><br><span class="line">BundleFileFinder.jar/</span><br><span class="line">  com/yuyang/finder/</span><br><span class="line">      ...</span><br><span class="line">  META-INF/</span><br><span class="line">    plugin.xml</span><br><span class="line"> </span><br><span class="line">.zip 类型的文件内容结构</span><br><span class="line">BundleFileFinder.zip/</span><br><span class="line">  lib/</span><br><span class="line">    lib1.jar</span><br><span class="line">    lib2.jar</span><br><span class="line">    BundleFileFinder.jar/</span><br><span class="line">      com/yuyang/finder/</span><br><span class="line">          ...</span><br><span class="line">      META-INF/</span><br><span class="line">        plugin.xml</span><br></pre></td></tr></table></figure>
 
 <h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><p>Intellij IDEA -&gt; Preferences -&gt; Plugins -&gt; Install Plugin From Disk，选择打包出来的 .jar 或者 .zip 文件。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095355169.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea5169.png"></p>
 <h2 id="Plugin-Components"><a href="#Plugin-Components" class="headerlink" title="Plugin Components"></a>Plugin Components</h2><h3 id="Components-类型"><a href="#Components-类型" class="headerlink" title="Components 类型"></a>Components 类型</h3><table>
 <thead>
 <tr>
@@ -508,20 +516,20 @@
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">extensions</span> <span class="attr">defaultExtensionNs</span>=<span class="string">&quot;com.intellij&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- application 级别--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">applicationService</span> <span class="attr">serviceImplementation</span>=<span class="string">&quot;com.yuyh.finder.PersistentStateComponentImpl1&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- project 级别 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">projectService</span> <span class="attr">serviceImplementation</span>=<span class="string">&quot;com.yuyh.finder.PersistentStateComponentImpl2&quot;</span>/&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">extensions</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="GUI-面板"><a href="#GUI-面板" class="headerlink" title="GUI 面板"></a>GUI 面板</h2><p>IDEA - Preference - Editor - Gui Designer，勾选 Java Source Code，表示我们通过面板编辑后可以生成 java代码。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095417889.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea7889.png"></p>
 <h3 id="创建GUI-Form"><a href="#创建GUI-Form" class="headerlink" title="创建GUI Form"></a>创建GUI Form</h3><p>指定位置右击 - New - GUI Form</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095510265.png" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095539172.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>面板编辑完成之后，点击Toolbar工具条那里的<img src="https://img-blog.csdnimg.cn/20190822095639343.png" alt="在这里插入图片描述">按钮，进行编译。编译完成后，GUI的代码会生成在 对应的 Java文件里面。如图是 Demo.java</p>
+<p><img src="/images/idea0265.png"></p>
+<p><img src="/images/idea9172.png"></p>
+<p>面板编辑完成之后，点击Toolbar工具条那里的<img src="https://img-blog.csdnimg.cn/20190822095639343.png">按钮，进行编译。编译完成后，GUI的代码会生成在 对应的 Java文件里面。如图是 Demo.java</p>
 <h3 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h3><p>默认根JPanel是没有配置 “field name”控件属性的，所以我们需要给他配置一下。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095745756.png" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea5756.png"></p>
 <p>生成的java文件如图，<code>$$$setupUI$$$()</code> 方法里面是具体创建布局的代码。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095850748.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea0748.png"></p>
 <h3 id="布局预览"><a href="#布局预览" class="headerlink" title="布局预览"></a>布局预览</h3><p>在需要插入main方法的地方，按下 Command + n，点击 Form main，则会生成可执行的main方法。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095804234.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea4234.png"></p>
 <p>运行 main 方法，可以预览之前创建的布局。</p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095901294.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/20190822095912753.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3l5aDM1MjA5MTYyNg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="/images/idea1294.png"></p>
+<p><img src="/images/idea2753.png"></p>
 <h2 id="插件上传"><a href="#插件上传" class="headerlink" title="插件上传"></a>插件上传</h2><p>插件也支持上传到 idea 仓库，让其他人搜索到。<br>官方文档：<a target="_blank" rel="noopener" href="http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/publishing_plugin.html">http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started&#x2F;publishing_plugin.html</a></p>
 <h2 id="示例项目"><a href="#示例项目" class="headerlink" title="示例项目"></a>示例项目</h2><p>实现反编译APK来查找是否引用了某个类；<br>仓库地址：<a href="">BundleFileFinder</a></p>
 
@@ -533,7 +541,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://smuyyh.top/2019/08/21/idea-plugin-dev/" title="IDEA 插件开发" target="_blank" rel="external">http://smuyyh.top/2019/08/21/idea-plugin-dev/</a>
+      <a href="http://smuyyh.top/2022/08/21/idea-plugin-dev/" title="IDEA 插件开发" target="_blank" rel="external">http://smuyyh.top/2022/08/21/idea-plugin-dev/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -580,14 +588,22 @@
   <ul class="pager pull-left">
     
     <li class="prev">
-      <a href="/2019/11/26/recyclerview-auto-viewtype/" title="RecyclerView Adapter 实现自动多 ViewType"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+      <a href="/2023/08/02/terminal-info/" title="终端 Terminal 的一些实现细节分享"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
     </li>
     
     
     <li class="next">
-      <a href="/2018/10/11/java-volatile/" title="简析 Volatile 关键字"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2021/09/14/kotlin-in-chinese/" title="Kotlin官方文档翻译"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
     
   </ul>
   

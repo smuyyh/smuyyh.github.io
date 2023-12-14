@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Android Tab吸顶 嵌套滚动通用实现方案✅ | smuyyh blog</title>
+  <meta name="description" content="很多应用的首页都会有一些嵌套滚动、Tab吸顶的布局，尤其是一些生鲜类应用，例如 朴朴超市、大润发优鲜、盒马等等。    &amp;nbsp;  在 Android 里面，滚动吸顶方式通常可以通过 CoordinatorLayout + AppBarLayout + CollapsingToolbarLayout + NestedScrollView 来实现，但是 AppBarLayoutBehavior">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Tab吸顶 嵌套滚动通用实现方案✅">
+<meta property="og:url" content="http://smuyyh.top/2023/12/14/nested-recyclerview/index.html">
+<meta property="og:site_name" content="LeBron_Six 的博客">
+<meta property="og:description" content="很多应用的首页都会有一些嵌套滚动、Tab吸顶的布局，尤其是一些生鲜类应用，例如 朴朴超市、大润发优鲜、盒马等等。    &amp;nbsp;  在 Android 里面，滚动吸顶方式通常可以通过 CoordinatorLayout + AppBarLayout + CollapsingToolbarLayout + NestedScrollView 来实现，但是 AppBarLayoutBehavior">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://smuyyh.top/images/nested1.png">
+<meta property="og:image" content="http://smuyyh.top/images/nested2.jpg">
+<meta property="og:image" content="http://smuyyh.top/images/nested3.gif">
+<meta property="og:image" content="http://smuyyh.top/images/nested4.gif">
+<meta property="article:published_time" content="2023-12-14T12:29:27.000Z">
+<meta property="article:modified_time" content="2023-12-14T12:32:44.955Z">
+<meta property="article:author" content="LeBron_Six">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="RecyclerView">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://smuyyh.top/images/nested1.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://smuyyh.top/2023/12/14/nested-recyclerview/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="LeBron_Six 的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/avatar.jpg" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.css">
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body class="main-center theme-purple" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/smuyyh" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">所长</h2>
+        <h4 id="title" class="hidden-xs hidden-sm hidden-md">Android Development Engineer</h4>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Hangzhou, China</small>
+        <small id="company" class="text-muted hidden-xs hidden-sm" style="margin-left: 10px"><i class="icon icon-users"></i> Alibaba Group</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Terminal/">Terminal</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/3D-Touch/" rel="tag">3D Touch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android-Studio/" rel="tag">Android Studio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AsyncTask/" rel="tag">AsyncTask</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bubble/" rel="tag">Bubble</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Camera/" rel="tag">Camera</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Crash/" rel="tag">Crash</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Handler/" rel="tag">Handler</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HashMap/" rel="tag">HashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JCenter/" rel="tag">JCenter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Looper/" rel="tag">Looper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mac/" rel="tag">Mac</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Message/" rel="tag">Message</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OkHttp/" rel="tag">OkHttp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RecyclerView/" rel="tag">RecyclerView</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/" rel="tag">Retrofit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RxJava/" rel="tag">RxJava</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Terminal/" rel="tag">Terminal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/View/" rel="tag">View</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VirtualAPK/" rel="tag">VirtualAPK</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Volatile/" rel="tag">Volatile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Widget/" rel="tag">Widget</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea-plugin/" rel="tag">idea plugin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/io/" rel="tag">io</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/recyclerview/" rel="tag">recyclerview</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" rel="tag">内存泄露</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8A%A8%E7%94%BB/" rel="tag">动画</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E6%AD%A5/" rel="tag">异步</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="tag">性能优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag">排序</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B0%94%E6%B3%A1/" rel="tag">气泡</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" rel="tag">页面性能</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/3D-Touch/" style="font-size: 13px;">3D Touch</a> <a href="/tags/Android/" style="font-size: 14px;">Android</a> <a href="/tags/Android-Studio/" style="font-size: 13px;">Android Studio</a> <a href="/tags/AsyncTask/" style="font-size: 13px;">AsyncTask</a> <a href="/tags/Bubble/" style="font-size: 13px;">Bubble</a> <a href="/tags/Camera/" style="font-size: 13px;">Camera</a> <a href="/tags/Crash/" style="font-size: 13px;">Crash</a> <a href="/tags/Github/" style="font-size: 13px;">Github</a> <a href="/tags/Handler/" style="font-size: 13.33px;">Handler</a> <a href="/tags/HashMap/" style="font-size: 13px;">HashMap</a> <a href="/tags/JCenter/" style="font-size: 13px;">JCenter</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/Java/" style="font-size: 13.67px;">Java</a> <a href="/tags/JavaScript/" style="font-size: 13px;">JavaScript</a> <a href="/tags/Looper/" style="font-size: 13px;">Looper</a> <a href="/tags/Mac/" style="font-size: 13px;">Mac</a> <a href="/tags/Message/" style="font-size: 13px;">Message</a> <a href="/tags/OkHttp/" style="font-size: 13px;">OkHttp</a> <a href="/tags/RecyclerView/" style="font-size: 13.67px;">RecyclerView</a> <a href="/tags/Retrofit/" style="font-size: 13px;">Retrofit</a> <a href="/tags/RxJava/" style="font-size: 13px;">RxJava</a> <a href="/tags/Terminal/" style="font-size: 13px;">Terminal</a> <a href="/tags/View/" style="font-size: 13px;">View</a> <a href="/tags/VirtualAPK/" style="font-size: 13px;">VirtualAPK</a> <a href="/tags/Volatile/" style="font-size: 13px;">Volatile</a> <a href="/tags/Widget/" style="font-size: 13px;">Widget</a> <a href="/tags/idea-plugin/" style="font-size: 13px;">idea plugin</a> <a href="/tags/io/" style="font-size: 13px;">io</a> <a href="/tags/java/" style="font-size: 13px;">java</a> <a href="/tags/recyclerview/" style="font-size: 13px;">recyclerview</a> <a href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" style="font-size: 13px;">内存泄露</a> <a href="/tags/%E5%8A%A8%E7%94%BB/" style="font-size: 13px;">动画</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 13px;">多线程</a> <a href="/tags/%E5%BC%82%E6%AD%A5/" style="font-size: 13.33px;">异步</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 13px;">性能优化</a> <a href="/tags/%E6%8E%92%E5%BA%8F/" style="font-size: 13px;">排序</a> <a href="/tags/%E6%B0%94%E6%B3%A1/" style="font-size: 13px;">气泡</a> <a href="/tags/%E9%A1%B5%E9%9D%A2%E6%80%A7%E8%83%BD/" style="font-size: 13px;">页面性能</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">十二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">十月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">八月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/12/14/nested-recyclerview/" class="title">Android Tab吸顶 嵌套滚动通用实现方案✅</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-12-14T12:29:27.000Z" itemprop="datePublished">2023-12-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/10/25/file-sort/" class="title">多个大文件数据排序去重的解题思路</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-10-25T12:30:53.000Z" itemprop="datePublished">2023-10-25</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Terminal/">Terminal</a>
+              </p>
+              <p class="item-title">
+                <a href="/2023/08/02/terminal-info/" class="title">终端 Terminal 的一些实现细节分享</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2023-08-02T12:45:01.000Z" itemprop="datePublished">2023-08-02</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Java/">Java</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/08/21/idea-plugin-dev/" class="title">IDEA 插件开发</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-08-21T12:43:04.000Z" itemprop="datePublished">2022-08-21</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Android/">Android</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/09/14/kotlin-in-chinese/" class="title">Kotlin官方文档翻译</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-09-14T07:00:04.000Z" itemprop="datePublished">2021-09-14</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ParentRecyclerView"><span class="toc-number">1.</span> <span class="toc-text">ParentRecyclerView</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ChildRecyclerView"><span class="toc-number">2.</span> <span class="toc-text">ChildRecyclerView</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%88%E6%9E%9C"><span class="toc-number">3.</span> <span class="toc-text">效果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89-Tab"><span class="toc-number">3.1.</span> <span class="toc-text">有 Tab</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0-Tab%EF%BC%8C%E4%B8%A4%E4%B8%AA-RecyclerView-%E5%B5%8C%E5%A5%97"><span class="toc-number">3.2.</span> <span class="toc-text">无 Tab，两个 RecyclerView 嵌套</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-nested-recyclerview" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android Tab吸顶 嵌套滚动通用实现方案✅
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2023/12/14/nested-recyclerview/" class="article-date">
+	  <time datetime="2023-12-14T12:29:27.000Z" itemprop="datePublished">2023年12月14日</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Android/">Android</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Android/" rel="tag">Android</a>, <a class="article-tag-link-link" href="/tags/RecyclerView/" rel="tag">RecyclerView</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2023/12/14/nested-recyclerview/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>很多应用的首页都会有一些嵌套滚动、Tab吸顶的布局，尤其是一些生鲜类应用，例如 朴朴超市、大润发优鲜、盒马等等。</p>
+<div align=left>
+<img width="240" src="/images/nested1.png" />
+</div>
+&nbsp;
+
+<p>在 Android 里面，滚动吸顶方式通常可以通过 <code>CoordinatorLayout + AppBarLayout + CollapsingToolbarLayout + NestedScrollView</code> 来实现，但是 AppBarLayoutBehavior fling<br>无法传递到<br>NestedScrollView，快速来回滑动偶尔也会有些抖动，导致滚动不流畅。</p>
+<p>另外对于头部是一些动态列表的，还是更希望通过 RecyclerView 来实现，那么嵌套的方式变为：<code>RecyclerView + ViewPager + RecyclerView</code>，那么就需要处理好 RecyclerView 的滑动冲突问题。</p>
+<span id="more"></span>
+
+<p>如果 ViewPager 的 RecyclerView 内部还嵌套一层 ViewPager，例如一些广告Banner图，那么事件处理也会更加复杂。本文将介绍一种通用的嵌套滚动方案，既可以实现Tab的吸顶，又可以单纯实现的两个垂直 RecyclerView 嵌套（主要场景是：尾部的recyclerview可以实现容器级别的复用，例如往多个列表页的尾部嵌套一个相同样式的推荐商品列表，如下图所示）。</p>
+<p><img src="/images/nested2.jpg" alt="nested2.jpg"></p>
+<p><strong>代码库地址：<a target="_blank" rel="noopener" href="https://github.com/smuyyh/NestedRecyclerView">https://github.com/smuyyh/NestedRecyclerView</a></strong></p>
+<p>目前已应用到线上，如有一些好的建议欢迎交流~~</p>
+<p><strong>核心思路：</strong></p>
+<ul>
+<li>父容器滑动到底部之后，触摸事件继续交给子容器滑动</li>
+<li>子容器滚动到顶部之后，触摸事件继续交给父容器滑动</li>
+<li>fling 在父容器和子容器之间传递</li>
+<li>Tab 在屏幕中间，切换 ViewPager 之后，如果子容器不在顶部，需要优先处理滑动</li>
+</ul>
+<p><strong>代码实现：</strong></p>
+<h2 id="ParentRecyclerView"><a href="#ParentRecyclerView" class="headerlink" title="ParentRecyclerView"></a>ParentRecyclerView</h2><p>因为触摸事件首先分发到父容器，所以核心的协调逻辑主要由父容器实现，子容器只需要处理 fling 传递即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ParentRecyclerView</span> <span class="keyword">extends</span> <span class="title class_">RecyclerView</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">mTouchSlop</span> <span class="operator">=</span> ViewConfiguration.get(getContext()).getScaledTouchSlop();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * fling时的加速度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">mVelocity</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">float</span> <span class="variable">mLastTouchY</span> <span class="operator">=</span> <span class="number">0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> mLastInterceptX;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> mLastInterceptY;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用于向子容器传递 fling 速度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">VelocityTracker</span> <span class="variable">mVelocityTracker</span> <span class="operator">=</span> VelocityTracker.obtain();</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> mMaximumFlingVelocity;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> mMinimumFlingVelocity;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子容器是否消耗了滑动事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="variable">childConsumeTouch</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子容器消耗的滑动距离</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">childConsumeDistance</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ParentRecyclerView</span><span class="params">(<span class="meta">@NonNull</span> Context context)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>(context, <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ParentRecyclerView</span><span class="params">(<span class="meta">@NonNull</span> Context context, <span class="meta">@Nullable</span> AttributeSet attrs)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>(context, attrs, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ParentRecyclerView</span><span class="params">(<span class="meta">@NonNull</span> Context context, <span class="meta">@Nullable</span> AttributeSet attrs, <span class="type">int</span> defStyle)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(context, attrs, defStyle);</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">ViewConfiguration</span> <span class="variable">configuration</span> <span class="operator">=</span> ViewConfiguration.get(getContext());</span><br><span class="line">        mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();</span><br><span class="line">        mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();</span><br><span class="line"></span><br><span class="line">        addOnScrollListener(<span class="keyword">new</span> <span class="title class_">OnScrollListener</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onScrollStateChanged</span><span class="params">(<span class="meta">@NonNull</span> RecyclerView recyclerView, <span class="type">int</span> newState)</span> &#123;</span><br><span class="line">                <span class="built_in">super</span>.onScrollStateChanged(recyclerView, newState);</span><br><span class="line">                <span class="keyword">if</span> (newState == SCROLL_STATE_IDLE) &#123;</span><br><span class="line">                    dispatchChildFling();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> &#123;</span><br><span class="line">        <span class="keyword">switch</span> (ev.getAction()) &#123;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</span><br><span class="line">                mVelocity = <span class="number">0</span>;</span><br><span class="line">                mLastTouchY = ev.getRawY();</span><br><span class="line">                childConsumeTouch = <span class="literal">false</span>;</span><br><span class="line">                childConsumeDistance = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">                <span class="type">ChildRecyclerView</span> <span class="variable">childRecyclerView</span> <span class="operator">=</span> findNestedScrollingChildRecyclerView();</span><br><span class="line">                <span class="keyword">if</span> (isScrollToBottom() &amp;&amp; (childRecyclerView != <span class="literal">null</span> &amp;&amp; !childRecyclerView.isScrollToTop())) &#123;</span><br><span class="line">                    stopScroll();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_UP:</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_CANCEL:</span><br><span class="line">                childConsumeTouch = <span class="literal">false</span>;</span><br><span class="line">                childConsumeDistance = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">super</span>.dispatchTouchEvent(ev);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">onInterceptTouchEvent</span><span class="params">(MotionEvent event)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (isChildConsumeTouch(event)) &#123;</span><br><span class="line">            <span class="comment">// 子容器如果消费了触摸事件，后续父容器就无法再拦截事件</span></span><br><span class="line">            <span class="comment">// 在必要的时候，子容器需调用 requestDisallowInterceptTouchEvent(false) 来允许父容器继续拦截事件</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 子容器不消费触摸事件，父容器按正常流程处理</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.onInterceptTouchEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子容器是否消费触摸事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">isChildConsumeTouch</span><span class="params">(MotionEvent event)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> (<span class="type">int</span>) event.getRawX();</span><br><span class="line">        <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> (<span class="type">int</span>) event.getRawY();</span><br><span class="line">        <span class="keyword">if</span> (event.getAction() != MotionEvent.ACTION_MOVE) &#123;</span><br><span class="line">            mLastInterceptX = x;</span><br><span class="line">            mLastInterceptY = y;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">deltaX</span> <span class="operator">=</span> x - mLastInterceptX;</span><br><span class="line">        <span class="type">int</span> <span class="variable">deltaY</span> <span class="operator">=</span> y - mLastInterceptY;</span><br><span class="line">        <span class="keyword">if</span> (Math.abs(deltaX) &gt; Math.abs(deltaY) || Math.abs(deltaY) &lt;= mTouchSlop) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> shouldChildScroll(deltaY);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子容器是否需要消费滚动事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">shouldChildScroll</span><span class="params">(<span class="type">int</span> deltaY)</span> &#123;</span><br><span class="line">        <span class="type">ChildRecyclerView</span> <span class="variable">childRecyclerView</span> <span class="operator">=</span> findNestedScrollingChildRecyclerView();</span><br><span class="line">        <span class="keyword">if</span> (childRecyclerView == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isScrollToBottom()) &#123;</span><br><span class="line">            <span class="comment">// 父容器已经滚动到底部 且 向下滑动 且 子容器还没滚动到底部</span></span><br><span class="line">            <span class="keyword">return</span> deltaY &lt; <span class="number">0</span> &amp;&amp; !childRecyclerView.isScrollToBottom();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 父容器还没滚动到底部 且 向上滑动 且 子容器已经滚动到顶部</span></span><br><span class="line">            <span class="keyword">return</span> deltaY &gt; <span class="number">0</span> &amp;&amp; !childRecyclerView.isScrollToTop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">onTouchEvent</span><span class="params">(MotionEvent e)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (isScrollToBottom()) &#123;</span><br><span class="line">            <span class="comment">// 如果父容器已经滚动到底部，且向上滑动，且子容器还没滚动到顶部，事件传递给子容器</span></span><br><span class="line">            <span class="type">ChildRecyclerView</span> <span class="variable">childRecyclerView</span> <span class="operator">=</span> findNestedScrollingChildRecyclerView();</span><br><span class="line">            <span class="keyword">if</span> (childRecyclerView != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="type">int</span> <span class="variable">deltaY</span> <span class="operator">=</span> (<span class="type">int</span>) (mLastTouchY - e.getRawY());</span><br><span class="line">                <span class="keyword">if</span> (deltaY &gt;= <span class="number">0</span> || !childRecyclerView.isScrollToTop()) &#123;</span><br><span class="line">                    mVelocityTracker.addMovement(e);</span><br><span class="line">                    <span class="keyword">if</span> (e.getAction() == MotionEvent.ACTION_UP) &#123;</span><br><span class="line">                        <span class="comment">// 传递剩余 fling 速度</span></span><br><span class="line">                        mVelocityTracker.computeCurrentVelocity(<span class="number">1000</span>, mMaximumFlingVelocity);</span><br><span class="line">                        <span class="type">float</span> <span class="variable">velocityY</span> <span class="operator">=</span> mVelocityTracker.getYVelocity();</span><br><span class="line">                        <span class="keyword">if</span> (Math.abs(velocityY) &gt; mMinimumFlingVelocity) &#123;</span><br><span class="line">                            childRecyclerView.fling(<span class="number">0</span>, -(<span class="type">int</span>) velocityY);</span><br><span class="line">                        &#125;</span><br><span class="line">                        mVelocityTracker.clear();</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">// 传递滑动事件</span></span><br><span class="line">                        childRecyclerView.scrollBy(<span class="number">0</span>, deltaY);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    childConsumeDistance += deltaY;</span><br><span class="line">                    mLastTouchY = e.getRawY();</span><br><span class="line">                    childConsumeTouch = <span class="literal">true</span>;</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mLastTouchY = e.getRawY();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (childConsumeTouch) &#123;</span><br><span class="line">            <span class="comment">// 在同一个事件序列中，子容器消耗了部分滑动距离，需要扣除掉</span></span><br><span class="line">            <span class="type">MotionEvent</span> <span class="variable">adjustedEvent</span> <span class="operator">=</span> MotionEvent.obtain(</span><br><span class="line">                    e.getDownTime(),</span><br><span class="line">                    e.getEventTime(),</span><br><span class="line">                    e.getAction(),</span><br><span class="line">                    e.getX(),</span><br><span class="line">                    e.getY() + childConsumeDistance, <span class="comment">// 更新Y坐标</span></span><br><span class="line">                    e.getMetaState()</span><br><span class="line">            );</span><br><span class="line"></span><br><span class="line">            <span class="type">boolean</span> <span class="variable">handled</span> <span class="operator">=</span> <span class="built_in">super</span>.onTouchEvent(adjustedEvent);</span><br><span class="line">            adjustedEvent.recycle();</span><br><span class="line">            <span class="keyword">return</span> handled;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (e.getAction() == MotionEvent.ACTION_UP || e.getAction() == MotionEvent.ACTION_CANCEL) &#123;</span><br><span class="line">            mVelocityTracker.clear();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">super</span>.onTouchEvent(e);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">fling</span><span class="params">(<span class="type">int</span> velX, <span class="type">int</span> velY)</span> &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">fling</span> <span class="operator">=</span> <span class="built_in">super</span>.fling(velX, velY);</span><br><span class="line">        <span class="keyword">if</span> (!fling || velY &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            mVelocity = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            mVelocity = velY;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> fling;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">dispatchChildFling</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 父容器滚动到底部后，如果还有剩余加速度，传递给子容器</span></span><br><span class="line">        <span class="keyword">if</span> (isScrollToBottom() &amp;&amp; mVelocity != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 尽量让速度传递更加平滑</span></span><br><span class="line">            <span class="type">float</span> <span class="variable">mVelocity</span> <span class="operator">=</span> NestedOverScroller.invokeCurrentVelocity(<span class="built_in">this</span>);</span><br><span class="line">            <span class="keyword">if</span> (Math.abs(mVelocity) &lt;= <span class="number">2.0E-5F</span>) &#123;</span><br><span class="line">                mVelocity = (<span class="type">float</span>) <span class="built_in">this</span>.mVelocity * <span class="number">0.5F</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                mVelocity *= <span class="number">0.46F</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">ChildRecyclerView</span> <span class="variable">childRecyclerView</span> <span class="operator">=</span> findNestedScrollingChildRecyclerView();</span><br><span class="line">            <span class="keyword">if</span> (childRecyclerView != <span class="literal">null</span>) &#123;</span><br><span class="line">                childRecyclerView.fling(<span class="number">0</span>, (<span class="type">int</span>) mVelocity);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        mVelocity = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ChildRecyclerView <span class="title function_">findNestedScrollingChildRecyclerView</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (getAdapter() <span class="keyword">instanceof</span> INestedParentAdapter) &#123;</span><br><span class="line">            <span class="keyword">return</span> ((INestedParentAdapter) getAdapter()).getCurrentChildRecyclerView();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isScrollToBottom</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> !canScrollVertically(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isScrollToTop</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> !canScrollVertically(-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">scrollToPosition</span><span class="params">(<span class="keyword">final</span> <span class="type">int</span> position)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (position == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 父容器滚动到顶部，从交互上来说子容器也需要滚动到顶部</span></span><br><span class="line">            <span class="type">ChildRecyclerView</span> <span class="variable">childRecyclerView</span> <span class="operator">=</span> findNestedScrollingChildRecyclerView();</span><br><span class="line">            <span class="keyword">if</span> (childRecyclerView != <span class="literal">null</span>) &#123;</span><br><span class="line">                childRecyclerView.scrollToPosition(<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">super</span>.scrollToPosition(position);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">onStartNestedScroll</span><span class="params">(View child, View target, <span class="type">int</span> nestedScrollAxes)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> target <span class="keyword">instanceof</span> ChildRecyclerView;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onNestedPreScroll</span><span class="params">(View target, <span class="type">int</span> dx, <span class="type">int</span> dy, <span class="type">int</span>[] consumed)</span> &#123;</span><br><span class="line">        <span class="type">ChildRecyclerView</span> <span class="variable">childRecyclerView</span> <span class="operator">=</span> findNestedScrollingChildRecyclerView();</span><br><span class="line">        <span class="comment">//1、当前ParentRecyclerView没有滑动底，且dy&gt; 0，即下滑</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">isParentCanScroll</span> <span class="operator">=</span> dy &gt; <span class="number">0</span> &amp;&amp; !isScrollToBottom();</span><br><span class="line">        <span class="comment">//2、当前ChildRecyclerView滑到顶部了，且dy &lt; 0，即上滑</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">isChildCanNotScroll</span> <span class="operator">=</span> dy &lt; <span class="number">0</span> &amp;&amp; (childRecyclerView == <span class="literal">null</span> || childRecyclerView.isScrollToTop());</span><br><span class="line">        <span class="keyword">if</span> (isParentCanScroll || isChildCanNotScroll) &#123;</span><br><span class="line">            smoothScrollBy(<span class="number">0</span>, dy);</span><br><span class="line">            consumed[<span class="number">1</span>] = dy;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">onNestedFling</span><span class="params">(View target, <span class="type">float</span> velocityX, <span class="type">float</span> velocityY, <span class="type">boolean</span> consumed)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">onNestedPreFling</span><span class="params">(View target, <span class="type">float</span> velocityX, <span class="type">float</span> velocityY)</span> &#123;</span><br><span class="line">        <span class="type">ChildRecyclerView</span> <span class="variable">childRecyclerView</span> <span class="operator">=</span> findNestedScrollingChildRecyclerView();</span><br><span class="line">        <span class="comment">// 1、当前ParentRecyclerView没有滑动底，且向下滑动，即下滑</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">isParentCanFling</span> <span class="operator">=</span> velocityY &gt; <span class="number">0f</span> &amp;&amp; !isScrollToBottom();</span><br><span class="line">        <span class="comment">// 2、当前ChildRecyclerView滑到顶部了，且向上滑动，即上滑</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">isChildCanNotFling</span> <span class="operator">=</span> velocityY &lt; <span class="number">0</span> &amp;&amp; (childRecyclerView == <span class="literal">null</span> || childRecyclerView.isScrollToTop());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!isParentCanFling &amp;&amp; !isChildCanNotFling) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        fling(<span class="number">0</span>, (<span class="type">int</span>) velocityY);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ChildRecyclerView"><a href="#ChildRecyclerView" class="headerlink" title="ChildRecyclerView"></a>ChildRecyclerView</h2><p>子容器主要处理 fling 传递，以及滑动到顶部时，允许父容器继续拦截事件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ChildRecyclerView</span> <span class="keyword">extends</span> <span class="title class_">RecyclerView</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">ParentRecyclerView</span> <span class="variable">mParentRecyclerView</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * fling时的加速度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">mVelocity</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> mLastInterceptX;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> mLastInterceptY;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ChildRecyclerView</span><span class="params">(<span class="meta">@NonNull</span> Context context)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>(context, <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ChildRecyclerView</span><span class="params">(<span class="meta">@NonNull</span> Context context, <span class="meta">@Nullable</span> AttributeSet attrs)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>(context, attrs, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ChildRecyclerView</span><span class="params">(<span class="meta">@NonNull</span> Context context, <span class="meta">@Nullable</span> AttributeSet attrs, <span class="type">int</span> defStyle)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(context, attrs, defStyle);</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">        setOverScrollMode(OVER_SCROLL_NEVER);</span><br><span class="line"></span><br><span class="line">        addOnScrollListener(<span class="keyword">new</span> <span class="title class_">OnScrollListener</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onScrollStateChanged</span><span class="params">(<span class="meta">@NonNull</span> RecyclerView recyclerView, <span class="type">int</span> newState)</span> &#123;</span><br><span class="line">                <span class="built_in">super</span>.onScrollStateChanged(recyclerView, newState);</span><br><span class="line">                <span class="keyword">if</span> (newState == SCROLL_STATE_IDLE) &#123;</span><br><span class="line">                    dispatchParentFling();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">dispatchParentFling</span><span class="params">()</span> &#123;</span><br><span class="line">        ensureParentRecyclerView();</span><br><span class="line">        <span class="comment">// 子容器滚动到顶部，如果还有剩余加速度，就交给父容器处理</span></span><br><span class="line">        <span class="keyword">if</span> (mParentRecyclerView != <span class="literal">null</span> &amp;&amp; isScrollToTop() &amp;&amp; mVelocity != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 尽量让速度传递更加平滑</span></span><br><span class="line">            <span class="type">float</span> <span class="variable">velocityY</span> <span class="operator">=</span> NestedOverScroller.invokeCurrentVelocity(<span class="built_in">this</span>);</span><br><span class="line">            <span class="keyword">if</span> (Math.abs(velocityY) &lt;= <span class="number">2.0E-5F</span>) &#123;</span><br><span class="line">                velocityY = (<span class="type">float</span>) <span class="built_in">this</span>.mVelocity * <span class="number">0.5F</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                velocityY *= <span class="number">0.65F</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            mParentRecyclerView.fling(<span class="number">0</span>, (<span class="type">int</span>) velocityY);</span><br><span class="line">            mVelocity = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (ev.getAction() == MotionEvent.ACTION_DOWN) &#123;</span><br><span class="line">            mVelocity = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> (<span class="type">int</span>) ev.getRawX();</span><br><span class="line">        <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> (<span class="type">int</span>) ev.getRawY();</span><br><span class="line">        <span class="keyword">if</span> (ev.getAction() != MotionEvent.ACTION_MOVE) &#123;</span><br><span class="line">            mLastInterceptX = x;</span><br><span class="line">            mLastInterceptY = y;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> <span class="variable">deltaX</span> <span class="operator">=</span> x - mLastInterceptX;</span><br><span class="line">        <span class="type">int</span> <span class="variable">deltaY</span> <span class="operator">=</span> y - mLastInterceptY;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isScrollToTop() &amp;&amp; Math.abs(deltaX) &lt;= Math.abs(deltaY) &amp;&amp; getParent() != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 子容器滚动到顶部，继续向上滑动，此时父容器需要继续拦截事件。与父容器 onInterceptTouchEvent 对应</span></span><br><span class="line">            getParent().requestDisallowInterceptTouchEvent(<span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.dispatchTouchEvent(ev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">fling</span><span class="params">(<span class="type">int</span> velocityX, <span class="type">int</span> velocityY)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!isAttachedToWindow()) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">fling</span> <span class="operator">=</span> <span class="built_in">super</span>.fling(velocityX, velocityY);</span><br><span class="line">        <span class="keyword">if</span> (!fling || velocityY &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">            mVelocity = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            mVelocity = velocityY;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> fling;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isScrollToTop</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> !canScrollVertically(-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isScrollToBottom</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> !canScrollVertically(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">ensureParentRecyclerView</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (mParentRecyclerView == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="type">ViewParent</span> <span class="variable">parentView</span> <span class="operator">=</span> getParent();</span><br><span class="line">            <span class="keyword">while</span> (!(parentView <span class="keyword">instanceof</span> ParentRecyclerView)) &#123;</span><br><span class="line">                parentView = parentView.getParent();</span><br><span class="line">            &#125;</span><br><span class="line">            mParentRecyclerView = (ParentRecyclerView) parentView;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><h3 id="有-Tab"><a href="#有-Tab" class="headerlink" title="有 Tab"></a>有 Tab</h3><div align=left>
+<img width="240" src="/images/nested3.gif" />
+</div>
+
+<h3 id="无-Tab，两个-RecyclerView-嵌套"><a href="#无-Tab，两个-RecyclerView-嵌套" class="headerlink" title="无 Tab，两个 RecyclerView 嵌套"></a>无 Tab，两个 RecyclerView 嵌套</h3><div align=left>
+<img width="240" src="/images/nested4.gif" />
+</div>
+
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://smuyyh.top/2023/12/14/nested-recyclerview/" title="Android Tab吸顶 嵌套滚动通用实现方案✅" target="_blank" rel="external">http://smuyyh.top/2023/12/14/nested-recyclerview/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/smuyyh" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/smuyyh" target="_blank"><span class="text-dark">所长</span><small class="ml-1x">Android Development Engineer</small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+           
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2023/10/25/file-sort/" title="多个大文件数据排序去重的解题思路"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/alipay.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/wechat.jpg" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/smuyyh" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="https://weibo.com/u/1879276162" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="mailto:smuyyh@gmail.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="https://gitee.com/smuyyh" target="_blank" title="Gitee" data-toggle=tooltip data-placement=top><i class="icon icon-gitee"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2023 LeBron_Six
+        
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+  <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+  <script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '0a452de0f03398d1ea74',
+    clientSecret: '774c6e487b59087f22aea6b51bbbd69e2ef0a5c2',
+    repo: 'smuyyh.github.io',
+    owner: 'smuyyh',
+    admin: ['smuyyh'],
+    id: md5(location.pathname),
+    distractionFreeMode: true,
+    language: 'zh-CN',
+    enableHotKey: 'true'
+  })
+  gitalk.render('comments')
+  </script>
+      
+
+
+
+
+
+
+
+</body>
+</html>
